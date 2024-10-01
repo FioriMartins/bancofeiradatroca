@@ -15,5 +15,5 @@
 ## Quem somos?
 ### Estudantes da ETEC (2023 - 2025), da turma João Cabral de Melo Neto:
 - Caio Fiori Martins;
-- Gabriel Lucrécio;
 - Enzo Queiroz;
+- Gabriel Lucrécio;
