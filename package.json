@@ -1,0 +1,21 @@
+{
+  "name": "bancofeiradatroca",
+  "version": "1.0.0",
+  "description": "> Feira da Troca é um projeto anual, localizado em *Taquarituba SP,* especificamente na ***ETEC Profª Terezinha Monteiro dos Santos***, com o intuito de **ensinar a ser sustentável**. Sendo a realização de troca de itens que você já não vê mais utilidade para você, mas que pode haver para outra pessoa.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cd front-end && npm install && echo 'Dependencias do Front-end instaladas' && cd .. && cd back-end && npm install && echo 'Dependencias do back-end instaladas' && cd .. && echo 'Tudo joia!'",
+    "front": "cd front-end && echo'Ligando a parte do front-end!!' && npm run dev",
+    "back": "cd back-end && echo 'Arquivos faltando...'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FioriMartins/bancofeiradatroca.git"
+  },
+  "author": "Caio Fiori",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FioriMartins/bancofeiradatroca/issues"
+  },
+  "homepage": "https://github.com/FioriMartins/bancofeiradatroca#readme"
+}
