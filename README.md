@@ -13,7 +13,16 @@
 > **Afim de melhorar a experiência e extinguir os problemas acarretados**, decidimos criar um banco, que pode ser utilizado até o fim do projeto. *Sendo open source, para uma maior manipulação, e sendo um sistema que tenha uma base concreta.*
 
 ## Quem somos?
-### Estudantes da ETEC (2023 - 2025), da turma João Cabral de Melo Neto:
 - Caio Fiori Martins;
 - Enzo Queiroz;
 - Gabriel Lucrécio;
+
+
+## Créditos à:
+- Matheus A.
+- Taíssa S.
+
+
+### Estudantes da ETEC (2023 - 2025), da turma João Cabral de Melo Neto.
+
+*~fiori*
