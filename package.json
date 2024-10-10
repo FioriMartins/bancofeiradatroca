@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "cd front-end && npm install && echo 'Dependencias do Front-end instaladas' && cd .. && cd back-end && npm install && echo 'Dependencias do back-end instaladas' && cd .. && echo 'Tudo joia!'",
-    "front": "cd front-end && echo'Ligando a parte do front-end!!' && npm run dev",
+    "front": "cd front-end && echo 'Ligando a parte do front-end!!' && npm run dev -- --host",
     "back": "cd back-end && echo 'Arquivos faltando...'"
   },
   "repository": {
