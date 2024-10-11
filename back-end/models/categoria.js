@@ -12,7 +12,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     precodef: {
-      type: DataTypes.DOUBLE,
+      type: DataTypes.INTEGER,
       allowNull: false
     }
   }, {

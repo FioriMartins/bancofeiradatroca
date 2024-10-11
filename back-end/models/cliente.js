@@ -11,13 +11,9 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(45),
       allowNull: false
     },
-    turmaid: {
-      type: DataTypes.STRING(11),
-      allowNull: false,
-      references: {
-        model: 'turma',
-        key: 'idturma'
-      }
+    turma: {
+      type: DataTypes.STRING(45),
+      allowNull: false
     }
   }, {
     sequelize,
@@ -30,13 +26,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "idcliente" },
-        ]
-      },
-      {
-        name: "fk_turma_cliente_idx",
-        using: "BTREE",
-        fields: [
-          { name: "turmaid" },
         ]
       },
     ]

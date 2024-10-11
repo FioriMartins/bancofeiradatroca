@@ -24,7 +24,7 @@ module.exports = function(sequelize, DataTypes) {
       }
     },
     preco: {
-      type: DataTypes.DOUBLE,
+      type: DataTypes.INTEGER,
       allowNull: false
     }
   }, {

@@ -16,7 +16,11 @@ module.exports = function(sequelize, DataTypes) {
       }
     },
     preco: {
-      type: DataTypes.DOUBLE,
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    nome: {
+      type: DataTypes.STRING(45),
       allowNull: true
     }
   }, {
