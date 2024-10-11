@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('cliente', {
-    idcliente: {
+  return sequelize.define('categoria', {
+    idcategoria: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -11,17 +11,13 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(45),
       allowNull: false
     },
-    turmaid: {
-      type: DataTypes.STRING(11),
-      allowNull: false,
-      references: {
-        model: 'turma',
-        key: 'idturma'
-      }
+    precodef: {
+      type: DataTypes.DOUBLE,
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'cliente',
+    tableName: 'categoria',
     timestamps: false,
     indexes: [
       {
@@ -29,14 +25,7 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "idcliente" },
-        ]
-      },
-      {
-        name: "fk_turma_cliente_idx",
-        using: "BTREE",
-        fields: [
-          { name: "turmaid" },
+          { name: "idcategoria" },
         ]
       },
     ]
