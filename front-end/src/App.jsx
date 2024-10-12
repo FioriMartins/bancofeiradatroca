@@ -32,7 +32,7 @@ function App() {
       }
     } catch (e) {
       alert('deu erro')
-      console.error('Erro ao enviar os dados: ', error)
+      console.error('Erro ao enviar os dados: ', e)
     }
   }
 
