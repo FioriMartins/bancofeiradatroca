@@ -1,0 +1,10 @@
+﻿
+- Sete contas de ADM para cada sala, para que possam acessar os devidos produtos de sua sala
+
+- Sete caixas com um valor médio de moedas das moedas totais
+
+- No dia irá ter pessoas reesposáveis por colocar os produtos na devida caixa da sala que esses produtos serão vendidos
+ 
+- Quando terminar a venda do produto, ele será deletado do banco
+
+- Plano B se der pau no banco: python ou NoSQL
