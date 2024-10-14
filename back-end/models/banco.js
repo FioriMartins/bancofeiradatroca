@@ -15,16 +15,8 @@ module.exports = function(sequelize, DataTypes) {
         key: 'idproduto'
       }
     },
-    categoriaID: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'categoria',
-        key: 'idcategoria'
-      }
-    },
-    preco: {
-      type: DataTypes.INTEGER,
+    data: {
+      type: DataTypes.DATEONLY,
       allowNull: false
     }
   }, {
@@ -41,17 +33,10 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "fk_banco_produto_idx",
+        name: "fk_banco_transicao_idx",
         using: "BTREE",
         fields: [
           { name: "produtoID" },
-        ]
-      },
-      {
-        name: "fk_banco_categoria_idx",
-        using: "BTREE",
-        fields: [
-          { name: "categoriaID" },
         ]
       },
     ]

@@ -4,7 +4,6 @@ var _banco = require("./banco");
 var _categoria = require("./categoria");
 var _cliente = require("./cliente");
 var _produto = require("./produto");
-var _transicao = require("./transicao");
 
 function initModels(sequelize) {
   var admin = _admin(sequelize, DataTypes);
@@ -12,14 +11,11 @@ function initModels(sequelize) {
   var categoria = _categoria(sequelize, DataTypes);
   var cliente = _cliente(sequelize, DataTypes);
   var produto = _produto(sequelize, DataTypes);
-  var transicao = _transicao(sequelize, DataTypes);
 
-  banco.belongsTo(categoria, { as: "categorium", foreignKey: "categoriaID"});
-  categoria.hasMany(banco, { as: "bancos", foreignKey: "categoriaID"});
+  produto.belongsTo(categoria, { as: "categorium", foreignKey: "categoriaID"});
+  categoria.hasMany(produto, { as: "produtos", foreignKey: "categoriaID"});
   banco.belongsTo(produto, { as: "produto", foreignKey: "produtoID"});
   produto.hasMany(banco, { as: "bancos", foreignKey: "produtoID"});
-  transicao.belongsTo(produto, { as: "produto", foreignKey: "produtoID"});
-  produto.hasMany(transicao, { as: "transicaos", foreignKey: "produtoID"});
 
   return {
     admin,
@@ -27,7 +23,6 @@ function initModels(sequelize) {
     categoria,
     cliente,
     produto,
-    transicao,
   };
 }
 module.exports = initModels;

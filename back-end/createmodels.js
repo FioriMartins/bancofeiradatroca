@@ -1,5 +1,5 @@
 const SequelizeAuto = require('sequelize-auto')
-const auto = new SequelizeAuto('feiradatroca', 'fiori', 'Julialinda1!', {
+const auto = new SequelizeAuto('feiradatroca', 'root', 'Julialinda1!', {
     dialect: 'mysql',
 })
 
