@@ -1,17 +1,13 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('produto', {
-    idproduto: {
+  return sequelize.define('produtos', {
+    id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
     nome: {
-      type: DataTypes.STRING(45),
-      allowNull: true
-    },
-    descricao: {
       type: DataTypes.STRING(255),
       allowNull: true
     },
@@ -19,17 +15,25 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'categoria',
-        key: 'idcategoria'
+        model: 'categorias',
+        key: 'id'
       }
     },
-    preco: {
+    descricao: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    caixaID: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: 'caixas',
+        key: 'id'
+      }
     }
   }, {
     sequelize,
-    tableName: 'produto',
+    tableName: 'produtos',
     timestamps: false,
     indexes: [
       {
@@ -37,14 +41,21 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "idproduto" },
+          { name: "id" },
         ]
       },
       {
-        name: "fk_produto_categoria_idx",
+        name: "fk_produtos_categoria_idx",
         using: "BTREE",
         fields: [
           { name: "categoriaID" },
+        ]
+      },
+      {
+        name: "fk_produtos_caixa_idx",
+        using: "BTREE",
+        fields: [
+          { name: "caixaID" },
         ]
       },
     ]
