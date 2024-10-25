@@ -6,8 +6,20 @@ const initModels = require('./init-models').initModels
 require('dotenv').config();
 
 const app = express()
-const PORT = process.env.DB_PORT
+const PORT = process.env.PORT
 const HOST = process.env.DB_HOST
+
+const corsOptions = {
+    origin: 'http://192.168.56.1:5173',
+    methods: 'GET,POST,PUT,DELETE,OPTIONS', 
+    allowedHeaders: ['Content-Type', 'Authorization'],  
+}
+
+app.use(cors(corsOptions))
+
+app.options('*', cors(corsOptions))
+
+app.use(express.json())
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
     host: HOST,
@@ -22,34 +34,26 @@ sequelize.authenticate().then(() => {
 
 const models = initModels(sequelize)
 
-app.use(cors())
-app.use(express.json())
 
-app.get('/admin', async (req, res) => {
-    const admin = await models.admin.findAll()
-    res.json(admin)
+app.get('/turmas', async (req, res) => {
+    const turmas = await models.turmas.findAll()
+    res.json(turmas)
 })
-
-app.get('/categoria', async (req, res) => {
-    const categorias = await models.categoria.findAll()
-    res.json(categorias)
-})
-
 
 // endpoint method post para receber
-
-app.post('/categoria', async (req, res) => {
-    const {nome, precodef} = req.body
+app.post('/turmas', async (req, res) => {
+    const {id, patrono, descricao } = req.body
 
     try {
-        const novosDados = await models.categoria.create({
-            nome: nome,
-            precodef: precodef
+        const addTurma = await models.turmas.create({
+            id,
+            patrono,
+            descricao
         })
-        res.status(201).json(novosDados)
+        res.status(201).json(addTurma)
     } catch (e) {
-        res.status(500).json({e: 'Erro ao criar usuário'})
         console.log(e)
+        res.status(500).json({error: e.message})
     }
 })
 

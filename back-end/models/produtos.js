@@ -30,6 +30,10 @@ module.exports = function(sequelize, DataTypes) {
         model: 'caixas',
         key: 'id'
       }
+    },
+    vendido: {
+      type: DataTypes.TINYINT,
+      allowNull: false
     }
   }, {
     sequelize,
