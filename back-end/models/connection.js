@@ -8,9 +8,10 @@ require('dotenv').config();
 const app = express()
 const PORT = process.env.PORT
 const HOST = process.env.DB_HOST
+const ADDRESS = process.env.ADDRESS
 
 const corsOptions = {
-    origin: 'http://192.168.56.1:5173',
+    origin: ADDRESS,
     methods: 'GET,POST,PUT,DELETE,OPTIONS', 
     allowedHeaders: ['Content-Type', 'Authorization'],  
 }
