@@ -15,7 +15,7 @@
 ## Quem somos?
 - Caio Fiori Martins;
 - Enzo Queiroz;
-- Gabriel Lucrécio;
+- Gabriel Lucrécio.
 
 ### Estudantes da ETEC (2023 - 2025), da turma João Cabral de Melo Neto.
 
