@@ -1,7 +1,8 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('transicao', {
+  return sequelize.define('transacoes', {
     id: {
+      autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
@@ -10,22 +11,26 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(255),
       allowNull: true
     },
-    sala: {
+    horario: {
       type: DataTypes.STRING(45),
-      allowNull: true
+      allowNull: false
     },
-    produtoID: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'produtos',
-        key: 'id'
-      }
+    dia: {
+      type: DataTypes.STRING(45),
+      allowNull: false
+    },
+    comandaId: {
+      type: DataTypes.STRING(4),
+      allowNull: false
+    },
+    detalhesJson: {
+      type: DataTypes.JSON,
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'transicao',
-    timestamps: true,
+    tableName: 'transacoes',
+    timestamps: false,
     indexes: [
       {
         name: "PRIMARY",
@@ -33,13 +38,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "id" },
-        ]
-      },
-      {
-        name: "fk_transicao_produto_idx",
-        using: "BTREE",
-        fields: [
-          { name: "produtoID" },
         ]
       },
     ]

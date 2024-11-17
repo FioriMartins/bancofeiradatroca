@@ -1,42 +1,50 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+:root {
+  --primary-color: #F7F6ED;
+  --second-color:  #27C25D;
+  --third-color: #101A17;
+  --fourth-color: #191917;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.container {
+  display: flex;
+  width: 100%;
+  padding: 10px;
+  justify-content: center;
+  margin-left: 100px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.side-bar {
+  /* border-right: solid 1px black; */
+  background-color: var(--primary-color);
+  width: 100px;
+  height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+
+  position: fixed;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.card {
-  padding: 2em;
+#icon {
+  width: 80px;
+  height: 80px;
+
+  background-color: var(--second-color);
 }
 
-.read-the-docs {
-  color: #888;
+/* feed */
+
+.feed-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
 }

@@ -41,9 +41,15 @@ app.get('/turmas', async (req, res) => {
     res.json(turmas)
 })
 
+app.get('/transacoes', async (req, res) => {
+    const trans = await models.transacoes.findAll()
+    res.json(trans)
+})
+
 // endpoint method post para receber
-app.post('/turmas', async (req, res) => {
+app.post('/turmas/receive', async (req, res) => {
     const {id, patrono, descricao } = req.body
+    console.log(id, patrono, descricao)
 
     try {
         const addTurma = await models.turmas.create({
@@ -54,6 +60,24 @@ app.post('/turmas', async (req, res) => {
         res.status(201).json(addTurma)
     } catch (e) {
         console.log(e)
+        res.status(500).json({error: e.message})
+    }
+})
+
+app.post('/transicoes/receive', async (req, res) => {
+    const {descricao, horario, dia, comandaId, detalhesJson} = req.body
+
+    try {
+        const addTrans = await models.transacoes.create({
+            descricao,
+            horario,
+            dia,
+            comandaId,
+            detalhesJson
+        })
+        res.status(201).json(addTrans)
+    } catch (e) {
+        console.error(e)
         res.status(500).json({error: e.message})
     }
 })
