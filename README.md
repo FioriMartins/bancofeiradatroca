@@ -17,12 +17,6 @@
 - Enzo Queiroz;
 - Gabriel Lucrécio;
 
-
-## Créditos à:
-- Matheus A.
-- Taíssa S.
-
-
 ### Estudantes da ETEC (2023 - 2025), da turma João Cabral de Melo Neto.
 
 *~fiori*
