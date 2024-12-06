@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Alata&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
 :root {
-  --primary-color: #F7F6ED;
-  --second-color:  #27C25D;
-  --third-color: #101A17;
-  --fourth-color: #191917;
+  --primary-color: #ffffff;
+  --second-color:  #f5f5f5;
+  --third-color: #44444c;
+  --fourth-color: #5a616d;
 }
 
 .container {
@@ -10,35 +12,115 @@
   width: 100%;
   padding: 10px;
   justify-content: center;
-  margin-left: 100px;
+  margin-left: 180px;
+  /* filter: blur(2px); */
 }
 
 .side-bar {
-  /* border-right: solid 1px black; */
   background-color: var(--primary-color);
-  width: 100px;
+  width: 95px;
   height: 100dvh;
 
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.26);
 
   position: fixed;
+  z-index: 9999;
+  transition: width 350ms; 
+}
+
+.button-config {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
 }
 
 .buttons {
   display: flex;
+  width: 100%;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 25px;
 }
 
 #icon {
-  width: 80px;
+  display: flex;
+  flex-direction: row;
+  border-radius: 8px;
+  /* margin: 0 15px; */
+  justify-content: start;
+  align-items: center; 
+  width: 75%;
   height: 80px;
+  color: var(--fourth-color);
+  gap: 20px;
 
-  background-color: var(--second-color);
+  cursor: pointer;
+
+  transition: opacity 550ms;
+  transition: transform 350ms;
 }
+
+#icon path {
+  stroke: var(--fourth-color);
+}
+
+#selected {
+  display: flex;
+  padding: 0 5px;
+  flex-direction: row;
+  border-radius: 8px;
+  /* margin: 0 15px; */
+  justify-content: start;
+  align-items: center; 
+  width: 75%;
+  height: 80px;
+  color: var(--primary-color);
+  gap: 20px;
+  background-color: var(--fourth-color);
+
+  cursor: pointer;
+
+  transition: opacity 550ms;
+  transition: background-color 600ms;
+  transition: transform 350ms;
+}
+
+#selected p {
+  opacity: 0;
+  display: none;
+
+  font-size: 36px;
+  font-family: "Alata", Arial;
+
+  transition: opacity 500ms;
+}
+
+#selected path {
+  stroke: var(--primary-color);
+  justify-content: center;
+}
+
+#icon p {
+  opacity: 0;
+  display: none;
+
+  font-size: 36px;
+  font-family: "Alata", Arial;
+
+  transition: opacity 500ms;
+}
+
+#icon:hover, #selected:hover {
+  transition: transform 350ms;
+  transform: scale(1.05);
+}
+
 
 /* feed */
 
@@ -47,4 +129,68 @@
   gap: 20px;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+/* homosexualismo do home */
+
+.formularioProdutos {
+  background-color: var(--primary-color);
+  padding: 20px;
+  box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.192);
+  border-radius: 10px;
+  color: var(--fourth-color);
+  font-family: "Alata", Arial;
+}
+
+.carrinho {
+  /* border: 1px solid black; */
+  color: var(--fourth-color);
+  font-family: "Alata", Arial;
+  width: 709px;
+
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+}
+
+.carrinho h2 {
+  width: 100%;
+}
+
+.carrinhoProd {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.carHeader {
+  display: flex;
+}
+
+.boxProduct {
+  background-color: var(--primary-color);
+  width: 170px;
+  height: 235px;
+  padding: 1px 15px 20px 15px;
+  border-radius: 10px;
+  box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.096);
+  transition-duration: 250ms;
+}
+
+.boxProduct p {
+  width: 100%;  
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.boxProduct:hover {
+  transform: scale(1.02)
+}
+
+* {
+  font-family: 'Alata', Arial;
 }

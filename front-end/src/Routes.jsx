@@ -7,6 +7,8 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import Home from './Routes/Home.jsx'
 import Config from './Routes/Config.jsx'
 import Venda from './Routes/Venda.jsx'
+import Comandas from './Routes/Comandas.jsx'
+import AllComandas from './Routes/AllComandas.jsx'
 
 import './App.css'
 import SideBar from './components/SideBar.jsx'
@@ -20,6 +22,8 @@ function AppRoutes() {
                 <div className='container'>
                     <Routes>
                         <Route path="/" element={<Home />} />
+                        <Route path="/comandas" element={<Comandas />}/>
+                        <Route path="/comandas/todos" element={<AllComandas />}/>
                         <Route path="/config" element={<Config />} />
                         <Route path="/vender" element={<Venda />}/>
                     </Routes>

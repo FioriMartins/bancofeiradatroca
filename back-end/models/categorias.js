@@ -14,6 +14,10 @@ module.exports = function(sequelize, DataTypes) {
     descricao: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    valorOff: {
+      type: DataTypes.STRING(45),
+      allowNull: true
     }
   }, {
     sequelize,

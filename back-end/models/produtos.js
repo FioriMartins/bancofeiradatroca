@@ -22,16 +22,20 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(255),
       allowNull: true
     },
-    caixaID: {
-      type: DataTypes.INTEGER,
+    turmaId: {
+      type: DataTypes.STRING(4),
       allowNull: false,
       references: {
-        model: 'caixas',
+        model: 'turmas',
         key: 'id'
       }
     },
     vendido: {
       type: DataTypes.TINYINT,
+      allowNull: false
+    },
+    valor: {
+      type: DataTypes.INTEGER,
       allowNull: false
     }
   }, {
@@ -55,10 +59,10 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "fk_produtos_caixa_idx",
+        name: "fk_produtos_turma_idx",
         using: "BTREE",
         fields: [
-          { name: "caixaID" },
+          { name: "turmaId" },
         ]
       },
     ]

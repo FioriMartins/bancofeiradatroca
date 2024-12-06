@@ -35,7 +35,6 @@ sequelize.authenticate().then(() => {
 
 const models = initModels(sequelize)
 
-
 app.get('/turmas', async (req, res) => {
     const turmas = await models.turmas.findAll()
     res.json(turmas)
@@ -44,6 +43,11 @@ app.get('/turmas', async (req, res) => {
 app.get('/transacoes', async (req, res) => {
     const trans = await models.transacoes.findAll()
     res.json(trans)
+})
+
+app.get('/categorias', async (req, res) => {
+    const category = await models.categorias.findAll()
+    res.json(category)
 })
 
 // endpoint method post para receber
@@ -60,6 +64,21 @@ app.post('/turmas/receive', async (req, res) => {
         res.status(201).json(addTurma)
     } catch (e) {
         console.log(e)
+        res.status(500).json({error: e.message})
+    }
+})
+
+app.post('/categorias/receive', async (req, res) => {
+    const {nome, descricao} = req.body
+
+    try {
+        const addCateg = await models.categorias.create({
+            nome,
+            descricao
+        })
+        res.status(201).json(addCateg)
+    } catch (e) {
+        console.error(e)
         res.status(500).json({error: e.message})
     }
 })

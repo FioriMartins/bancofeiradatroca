@@ -1,13 +1,13 @@
 :root {
-    --primary-color: #F7F6ED;
-    --second-color:  #27C25D;
-    --third-color: #101A17;
-    --fourth-color: #191917;
+    --primary-color: #ffffff;
+    --second-color:  #f5f5f5;
+    --third-color: #44444c;
+    --fourth-color: #5a616d;
 }
 
 html, body, #root {
     display: flex;
-    background-color: var(--primary-color);
+    background-color: var(--second-color);
 
     margin: 0;
     height: 100dvh;
