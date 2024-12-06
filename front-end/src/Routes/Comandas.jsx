@@ -1,14 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react'
-import {useNavigate} from 'react-router-dom'
-import { getFirestore, addDoc, getDocs, collection } from "firebase/firestore"
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { getDocs, collection } from "firebase/firestore"
 import { db } from '../firebase/connect'
-import './Comandas.css'
 
+import './Comandas.css'
 
 export default function Comandas() {
     const [comandas, setComandas] = useState([])
     const navigate = useNavigate()
-    
+
     const goToAllComandas = () => navigate('/comandas/todos')
 
     const readComandas = async () => {

@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { getFirestore, addDoc, getDocs, collection } from "firebase/firestore"
+import { useState, useEffect } from 'react'
+import { getDocs, collection } from "firebase/firestore"
 import { db } from '../firebase/connect'
 import './Comandas.css'
 

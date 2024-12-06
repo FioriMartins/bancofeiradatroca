@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState, useRef } from 'react'
+import { useState, useRef } from 'react'
+
+import './SideBar.css'
 
 export default function SideBar() {
   const navigate = useNavigate()
@@ -117,7 +119,7 @@ export default function SideBar() {
         </div>
       </div>
       <div className='blur'>
-    
+
       </div>
     </>
   )

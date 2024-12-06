@@ -1,0 +1,105 @@
+.side-bar {
+  background-color: var(--primary-color);
+  width: 95px;
+  height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.26);
+
+  position: fixed;
+  z-index: 9999;
+  transition: width 350ms;
+}
+
+.button-config {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.buttons {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+#icon {
+  display: flex;
+  flex-direction: row;
+  border-radius: 8px;
+  /* margin: 0 15px; */
+  justify-content: start;
+  align-items: center;
+  width: 75%;
+  height: 80px;
+  color: var(--fourth-color);
+  gap: 20px;
+
+  cursor: pointer;
+
+  transition: opacity 550ms;
+  transition: transform 350ms;
+}
+
+#icon path {
+  stroke: var(--fourth-color);
+}
+
+#selected {
+  display: flex;
+  padding: 0 5px;
+  flex-direction: row;
+  border-radius: 8px;
+  /* margin: 0 15px; */
+  justify-content: start;
+  align-items: center;
+  width: 75%;
+  height: 80px;
+  color: var(--primary-color);
+  gap: 20px;
+  background-color: var(--fourth-color);
+
+  cursor: pointer;
+
+  transition: opacity 550ms;
+  transition: background-color 600ms;
+  transition: transform 350ms;
+}
+
+#selected p {
+  opacity: 0;
+  display: none;
+
+  font-size: 36px;
+  font-family: "Alata", Arial;
+
+  transition: opacity 500ms;
+}
+
+#selected path {
+  stroke: var(--primary-color);
+  justify-content: center;
+}
+
+#icon p {
+  opacity: 0;
+  display: none;
+
+  font-size: 36px;
+  font-family: "Alata", Arial;
+
+  transition: opacity 500ms;
+}
+
+#icon:hover,
+#selected:hover {
+  transition: transform 350ms;
+  transform: scale(1.05);
+}
