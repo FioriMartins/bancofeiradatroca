@@ -1,14 +1,13 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import Produtos from './Routes/Produtos.jsx'
-import Config from './Routes/Config.jsx'
-import Venda from './Routes/Venda.jsx'
-import Comandas from './Routes/Comandas.jsx'
-import AllComandas from './Routes/AllComandas.jsx'
+import Produtos from './Routes/produtos.jsx'
+import Config from './Routes/config.jsx'
+import Venda from './Routes/venda.jsx'
+import Comandas from './Routes/comandas.jsx'
+import AllComandas from './Routes/allcomandas.jsx'
 
-import './App.css'
+import './Routes.css'
 import SideBar from './components/SideBar/SideBar.jsx'
-
 
 function AppRoutes() {
     return (

@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Alata&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+    --primary-color: #ffffff;
+    --second-color: #f5f5f5;
+    --third-color: #44444c;
+    --fourth-color: #5a616d;
+}
+
+body {
+    overflow-y: hidden;
+}
+
+.content-comanda {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:3rem;
+}
+
+.cadastroUsuario {
+    background-color: var(--primary-color);
+    padding: 20px;
+    box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.192);
+    border-radius: 10px;
+    color: var(--fourth-color);
+    font-family: "Alata", Arial;
+
+    /* Altura e largura do formulário */
+    height: 500px;
+    width: 600px;
+}
+
+.card-comanda {
+    background-color: var(--primary-color);
+    /* padding: 20px; */
+    box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.192);
+    border-radius: 10px;
+    color: var(--fourth-color);
+    font-family: "Alata", Arial;
+    font-size: 32px;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    /* Altura e largura da Comanda */
+    height: 500px;
+    width: 310px;
+}
+
+.card-comanda img {
+    width: 230px;
+    height: 230px;
+    align-items: center;
+}
+
+.card-comanda p {
+    font-family: "Poppins", Helvetica, sans-serif;
+    height: 2.3rem;
+}
+
+.qrID {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.qrID p {
+    margin: 0;
+}
+
+#escaneie {
+    font-size: 15px;
+}
+
+.otherInfos {
+    display: flex;
+    flex-direction: column;
+    font-size: 28px;
+    width: 100%;
+    background-color: #343c4c;
+    color: #f5f5f5;
+    border-radius: 0 0 8px 8px;
+    padding: 0 20px;
+}
+
+.otherInfos p {
+    width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.comandas {
+    display: flex;
+    flex-direction: column;
+    /* background-color: var(--primary-color); */
+    /* padding: 20px;
+    box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.192);
+    border-radius: 10px; */
+    color: var(--fourth-color);
+    font-family: "Alata", Arial;
+    gap: 9px;
+
+    flex-wrap: wrap;
+    height: 100%;
+}
+
+.form-comandas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 250px;
+    gap: 22rem;
+}

@@ -9,8 +9,8 @@
 
 .container {
   display: flex;
-  width: 100%;
-  padding: 10px;
-  justify-content: center;
+  width: 88dvw;
+  align-items:center;
   margin-left: 180px;
+  margin-top: 20px;
 }
