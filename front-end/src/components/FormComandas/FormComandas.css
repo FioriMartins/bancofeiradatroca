@@ -13,6 +13,8 @@ body {
 
 .content-comanda {
     display: flex;
+    width: 100%;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     gap:3rem;
@@ -64,6 +66,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     text-align: center;
 }
 
@@ -87,19 +90,34 @@ body {
 }
 
 .otherInfos p {
-    width: 240px;
+    width: 230px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
+.otherInfos input {
+    width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 28px;
+    border: 0;
+    color: #f5f5f5;
+    background-color: transparent;
+}
+
+.otherInfos input::placeholder {
+    color: #f5f5f5;
+}
+
+.otherInfos input:focus {
+    outline: none;
+}
+
 .comandas {
     display: flex;
     flex-direction: column;
-    /* background-color: var(--primary-color); */
-    /* padding: 20px;
-    box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.192);
-    border-radius: 10px; */
     color: var(--fourth-color);
     font-family: "Alata", Arial;
     gap: 9px;
@@ -108,15 +126,22 @@ body {
     height: 100%;
 }
 
-.form-comandas {
+.form-buttons {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: row;
+    width: 310px;
     justify-content: space-between;
 }
 
-.form-buttons {
+#botoes {
+    color: #f5f5f5;
+    background-color: #343c4c;
+}
+
+.inputs {
     display: flex;
-    justify-content: space-around;
-    margin-top: 250px;
-    gap: 22rem;
+}
+
+.inputs p{
+    width: 70px;
 }

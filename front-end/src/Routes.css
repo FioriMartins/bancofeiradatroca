@@ -9,8 +9,7 @@
 
 .container {
   display: flex;
-  width: 88dvw;
-  align-items:center;
+  width: 85dvw;
   margin-left: 180px;
   margin-top: 20px;
 }
