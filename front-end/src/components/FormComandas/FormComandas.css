@@ -18,6 +18,7 @@ body {
     justify-content: center;
     align-items: center;
     gap:3rem;
+    background-color: transparent;
 }
 
 .cadastroUsuario {

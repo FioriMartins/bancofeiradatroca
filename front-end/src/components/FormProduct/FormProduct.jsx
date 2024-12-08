@@ -18,7 +18,6 @@ import "./FormProduct.css";
 
 const FormProduct = () => {
     const filter = createFilterOptions();
-
     const [categorias, setCategorias] = useState([]);
     const [turmas, setTurmas] = useState([]);
     const [value, setValue] = useState(null);

@@ -14,7 +14,8 @@ export default function Carrinho() {
     }, []);
 
     return (
-        <>
+        <div className="carrinho">
+            <h2>Carrinho</h2>
             {carrinho.length === 0 ? (
                 <p>O carrinho está vazio.</p>
             ) : (
@@ -53,6 +54,6 @@ export default function Carrinho() {
                     ))}
                 </div>
             )}
-        </>
+        </div>
     );
 }

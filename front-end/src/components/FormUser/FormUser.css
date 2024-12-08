@@ -1,0 +1,8 @@
+.formUser {
+    background-color: var(--primary-color);
+    padding: 20px;
+    box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.192);
+    border-radius: 10px;
+    color: var(--fourth-color);
+    font-family: "Alata", Arial;
+}
