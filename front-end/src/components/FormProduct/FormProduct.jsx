@@ -31,7 +31,7 @@ const FormProduct = () => {
 
     const [dados, setDados] = useState({
         nome: "",
-        valor: "",
+        valor: 0,
         desc: "",
         categoria: "",
         turma: "",
@@ -67,10 +67,6 @@ const FormProduct = () => {
         try {
             const responde = await axios.get("http://localhost:3000/categorias");
             setCategorias(responde.data);
-            if (responde.statusText == "OK") {
-                // console.log('OK')
-                // console.log(categorias)
-            }
         } catch (err) {
             console.log("Erro: ", err);
         }
@@ -80,9 +76,6 @@ const FormProduct = () => {
         try {
             const responde = await axios.get("http://localhost:3000/turmas");
             setTurmas(responde.data);
-            if (responde.statusText == "OK") {
-                // console.log('ok')
-            }
         } catch (err) {
             console.log("Erro: ", err);
         }
@@ -114,7 +107,7 @@ const FormProduct = () => {
         <div>
             <form className="formularioProdutos" onSubmit={handleSubmitCarrinho}>
                 <h2>Formulário de Cadastro de Produtos</h2>
-                <p>Por favor preencha tudo safada</p>
+                <p>Tente preencher todas as entradas.</p>
                 <TextField
                     name="nome"
                     onChange={handleChange}

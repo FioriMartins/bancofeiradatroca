@@ -1,8 +1,24 @@
+/* pesquisa */
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-search {
+    display: flex;
+    flex-direction: row;
+}
+
+/* comandas */
+
 .comandas {
     display: flex;
     height: 100dvh;
     width: 100%;
     flex-direction: row;
+    align-content: start;
 }
 
 .boxComanda {
@@ -12,6 +28,7 @@
     border-radius: 5px;
     padding: 10px;
     width: 170px;
+    height: 22px;
     text-align: center;
     transition: transform 250ms;
 }
@@ -23,19 +40,20 @@
     border-radius: 5px;
     padding: 10px;
     width: 170px;
+    height: 22px;
     text-align: center;
-
     transition: transform 250ms;
+    cursor: pointer;
 }
 
 .boxComanda:hover {
     cursor: pointer;
-    transform: scale(1.02);
+    transform: scale(1.01);
 }
 
 .boxComanda p,
 .boxComandaDesativa p {
-    margin: 0;    
+    margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

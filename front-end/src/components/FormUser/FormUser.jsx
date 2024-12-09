@@ -1,19 +1,29 @@
 import './FormUser.css'
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 import { getDocs, collection } from "firebase/firestore"
 import { db } from '../../firebase/connect'
 
-import TextField from "@mui/material/TextField";
+import TextField from "@mui/material/TextField"
 import IconButton from "@mui/material/IconButton"
-import AddCardIcon from '@mui/icons-material/AddCard';
-import Autocomplete from "@mui/material/Autocomplete";
-import Backdrop from '@mui/material/Backdrop';
+import AddCardIcon from '@mui/icons-material/AddCard'
+import Autocomplete from "@mui/material/Autocomplete"
 import FormComandas from '../FormComandas/FormComandas'
+
+function FormComandaBackDrop(props) {
+    const { onClose, selectedValue, open } = props;
+
+    const handleClose = () => {
+        onClose(selectedValue);
+    };
+
+    return (<FormComandas />);
+}
 
 export default function FormUser() {
     const [value, setValue] = useState(null)
-    const [openCard, setOpenCard] = useState(false)
     const [comandas, setComandas] = useState([])
+    const [carrinho, setCarrinho] = useState([])
+    const [total, setTotal] = useState(0)
 
     const readComandas = async () => {
         try {
@@ -42,7 +52,6 @@ export default function FormUser() {
             ...dados,
             [name]: value,
         })
-        console.log(dados)
     }
 
     const [dados, setDados] = useState({
@@ -55,29 +64,34 @@ export default function FormUser() {
         nome: "",
     });
 
-    const handleClose = () => {
-        if (reason === 'clickaway') {
-            return
-        }
-        setOpenCard(false);
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
     };
 
-    const handleSubmit = async (event) => {
-        // event.preventDefault();
-        // setValue({
-        //     nome: dialogValue.nome,
-        //     desc: dialogValue.desc,
-        // });
-        console.log("teste")
-        handleClose();
+    const handleClose = (valor) => {
+        setOpen(false);
     };
+
+    useEffect(() => {
+        const carrinhoSalvo = JSON.parse(localStorage.getItem("carrinho")) || [];
+
+        const totalCalculado = carrinhoSalvo.reduce((acc, carro) => acc + Number(carro.valor), 0);
+        console.log(totalCalculado)
+        setTotal(totalCalculado);
+        
+        setCarrinho(carrinhoSalvo);
+    }, [])
 
     return (
         <div className="formUser">
-            <form>
-                <h2>Formulario do usuario</h2>
-                <p>Por favor preencha tudo safada</p>
-
+            <h2>Formulario do usuário</h2>
+            <p>Selecione ou cadastre uma comanda.</p>
+            <div>
+                <p>ETC$: {carrinho.length === 0 ? (" Não há nenhum item no carrinho.") : (total)}</p>
+            </div>
+            <form className="classUser">
                 <Autocomplete
                     value={value}
                     id="free-solo-dialog-demo"
@@ -136,17 +150,14 @@ export default function FormUser() {
                     )}
                     required
                 />
-                <IconButton onClick={() => {
-                    setOpenCard(true)
-                }}><AddCardIcon /></IconButton>
+                <IconButton onClick={handleClickOpen}>
+                    <AddCardIcon />
+                </IconButton>
             </form>
-            <Backdrop
-                sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 9999 })}
-                open={openCard}
+            <FormComandaBackDrop
+                open={open}
                 onClose={handleClose}
-            >
-                <FormComandas />
-            </Backdrop>
+            />
         </div>
     )
 }

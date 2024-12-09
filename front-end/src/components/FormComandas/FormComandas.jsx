@@ -6,15 +6,15 @@ import Tilt from 'react-vanilla-tilt'
 import QRcode from 'qrcode'
 
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
-import AddCardIcon from '@mui/icons-material/AddCard';
 import Button from '@mui/material/Button';
+import Backdrop from '@mui/material/Backdrop'
 
 import './FormComandas.css'
 
 import Alerta from '../Alerta/Alerta'
 import Loading from '../Loading/Loading'
 
-export default function FormComandas() {
+export default function FormComandas({ backdropOpen, onClose, selectedValue, edit }) {
     const inputNome = useRef()
     const [open, setOpen] = useState(false)
     const [openError, setOpenError] = useState(false)
@@ -26,7 +26,7 @@ export default function FormComandas() {
     const [cardQR, setCardQR] = useState()
     const navigate = useNavigate()
 
-    const handleClose = (event, reason) => {
+    const handleCloseConfirn = (event, reason) => {
         if (reason === 'clickaway') {
             return
         }
@@ -36,7 +36,9 @@ export default function FormComandas() {
         setStateLoading(false)
     };
 
-    const goToAllComandas = () => navigate('/comandas/todos')
+    const handleClose = () => {
+        onClose(selectedValue);
+    };
 
     const readComandas = async () => {
         setStateLoading(true)
@@ -85,8 +87,36 @@ export default function FormComandas() {
         }
     }
 
+    const selectedID = async () => {
+        try {
+            const referencia = doc(db, "comandas", edit)
+            const docSnap = await getDoc(referencia)
+
+            let imagensQR = await QRcode.toDataURL(docSnap.id, {
+                width: 300,
+                margin: 4,
+                color: {
+                    dark: '#343c4c',
+                    light: '#ffffff',
+                },
+                errorCorrectionLevel: 'H',
+            })
+
+            setCardQR(imagensQR)
+            setValueID(docSnap.id)
+            setValueSaldo(docSnap.data().saldo)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     useEffect(() => {
-        nextID()
+       
+        if (edit !== null) {
+            selectedID()
+        } else {
+            nextID()
+        }
     }, [comandas])
 
     const handleChange = (e) => {
@@ -95,17 +125,16 @@ export default function FormComandas() {
         setValueNome(value)
     }
 
-    const handleSubmit = async () => {
+    const handleSubmit = async ({ }) => {
         try {
             const referencia = doc(db, "comandas", valueID)
             const docSnap = await getDoc(referencia)
-    
+
             if (docSnap.exists() && !docSnap.data().ativo) {
                 await updateDoc(referencia, {
                     nome: valueNome,
                     ativo: true
                 });
-    
                 setStateLoading(false);
                 setOpen(true);
                 await readComandas();
@@ -140,57 +169,38 @@ export default function FormComandas() {
     }
 
     return (
-        <div className='content-comanda'>
-            <Tilt className="card-comanda" options={{
-                max: 90,
-                scale: 2,
-                perspective: 50000,
-            }} style={{ padding: 0 }}>
-                <div className='qrID'>
-                    <p>{valueID}</p>
-                    <img src={cardQR} draggable="false"></img>
-                    <p id='escaneie'>Escaneie com uma câmera</p>
+        <Backdrop
+            sx={(theme) => ({
+                color: '#fff',
+                zIndex: theme.zIndex.drawer + 9999,
+            })}
+            onClick={handleClose}
+            open={backdropOpen}>
+            <div onClick={(e) => e.stopPropagation()}>
+                <div className='content-comanda'>
+                    <Tilt className="card-comanda" options={{
+                        max: 90,
+                        scale: 2,
+                        perspective: 50000,
+                    }} style={{ padding: 0 }}>
+                        <div className='qrID'>
+                            <p>{valueID}</p>
+                            <img src={cardQR} draggable="false"></img>
+                            <p id='escaneie'>Escaneie com uma câmera</p>
+                        </div>
+                        <div className='otherInfos'>
+                            <p>{valueSaldo} ETC</p>
+                            <input type='text' placeholder='Desconhecido' ref={inputNome} onChange={handleChange} />
+                        </div>
+                    </Tilt>
+                    <div className="form-buttons">
+                        <Button startIcon={<SendRoundedIcon />} id='botoes' onClick={handleSubmit} sx={{ width: `100%` }}>Cadastrar</Button>
+                    </div>
+                    <Alerta state={open} onClose={handleCloseConfirn} text="Usuário cadastrado com sucesso!" severity="success" />
+                    <Alerta state={openError} onClose={handleCloseConfirn} text="Não foi possível cadastrar o Usuário!" severity="error" />
+                    <Loading state={stateLoading} onClose={handleCloseConfirn} />
                 </div>
-                <div className='otherInfos'>
-                    <p>{valueSaldo} ETC</p>
-                    <input type='text' placeholder='Desconhecido' ref={inputNome} onChange={handleChange} />
-                </div>
-            </Tilt>
-            <div className="form-buttons">
-                <Button startIcon={<SendRoundedIcon />} id='botoes' onClick={handleSubmit}>Cadastrar</Button>
-                <Button startIcon={<AddCardIcon />} id='botoes' onClick={goToAllComandas}>Comandas</Button>
             </div>
-            <Alerta state={open} onClose={handleClose} text="Usuário cadastrado com sucesso!" severity="success" />
-            <Alerta state={openError} onClose={handleClose} text="Não foi possível cadastrar o Usuário!" severity="error" />
-            <Loading state={stateLoading} onClose={handleClose} />
-        </div>
+        </Backdrop>
     )
 }
-
-// return (
-//     <>
-//         <div className="content-comanda">
-//             <Tilt className="card-comanda" options={{
-//                 max: 90,
-//                 scale: 2,
-//                 perspective: 50000,
-//             }} style={{ padding: 0 }}>
-//                 <div className='qrID'>
-//                     <p>{valueID}</p>
-//                     <img src={cardQR} draggable="false"></img>
-//                     <p id='escaneie'>Escaneie com uma câmera</p>
-//                 </div>
-//                 <div className='otherInfos'>
-//                     <p>{valueSaldo} ETC</p>
-//                     <input type='text' placeholder='Desconhecido' ref={inputNome} onChange={handleChange} />
-//                 </div>
-//             </Tilt>
-//             <div className="form-buttons">
-//                 <Button startIcon={<SendRoundedIcon />} id='botoes' onClick={handleSubmit}>Cadastrar</Button>
-//                 <Button startIcon={<AddCardIcon />} id='botoes' onClick={goToAllComandas}>Comandas</Button>
-//             </div>
-//         </div>
-//         <Alerta state={open} onClose={handleClose} text="Usuário cadastrado com sucesso!" severity="success"/>
-//         <Loading state={stateLoading} onClose={handleClose}/>
-//     </>
-// )

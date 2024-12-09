@@ -1,9 +1,9 @@
-import FormComandas from '../components/FormComandas/FormComandas'
+import AllComandasComponent from "../components/AllComandas/AllComandas";
 
 export default function Comandas() {
     return (
         <>
-            <FormComandas />
+            <AllComandasComponent />
         </>
     )
 }

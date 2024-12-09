@@ -6,3 +6,8 @@
     color: var(--fourth-color);
     font-family: "Alata", Arial;
 }
+
+.classUser {
+    display: flex;
+    flex-direction: row;
+}

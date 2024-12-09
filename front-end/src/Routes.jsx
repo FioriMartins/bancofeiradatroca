@@ -4,7 +4,6 @@ import Produtos from './Routes/produtos.jsx'
 import Config from './Routes/config.jsx'
 import Venda from './Routes/venda.jsx'
 import Comandas from './Routes/comandas.jsx'
-import AllComandas from './Routes/allcomandas.jsx'
 
 import './Routes.css'
 import SideBar from './components/SideBar/SideBar.jsx'
@@ -18,7 +17,6 @@ function AppRoutes() {
                     <Routes>
                         <Route path="/" element={<Produtos />} />
                         <Route path="/comandas" element={<Comandas />} />
-                        <Route path="/comandas/todos" element={<AllComandas />} />
                         <Route path="/config" element={<Config />} />
                         <Route path="/vender" element={<Venda />} />
                     </Routes>
