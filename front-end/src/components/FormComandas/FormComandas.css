@@ -116,6 +116,16 @@ body {
     outline: none;
 }
 
+.inputName {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#inputLegal {
+    width: 200px; 
+}
+
 .comandas {
     display: flex;
     flex-direction: column;
@@ -130,13 +140,22 @@ body {
 .form-buttons {
     display: flex;
     flex-direction: row;
-    width: 310px;
+    /* width: 310px; */
     justify-content: space-between;
+    align-items: center;
 }
 
 #botoes {
+    padding: 10px;
     color: #f5f5f5;
     background-color: #343c4c;
+}
+
+#botoesDesativar {
+    background-color: #e6d7d7;
+    border: 2px solid #945c5c;
+    color: #5a616d;
+    border-radius: 7px;
 }
 
 .inputs {

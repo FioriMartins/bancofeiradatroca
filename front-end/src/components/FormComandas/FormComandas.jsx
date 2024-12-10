@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef, keyboardEvent } from 'react'
 import { getDocs, getDoc, collection, doc, updateDoc } from "firebase/firestore"
 import { db } from '../../firebase/connect'
 import Tilt from 'react-vanilla-tilt'
@@ -8,15 +7,21 @@ import QRcode from 'qrcode'
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import Button from '@mui/material/Button';
 import Backdrop from '@mui/material/Backdrop'
+import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
+import CreditScoreIcon from '@mui/icons-material/CreditScore';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import './FormComandas.css'
 
 import Alerta from '../Alerta/Alerta'
 import Loading from '../Loading/Loading'
 
-export default function FormComandas({ backdropOpen, onClose, selectedValue, edit }) {
+export default function FormComandas({ backdropOpen, onClose, selectedValue, edit, name }) {
     const inputNome = useRef()
+    const [option, setOption] = useState()
     const [open, setOpen] = useState(false)
+    const [openEdit, setOpenEdit] = useState(false)
     const [openError, setOpenError] = useState(false)
     const [stateLoading, setStateLoading] = useState(false)
     const [comandas, setComandas] = useState([])
@@ -24,7 +29,6 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
     const [valueSaldo, setValueSaldo] = useState()
     const [valueNome, setValueNome] = useState()
     const [cardQR, setCardQR] = useState()
-    const navigate = useNavigate()
 
     const handleCloseConfirn = (event, reason) => {
         if (reason === 'clickaway') {
@@ -111,11 +115,12 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
     }
 
     useEffect(() => {
-       
         if (edit !== null) {
             selectedID()
+            setOption("inputLegal")
         } else {
             nextID()
+            setOption("inputNext")
         }
     }, [comandas])
 
@@ -150,18 +155,100 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
         }
     }
 
-    const cadastrar = async () => {
+    const handleEdit = async () => {
         try {
-            const referencia = doc(db, "comandas", valueID);
-            await updateDoc(referencia, {
-                nome: valueNome,
-                ativo: true
-            })
+            const referencia = doc(db, "comandas", edit)
+            const docSnap = await getDoc(referencia)
 
-            setStateLoading(false)
-            setOpen(true)
-            await readComandas()
-            nextID()
+            if (docSnap.exists() && docSnap.data().ativo) {
+                await updateDoc(referencia, {
+                    nome: valueNome
+                });
+                localStorage.setItem('alerta', 'true')
+                setStateLoading(false);
+                setOpenEdit(true);
+
+                location.reload()
+            } else {
+                console.error("Erro ao editar a comanda.")
+                setOpenError(true)
+                setStateLoading(false)
+            }
+        } catch (erro) {
+            console.error("Erro ao editar: ", erro)
+            setOpenError(true)
+        }
+    }
+
+    const handleKeyDown = async (e) => {
+        if (e.key === "Enter") {
+            try {
+                const referencia = doc(db, "comandas", edit)
+                const docSnap = await getDoc(referencia)
+    
+                if (docSnap.exists() && docSnap.data().ativo) {
+                    await updateDoc(referencia, {
+                        nome: valueNome
+                    });
+                    localStorage.setItem('alerta', 'true')
+                    setStateLoading(false);
+                    setOpenEdit(true);
+                    location.reload()
+                } else {
+                    console.error("Erro ao editar a comanda.")
+                    setOpenError(true)
+                    setStateLoading(false)
+                }
+            } catch (erro) {
+                console.error("Erro ao editar: ", erro)
+                setOpenError(true)
+            }
+        }
+    }
+
+    const handleKeyDownCadastro = async (e) => {
+        if (e.key === "Enter") {
+            try {
+                const referencia = doc(db, "comandas", valueID)
+                const docSnap = await getDoc(referencia)
+    
+                if (docSnap.exists() && !docSnap.data().ativo) {
+                    await updateDoc(referencia, {
+                        nome: valueNome,
+                        ativo: true
+                    });
+                    setStateLoading(false);
+                    setOpen(true);
+                    await readComandas();
+                    nextID();
+                } else {
+                    console.error("O cartão já foi cadastrado por outro usuário.")
+                    setOpenError(true)
+                    setStateLoading(false)
+                }
+            } catch (erro) {
+                console.error("Erro ao atualizar:", erro)
+                setOpenError(true)
+            }
+        }
+    }
+
+    const handleDisable = async () => {
+        try {
+            const referencia = doc(db, "comandas", edit)
+            const docSnap = await getDoc(referencia)
+
+            if (docSnap.exists() && docSnap.data().ativo) {
+                await updateDoc(referencia, {
+                    nome: "Desconhecido",
+                    ativo: false,
+                    saldo: 0
+                });
+                location.reload()
+                setStateLoading(false);
+            } else {
+                console.error("O cartão já está desativado.")
+            }
         } catch (erro) {
             console.error("Erro ao atualizar:", erro)
             setOpenError(true)
@@ -190,17 +277,36 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
                         </div>
                         <div className='otherInfos'>
                             <p>{valueSaldo} ETC</p>
-                            <input type='text' placeholder='Desconhecido' ref={inputNome} onChange={handleChange} />
+                            <div className='inputName'>
+                                {
+                                    edit !== null ? (
+                                        <>
+                                            <input type='text' defaultValue={name} ref={inputNome} id={option} onChange={handleChange} onKeyDown={valueNome && handleKeyDown}/>
+                                            <IconButton sx={{ color: 'white' }} onClick={valueNome && handleEdit}>{valueNome ? <CreditScoreIcon /> : <EditIcon/>}</IconButton>
+                                        </>
+                                    ) : (
+                                        <input type='text' placeholder='Desconhecido' ref={inputNome} id={option} onChange={handleChange} onKeyDown={valueNome && handleKeyDownCadastro}/>
+                                    )
+                                }
+                            </div>
                         </div>
                     </Tilt>
-                    <div className="form-buttons">
-                        <Button startIcon={<SendRoundedIcon />} id='botoes' onClick={handleSubmit} sx={{ width: `100%` }}>Cadastrar</Button>
-                    </div>
+                    {
+                        edit !== null ? (
+                            <div className="form-buttons">
+                                <Button startIcon={<DeleteForeverIcon />} id='botoesDesativar' onClick={handleDisable} sx={{ width: `100%` }}>Desativar</Button>
+                            </div>
+                        ) : (
+                            <div className="form-buttons">
+                                <Button startIcon={<SendRoundedIcon />} id='botoes' onClick={handleSubmit} sx={{ width: `100%` }}>Cadastrar</Button>
+                            </div>
+                        )
+                    }
                     <Alerta state={open} onClose={handleCloseConfirn} text="Usuário cadastrado com sucesso!" severity="success" />
                     <Alerta state={openError} onClose={handleCloseConfirn} text="Não foi possível cadastrar o Usuário!" severity="error" />
                     <Loading state={stateLoading} onClose={handleCloseConfirn} />
                 </div>
-            </div>
-        </Backdrop>
+            </div >
+        </Backdrop >
     )
 }

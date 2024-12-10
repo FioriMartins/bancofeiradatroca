@@ -13,15 +13,28 @@ import TextField from "@mui/material/TextField";
 import './AllComandas.css'
 
 export default function AllComandasComponent() {
-    const idRef = useRef(null)
+    const [alerta, setAlerta] = useState()
     const [comandas, setComandas] = useState([])
     const [stateLoading, setStateLoading] = useState(false)
     const [idSearch, setIdSearch] = useState(0)
+    const [comandaName, setComandaName] = useState("")
     const [comandaSelected, setComandaSelected] = useState()
     const [nameSearch, setNameSearch] = useState("")
     const [selectedValue, setSelectedValue] = useState();
     const [openError, setOpenError] = useState(false)
     const [open, setOpen] = useState(false);
+    const [openEdit, setOpenEdit] = useState(false)
+
+    useEffect(() => {
+        const estado = localStorage.getItem("alerta")
+
+        if (estado == 'true') {
+            setOpenEdit(true)
+            localStorage.setItem('alerta', 'false')
+        } else {
+            console.log(estado)
+        }
+    }, [])
 
     const readComandas = async () => {
         setStateLoading(true)
@@ -58,21 +71,20 @@ export default function AllComandasComponent() {
         setNameSearch(e.target.value)
     }
 
-    const handleClickOpen = (id) => {
+    const handleClickOpen = (id, name) => {
         setComandaSelected(id)
+        setComandaName(name)
         setOpen(true);
     };
 
-    const handleClose = () => {
-        setOpen(false)
-    };
-
-    const handleCloseAlert = (event, reason) => {
+    const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return
         }
-        
-        setOpenError(false);
+
+        setOpen(false)
+        setOpenError(false)
+        setOpenEdit(false)
     };
 
     return (
@@ -103,7 +115,7 @@ export default function AllComandasComponent() {
                             key={comanda.id} 
                             onClick={() => {
                                 if (comanda.ativo) {
-                                    handleClickOpen(comanda.id)
+                                    handleClickOpen(comanda.id, comanda.nome)
                                 } else {
                                     setOpenError(true)
                                 }
@@ -113,10 +125,11 @@ export default function AllComandasComponent() {
                         </div>
                     ) : null
                 ))}
-                {open && <FormComandas backdropOpen={open} onClose={handleClose} selectedValue={selectedValue} edit={comandaSelected}/>}
+                {open && <FormComandas backdropOpen={open} onClose={handleClose} selectedValue={selectedValue} edit={comandaSelected} name={comandaName}/>}
             </div>
             <Loading state={stateLoading} onClose={handleCloseLoading} />
-            <Alerta state={openError} onClose={handleCloseAlert} text="Não é possivel selecionar a comanda!" severity="error" />
+            <Alerta state={openEdit} onClose={handleClose} text="Comanda editada com sucesso!" severity="info" />
+            <Alerta state={openError} onClose={handleClose} text="Não é possivel selecionar a comanda!" severity="error" />
         </div>
     )
 }

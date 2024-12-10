@@ -9,15 +9,6 @@ import AddCardIcon from '@mui/icons-material/AddCard'
 import Autocomplete from "@mui/material/Autocomplete"
 import FormComandas from '../FormComandas/FormComandas'
 
-function FormComandaBackDrop(props) {
-    const { onClose, selectedValue, open } = props;
-
-    const handleClose = () => {
-        onClose(selectedValue);
-    };
-
-    return (<FormComandas />);
-}
 
 export default function FormUser() {
     const [value, setValue] = useState(null)
@@ -75,13 +66,12 @@ export default function FormUser() {
     };
 
     useEffect(() => {
-        const carrinhoSalvo = JSON.parse(localStorage.getItem("carrinho")) || [];
+        const carrinhoSalvo = JSON.parse(localStorage.getItem("carrinho")) || []
 
-        const totalCalculado = carrinhoSalvo.reduce((acc, carro) => acc + Number(carro.valor), 0);
-        console.log(totalCalculado)
-        setTotal(totalCalculado);
-        
-        setCarrinho(carrinhoSalvo);
+        const totalCalculado = carrinhoSalvo.reduce((acc, carro) => acc + Number(carro.valor), 0)
+        setTotal(totalCalculado)
+
+        setCarrinho(carrinhoSalvo)
     }, [])
 
     return (
@@ -154,8 +144,10 @@ export default function FormUser() {
                     <AddCardIcon />
                 </IconButton>
             </form>
-            <FormComandaBackDrop
-                open={open}
+            <FormComandas
+                edit={null}
+                onClick={handleClickOpen}
+                backdropOpen={open}
                 onClose={handleClose}
             />
         </div>
