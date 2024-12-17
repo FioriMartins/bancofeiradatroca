@@ -255,6 +255,10 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
         }
     }
 
+    function handleSelectText () {
+        inputNome.current.select()
+    }
+
     return (
         <Backdrop
             sx={(theme) => ({
@@ -282,7 +286,7 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
                                     edit !== null ? (
                                         <>
                                             <input type='text' defaultValue={name} ref={inputNome} id={option} onChange={handleChange} onKeyDown={valueNome && handleKeyDown}/>
-                                            <IconButton sx={{ color: 'white' }} onClick={valueNome && handleEdit}>{valueNome ? <CreditScoreIcon /> : <EditIcon/>}</IconButton>
+                                            <IconButton sx={{ color: 'white' }} onClick={valueNome && handleEdit}>{valueNome ? <CreditScoreIcon /> : <EditIcon onClick={handleSelectText} />}</IconButton>
                                         </>
                                     ) : (
                                         <input type='text' placeholder='Desconhecido' ref={inputNome} id={option} onChange={handleChange} onKeyDown={valueNome && handleKeyDownCadastro}/>

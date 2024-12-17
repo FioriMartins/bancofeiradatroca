@@ -29,7 +29,7 @@
 .boxProduct {
   background-color: var(--primary-color);
   width: 170px;
-  height: 235px;
+  height: 100px;
   padding: 1px 15px 20px 15px;
   border-radius: 10px;
   box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.096);
@@ -44,6 +44,12 @@
 
 .boxProduct:hover {
   transform: scale(1.02);
+}
+
+.valorecategoria {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
 }
 
 * {

@@ -18,18 +18,6 @@ module.exports = function(sequelize, DataTypes) {
         key: 'id'
       }
     },
-    descricao: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    turmaId: {
-      type: DataTypes.STRING(4),
-      allowNull: false,
-      references: {
-        model: 'turmas',
-        key: 'id'
-      }
-    },
     vendido: {
       type: DataTypes.TINYINT,
       allowNull: false
@@ -37,6 +25,18 @@ module.exports = function(sequelize, DataTypes) {
     valor: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    caixaID: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'caixas',
+        key: 'id'
+      }
+    },
+    estoqueStatus: {
+      type: DataTypes.TINYINT,
+      allowNull: true
     }
   }, {
     sequelize,
@@ -59,10 +59,10 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "fk_produtos_turma_idx",
+        name: "fk_produtos_caixa_idx",
         using: "BTREE",
         fields: [
-          { name: "turmaId" },
+          { name: "caixaID" },
         ]
       },
     ]

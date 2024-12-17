@@ -45,6 +45,11 @@ app.get('/transacoes', async (req, res) => {
     res.json(trans)
 })
 
+app.get('/caixas', async (req, res) => {
+    const caixas = await models.caixas.findAll()
+    res.json(caixas)
+})
+
 app.get('/categorias', async (req, res) => {
     const category = await models.categorias.findAll()
     res.json(category)
@@ -68,13 +73,28 @@ app.post('/turmas/receive', async (req, res) => {
     }
 })
 
+app.post('/caixas/receive', async (req, res) => {
+    const {produtos, status, turmaID} = req.body
+
+    try {
+        const addCaixa = await models.caixas.create({
+            produtos,
+            status,
+            turmaID
+        })
+        res.status(201).json(addCaixa)
+    } catch (e) {
+        console.error(e)
+        res.status(500).json({error: e.message})
+    }
+})
+
 app.post('/categorias/receive', async (req, res) => {
-    const {nome, descricao} = req.body
+    const {nome} = req.body
 
     try {
         const addCateg = await models.categorias.create({
-            nome,
-            descricao
+            nome
         })
         res.status(201).json(addCateg)
     } catch (e) {

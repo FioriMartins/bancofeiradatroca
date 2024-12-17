@@ -10,14 +10,6 @@ module.exports = function(sequelize, DataTypes) {
     nome: {
       type: DataTypes.STRING(255),
       allowNull: false
-    },
-    descricao: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    valorOff: {
-      type: DataTypes.STRING(45),
-      allowNull: true
     }
   }, {
     sequelize,

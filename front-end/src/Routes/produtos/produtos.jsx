@@ -1,6 +1,6 @@
-import FormProduct from '../components/FormProduct/FormProduct'
-import Carrinho from '../components/Carrinho/Carrinho'
-import FormUser from '../components/FormUser/FormUser'
+import FormProduct from '../../components/FormProduct/FormProduct'
+import Carrinho from '../../components/Carrinho/Carrinho'
+import FormUser from '../../components/FormUser/FormUser'
 
 import './produtos.css'
 

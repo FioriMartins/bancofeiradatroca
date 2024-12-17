@@ -1,4 +1,4 @@
-import AllComandasComponent from "../components/AllComandas/AllComandas";
+import AllComandasComponent from "../../components/AllComandas/AllComandas";
 
 export default function Comandas() {
     return (

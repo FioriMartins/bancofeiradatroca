@@ -16,6 +16,14 @@ export default function SideBar() {
 
   const goToComandas = () => navigate('/comandas')
 
+  const goToCaixas = () => navigate('/caixas')
+
+  const goToGraficos = () => navigate('/graficos')
+
+  const goToVenda = () => navigate('/venda')
+
+  const goToConfig = () => navigate('/config')
+
   const toggleClass = (params) => {
     if (params == iconAtivo) {
       divButtons.current[params].id = 'selected'
@@ -26,8 +34,6 @@ export default function SideBar() {
       setIconAtivo(params)
     }
   }
-
-  const goToConfig = () => navigate('/config')
 
   const timeoutsRef = useRef([])
 
@@ -83,7 +89,7 @@ export default function SideBar() {
             </svg>
             <p ref={(el) => (textButtons.current[0] = el)}>Produtos</p>
           </div>
-          <div id='icon' ref={(el) => (divButtons.current[2] = el)} onClick={() => { goToHome(), toggleClass(2) }}>
+          <div id='icon' ref={(el) => (divButtons.current[2] = el)} onClick={() => { goToCaixas(), toggleClass(2) }}>
             <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M48.125 27.4166L21.875 12.2791M9.5375 20.3L35 35.0291L60.4625 20.3M35 64.4V35M61.25 46.6666V23.3333C61.249 22.3104 60.9789 21.3057 60.467 20.42C59.9551 19.5344 59.2192 18.799 58.3333 18.2875L37.9167 6.62081C37.0299 6.10883 36.024 5.83929 35 5.83929C33.976 5.83929 32.9701 6.10883 32.0833 6.62081L11.6667 18.2875C10.7808 18.799 10.0449 19.5344 9.53301 20.42C9.02108 21.3057 8.75105 22.3104 8.75 23.3333V46.6666C8.75105 47.6896 9.02108 48.6943 9.53301 49.5799C10.0449 50.4656 10.7808 51.201 11.6667 51.7125L32.0833 63.3791C32.9701 63.8911 33.976 64.1607 35 64.1607C36.024 64.1607 37.0299 63.8911 37.9167 63.3791L58.3333 51.7125C59.2192 51.201 59.9551 50.4656 60.467 49.5799C60.9789 48.6943 61.249 47.6896 61.25 46.6666Z" stroke="#E8F7F2" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -95,7 +101,7 @@ export default function SideBar() {
             </svg>
             <p ref={(el) => (textButtons.current[2] = el)}>Comandas</p>
           </div>
-          <div id='icon' ref={(el) => (divButtons.current[4] = el)} onClick={() => { goToHome(), toggleClass(4) }}>
+          <div id='icon' ref={(el) => (divButtons.current[4] = el)} onClick={() => { goToGraficos(), toggleClass(4) }}>
             <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M61.8625 46.3458C60.007 50.7339 57.1048 54.6006 53.4096 57.608C49.7145 60.6153 45.3389 62.6717 40.6654 63.5973C35.992 64.5229 31.1629 64.2896 26.6004 62.9178C22.038 61.5459 17.881 59.0773 14.493 55.7278C11.105 52.3782 8.58904 48.2497 7.16518 43.7032C5.74133 39.1567 5.45288 34.3306 6.32507 29.6469C7.19726 24.9631 9.20353 20.5643 12.1685 16.8351C15.1334 13.1059 18.9667 10.1597 23.3333 8.25418M64.1667 35C64.1667 31.1698 63.4123 27.3771 61.9465 23.8384C60.4807 20.2997 58.3323 17.0844 55.624 14.3761C52.9156 11.6677 49.7003 9.51929 46.1616 8.05352C42.6229 6.58776 38.8302 5.83334 35 5.83334V35H64.1667Z" stroke="#E8F7F2" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -103,7 +109,7 @@ export default function SideBar() {
           </div>
         </div>
         <div className='button-config'>
-          <div id='icon' ref={(el) => (divButtons.current[5] = el)} onClick={() => { goToHome(), toggleClass(5) }}>
+          <div id='icon' ref={(el) => (divButtons.current[5] = el)} onClick={() => { goToVenda(), toggleClass(5) }}>
             <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M35 2.91667V67.0833M49.5833 14.5833H27.7083C25.0009 14.5833 22.4044 15.6589 20.49 17.5733C18.5755 19.4877 17.5 22.0843 17.5 24.7917C17.5 27.4991 18.5755 30.0956 20.49 32.0101C22.4044 33.9245 25.0009 35 27.7083 35H42.2917C44.9991 35 47.5956 36.0755 49.5101 37.99C51.4245 39.9044 52.5 42.5009 52.5 45.2083C52.5 47.9158 51.4245 50.5123 49.5101 52.4267C47.5956 54.3412 44.9991 55.4167 42.2917 55.4167H17.5" stroke="#E8F7F2" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>

@@ -48,7 +48,12 @@
 
 .boxComanda:hover {
     cursor: pointer;
-    transform: scale(1.01);
+    transform: scale(1.04);
+}
+
+.boxComandaDesativa:hover {
+    cursor: pointer;
+    transform: scale(0.95);
 }
 
 .boxComanda p,

@@ -9,10 +9,6 @@ module.exports = function(sequelize, DataTypes) {
     patrono: {
       type: DataTypes.STRING(45),
       allowNull: true
-    },
-    descricao: {
-      type: DataTypes.STRING(45),
-      allowNull: true
     }
   }, {
     sequelize,

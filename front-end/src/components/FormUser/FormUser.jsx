@@ -9,33 +9,48 @@ import AddCardIcon from '@mui/icons-material/AddCard'
 import Autocomplete from "@mui/material/Autocomplete"
 import FormComandas from '../FormComandas/FormComandas'
 
+import Alerta from '../Alerta/Alerta'
+import Loading from '../Loading/Loading'
 
 export default function FormUser() {
     const [value, setValue] = useState(null)
+    const [stateReadComanda, setStateReadComanda] = useState(false)
+    const [stateLoading, setStateLoading] = useState(false)
+    const [openAlertError, setOpenAlertError] = useState(false)
     const [comandas, setComandas] = useState([])
     const [carrinho, setCarrinho] = useState([])
     const [total, setTotal] = useState(0)
 
+    const handleCloseAlert = (event, reason) => {
+        if (reason === 'clickaway') {
+            return
+        }
+
+        setOpenAlertError(false)
+    }
+
     const readComandas = async () => {
+        setStateLoading(true)
         try {
-            const cArray = []
-            const querySnapshot = await getDocs(collection(db, "comandas"))
+            if (!stateReadComanda) {
+                const cArray = []
+                const querySnapshot = await getDocs(collection(db, "comandas"))
 
-            querySnapshot.forEach(async (doc) => {
-                if (doc.data().ativo) {
-                    cArray.push({ id: doc.id, ...doc.data() })
-                }
-            })
+                querySnapshot.forEach(async (doc) => {
+                    if (doc.data().ativo) {
+                        cArray.push({ id: doc.id, ...doc.data() })
+                    }
+                })
+                setStateReadComanda(true)
+                setComandas(cArray)
+            }
 
-            setComandas(cArray)
+            setStateLoading(false)
         } catch (err) {
+            setStateLoading(false)
             console.error(err)
         }
     }
-
-    useEffect(() => {
-        readComandas()
-    }, [])
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -49,11 +64,6 @@ export default function FormUser() {
         id: "",
         nome: ""
     })
-
-    const [dialogValue, setDialogValue] = useState({
-        id: "",
-        nome: "",
-    });
 
     const [open, setOpen] = useState(false);
 
@@ -136,6 +146,7 @@ export default function FormUser() {
                             onChange={handleChange}
                             {...params}
                             label="Comanda"
+                            onClick={readComandas}
                         />
                     )}
                     required
@@ -150,6 +161,8 @@ export default function FormUser() {
                 backdropOpen={open}
                 onClose={handleClose}
             />
+            <Alerta state={openAlertError} onClose={handleClose} text="Não foi possível acessar as comandas!" severity="error" />
+            <Loading state={stateLoading} />
         </div>
     )
 }

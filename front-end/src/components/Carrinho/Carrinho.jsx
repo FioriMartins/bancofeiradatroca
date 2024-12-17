@@ -46,10 +46,10 @@ export default function Carrinho() {
                                 </IconButton>
                                 <p>{produto.nome}</p>
                             </div>
-                            <p>ETC$ {produto.valor}</p>
-                            <p>{produto.categoria}</p>
-                            <p>{produto.desc}</p>
-                            <p>{produto.turma}</p>
+                            <div className="valorecategoria">
+                                <p>ETC$ {produto.valor}</p>
+                                <p>{produto.categoria}</p>
+                            </div>
                         </div>
                     ))}
                 </div>

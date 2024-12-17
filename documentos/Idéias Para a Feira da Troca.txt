@@ -1,10 +1,11 @@
 ﻿
 - Sete contas de ADM para cada sala, para que possam acessar os devidos produtos de sua sala
 
-- Sete caixas com um valor médio de moedas das moedas totais
+- Sete caixas com um valor médio de moedas das moedas totais, separando uma porcentagem do total de produtos para o estoque
 
-- No dia irá ter pessoas reesposáveis por colocar os produtos na devida caixa da sala que esses produtos serão vendidos
- 
+- No dia irá ter pessoas reesposáveis por colocar os produtos na devida caixa da sala que esses produtos serão vendidos(o estoque)
+  - Precisamos ter uma página só para o pessoal do estoque, para que eles possam realizar a seleção dos produtos que irão para suas devidas caixas
+
 - Quando terminar a venda do produto, ele será deletado do banco
 
 - Plano B se der pau no banco: python ou NoSQL

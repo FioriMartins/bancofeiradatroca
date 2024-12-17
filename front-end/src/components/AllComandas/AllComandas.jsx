@@ -13,11 +13,10 @@ import TextField from "@mui/material/TextField";
 import './AllComandas.css'
 
 export default function AllComandasComponent() {
-    const [alerta, setAlerta] = useState()
     const [comandas, setComandas] = useState([])
     const [stateLoading, setStateLoading] = useState(false)
     const [idSearch, setIdSearch] = useState(0)
-    const [comandaName, setComandaName] = useState("")
+    const [comandaName, setComandaName] = useState("")  
     const [comandaSelected, setComandaSelected] = useState()
     const [nameSearch, setNameSearch] = useState("")
     const [selectedValue, setSelectedValue] = useState();
@@ -108,23 +107,25 @@ export default function AllComandasComponent() {
                 </form>
             </div>
             <div className='comandas'>
-                {comandas.map((comanda) => (
-                    comanda.id.includes(idSearch) || comanda.nome.includes(nameSearch) ? (
-                        <div 
-                            className={comanda.ativo ? 'boxComanda' : 'boxComandaDesativa'} 
-                            key={comanda.id} 
-                            onClick={() => {
-                                if (comanda.ativo) {
-                                    handleClickOpen(comanda.id, comanda.nome)
-                                } else {
-                                    setOpenError(true)
-                                }
-                            }}
-                        >
-                            <p>{comanda.id} - {comanda.nome}</p>
-                        </div>
-                    ) : null
-                ))}
+                {comandas.map((comanda) => { 
+                    if (comanda.id.includes(idSearch) || comanda.nome.includes(nameSearch)) {
+                        return (
+                            <div
+                                className={comanda.ativo ? 'boxComanda' : 'boxComandaDesativa'}
+                                key={comanda.id}
+                                onClick={() => {
+                                    if (comanda.ativo) {
+                                        handleClickOpen(comanda.id, comanda.nome);
+                                    } else {
+                                        setOpenError(true);
+                                    }
+                                }}
+                            >
+                                <p>{comanda.id} - {comanda.nome}</p>
+                            </div>
+                        );
+                    }
+                })}
                 {open && <FormComandas backdropOpen={open} onClose={handleClose} selectedValue={selectedValue} edit={comandaSelected} name={comandaName}/>}
             </div>
             <Loading state={stateLoading} onClose={handleCloseLoading} />
