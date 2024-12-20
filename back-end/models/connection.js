@@ -37,22 +37,27 @@ const models = initModels(sequelize)
 
 app.get('/turmas', async (req, res) => {
     const turmas = await models.turmas.findAll()
-    res.json(turmas)
+    res.status(200).json(turmas)
 })
 
 app.get('/transacoes', async (req, res) => {
     const trans = await models.transacoes.findAll()
-    res.json(trans)
+    res.status(200).json(trans)
 })
 
 app.get('/caixas', async (req, res) => {
     const caixas = await models.caixas.findAll()
-    res.json(caixas)
+    res.status(200).json(caixas)
 })
 
 app.get('/categorias', async (req, res) => {
     const category = await models.categorias.findAll()
-    res.json(category)
+    res.status(200).json(category)
+})
+
+app.get('/subcategorias', async (req, res) => {
+    const subcategory = await models.subcategorias.findAll()
+    res.status(200).json(subcategory)
 })
 
 // endpoint method post para receber

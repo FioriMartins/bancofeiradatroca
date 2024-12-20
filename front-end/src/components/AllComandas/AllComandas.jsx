@@ -15,7 +15,7 @@ import './AllComandas.css'
 export default function AllComandasComponent() {
     const [comandas, setComandas] = useState([])
     const [stateLoading, setStateLoading] = useState(false)
-    const [idSearch, setIdSearch] = useState(0)
+    const [idSearch, setIdSearch] = useState("")
     const [comandaName, setComandaName] = useState("")  
     const [comandaSelected, setComandaSelected] = useState()
     const [nameSearch, setNameSearch] = useState("")
@@ -67,7 +67,7 @@ export default function AllComandasComponent() {
 
     const handleChange = (e) => {
         setIdSearch(e.target.value)
-        setNameSearch(e.target.value)
+        setNameSearch(e.target.value.toUpperCase())
     }
 
     const handleClickOpen = (id, name) => {
@@ -84,6 +84,37 @@ export default function AllComandasComponent() {
         setOpen(false)
         setOpenError(false)
         setOpenEdit(false)
+    };
+
+    const filteredComandas = () => {
+        let searchStr = nameSearch; 
+        let results = []; 
+    
+        while (searchStr.length > 0) {
+            results = comandas.filter((comanda) =>
+                comanda.id.includes(idSearch) || comanda.nome.toUpperCase().includes(searchStr.toUpperCase())
+            );
+    
+            if (results.length > 0) break;
+    
+            searchStr = searchStr.slice(0, -1);
+        }
+    
+        return results.map((comanda) => (
+            <div
+                className={comanda.ativo ? 'boxComanda' : 'boxComandaDesativa'}
+                key={comanda.id}
+                onClick={() => {
+                    if (comanda.ativo) {
+                        handleClickOpen(comanda.id, comanda.nome);
+                    } else {
+                        setOpenError(true);
+                    }
+                }}
+            >
+                <p>{comanda.id} - {comanda.nome}</p>
+            </div>
+        ));
     };
 
     return (
@@ -107,25 +138,22 @@ export default function AllComandasComponent() {
                 </form>
             </div>
             <div className='comandas'>
-                {comandas.map((comanda) => { 
-                    if (comanda.id.includes(idSearch) || comanda.nome.includes(nameSearch)) {
-                        return (
-                            <div
-                                className={comanda.ativo ? 'boxComanda' : 'boxComandaDesativa'}
-                                key={comanda.id}
-                                onClick={() => {
-                                    if (comanda.ativo) {
-                                        handleClickOpen(comanda.id, comanda.nome);
-                                    } else {
-                                        setOpenError(true);
-                                    }
-                                }}
-                            >
-                                <p>{comanda.id} - {comanda.nome}</p>
-                            </div>
-                        );
-                    }
-                })}
+                {nameSearch || idSearch ? filteredComandas() : 
+                comandas.map((comanda) => (
+                    <div
+                        className={comanda.ativo ? 'boxComanda' : 'boxComandaDesativa'}
+                        key={comanda.id}
+                        onClick={() => {
+                            if (comanda.ativo) {
+                                handleClickOpen(comanda.id, comanda.nome);
+                            } else {
+                                setOpenError(true);
+                            }
+                        }}
+                    >
+                        <p>{comanda.id} - {comanda.nome}</p>
+                    </div>
+                ))}
                 {open && <FormComandas backdropOpen={open} onClose={handleClose} selectedValue={selectedValue} edit={comandaSelected} name={comandaName}/>}
             </div>
             <Loading state={stateLoading} onClose={handleCloseLoading} />

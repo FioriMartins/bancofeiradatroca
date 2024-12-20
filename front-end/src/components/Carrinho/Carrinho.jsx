@@ -48,7 +48,7 @@ export default function Carrinho() {
                             </div>
                             <div className="valorecategoria">
                                 <p>ETC$ {produto.valor}</p>
-                                <p>{produto.categoria}</p>
+                                <p>{produto.categoria.nome}</p>
                             </div>
                         </div>
                     ))}

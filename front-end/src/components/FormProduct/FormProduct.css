@@ -6,3 +6,13 @@
   color: var(--fourth-color);
   font-family: "Alata", Arial;
 }
+
+.li-option-icon {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+}
+
+.li-option-icon div {
+  padding: 6px 9px;
+}

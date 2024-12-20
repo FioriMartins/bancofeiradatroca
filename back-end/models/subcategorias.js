@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('produtos', {
+  return sequelize.define('subcategorias', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -11,33 +11,25 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(255),
       allowNull: true
     },
-    subcategoriaID: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'subcategorias',
-        key: 'id'
-      }
-    },
-    caixaID: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'caixas',
-        key: 'id'
-      }
-    },
-    estoqueStatus: {
-      type: DataTypes.TINYINT,
-      allowNull: true
-    },
     valor: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    quantidade: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    categoriaID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'categorias',
+        key: 'id'
+      }
     }
   }, {
     sequelize,
-    tableName: 'produtos',
+    tableName: 'subcategorias',
     timestamps: false,
     indexes: [
       {
@@ -49,17 +41,10 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "fk_produtos_caixa_idx",
+        name: "fk_subcategoria_categoria_idx",
         using: "BTREE",
         fields: [
-          { name: "caixaID" },
-        ]
-      },
-      {
-        name: "fk_produtos_subcategoria_idx",
-        using: "BTREE",
-        fields: [
-          { name: "subcategoriaID" },
+          { name: "categoriaID" },
         ]
       },
     ]

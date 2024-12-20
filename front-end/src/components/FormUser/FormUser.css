@@ -8,6 +8,7 @@
 }
 
 .classUser {
+    padding-top: 50px;
     display: flex;
     flex-direction: row;
 }

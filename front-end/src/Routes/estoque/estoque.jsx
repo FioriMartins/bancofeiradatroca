@@ -1,6 +1,6 @@
 
 
-const Caixas = () => {
+const Estoque = () => {
   return (
     <div>
       <div className="box">
@@ -10,4 +10,4 @@ const Caixas = () => {
   )
 }
 
-export default Caixas
+export default Estoque

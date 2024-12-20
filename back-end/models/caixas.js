@@ -2,13 +2,10 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('caixas', {
     id: {
+      autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
-    },
-    produtosCaixa: {
-      type: DataTypes.JSON,
-      allowNull: true
     },
     status: {
       type: DataTypes.TINYINT,
