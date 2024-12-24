@@ -11,9 +11,9 @@ import Backdrop from '@mui/material/Backdrop'
 import Collapse from '@mui/material/Collapse'
 import Alerta from "../Alerta/Alerta"
 
-import "./EditarCategoria.css";
+import "./AdicionarCategoria.css";
 
-export default function EditarCategoria({ open, fetchCategorias, fetchSubCategorias, handleCloseBackdrop, valueCategoria, setValueCategoria, categorias, setDados, dados }) {
+export default function AdicionarCategoria({ open, fetchCategorias, fetchSubCategorias, handleCloseBackdrop, valueCategoria, setValueCategoria, categorias, setDados, dados }) {
     const [openAlert, setOpenAlert] = useState(false)
     const [openAlertSubcategoria, setOpenAlertSubcategoria] = useState(false)
     const [openAlertAdd, setOpenAlertAdd] = useState(false)
@@ -22,36 +22,36 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
 
     const filter = createFilterOptions()
 
+    // ! Falta passar valores
     const handleSubmit = async () => {
         try {
-            await axios.put(`http://localhost:3000/subcategorias/edit/${valueCategoria.id}`, {
-                nome: valueCategoria.nome,
-                valor: valueCategoria.valor,
-                categoriaID: valueCategoria.categoriaID
+            await axios.post('http://localhost:3000/subcategorias/receive', {
+                nome,
+                valor,
+                categoriaID
             })
             setOpenAlertSubcategoria(true)
         } catch (err) {
-            console.error(err.response.data)
+            console.log(err)
+        }
+    }
+
+    const handleAddCategoria = async (nomeCategoria) => {
+        try {
+            await axios.post('http://localhost:3000/categorias/receive', {
+                nome: nomeCategoria
+            })
+            setOpenAlertAdd(true)
+        } catch (err) {
+            console.log(err)
         } finally {
             await fetchCategorias()
             await fetchSubCategorias()
         }
     }
 
-    const handleDelete = async () => {
-        try {
-            const response = await axios.delete(`http://localhost:3000/subcategorias/${valueCategoria.id}`)
-            console.log('Resposta do servidor: ', response.data)
-            setOpenAlertSubcategoria(true)
-        } catch (err) {
-            console.error(err.response.data)
-        }
-    }
-
     const handleChange = (event, newValue) => {
         const { name, value } = event.target
-
-        console.log(valueCategoria)
 
         if (typeof newValue === 'string') {
             setValueCategoria({
@@ -62,12 +62,15 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
             })
         } else if (newValue && newValue.inputValue) {
             setValueCategoria(newValue.inputValue)
-            handleSubmitCategoria(newValue.inputValue)
+            handleAddCategoria(newValue.inputValue)
         } else {
+            console.log(newValue)
             setValueCategoria(newValue || {
                 ...valueCategoria,
-                [name]: value
+                categoriaNome: newValue.nome,
+                categoriaID: newValue.id
             })
+            console.log(valueCategoria)
         }
     }
 
@@ -88,8 +91,10 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
             try {
                 const response = await axios.delete(`http://localhost:3000/categorias/${id}`)
                 console.log('Resposta do servidor: ', response.data)
+                setOpenOptions(false)
                 setOpenAlert(true)
             } catch (err) {
+                setOpenOptions(false)
                 console.error(err)
 
                 if (err.response.data.original.errno === 1451) {
@@ -109,7 +114,7 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
                 <form onSubmit={handleSubmit} >
                     <div onClick={(e) => e.stopPropagation()}
                         style={{ background: `#f5f5f5`, color: `#343c4c`, width: `30dvw`, borderRadius: `10px`, paddingLeft: `1.5rem`, paddingBottom: `1.5rem` }}>
-                        <h1>Editar subcategoria</h1>
+                        <h1>Adicionar subcategoria</h1>
                         <Autocomplete
                             onChange={(event, newValue) => {
                                 setValueCategoria({
@@ -117,7 +122,11 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
                                     categoriaNome: newValue.nome,
                                     categoriaID: newValue.id
                                 })
+                                if (newValue && newValue.inputValue) {
+                                    handleAddCategoria(valueCategoria.categoriaNome)
+                                }
                             }}
+                            // onChange={(event, newValue) => {handleChange(event, newValue)}}
                             sx={{
                                 "& .MuiOutlinedInput-root": {
                                     "& fieldset": {
@@ -177,7 +186,7 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
                             }}
                             freeSolo
                             renderInput={(params) => (
-                                <TextField {...params} name="categoriaNome" onChange={handleChange} label="Categoria" variant="standard" required />
+                                <TextField {...params} name="categoriaNome" label="Categoria" variant="standard" required />
                             )}
                             onKeyDown={(event) => {
                                 if (event.key === "Enter") {
@@ -250,8 +259,8 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
                             <Button onClick={handleSubmit}>
                                 Enviar
                             </Button>
-                            <Button onClick={handleDelete}>
-                                Deletar
+                            <Button onClick={handleCloseBackdrop}>
+                                Cancelar
                             </Button>
                         </div>
                     </div>
@@ -289,4 +298,4 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
             </Backdrop>
         </>
     )
-}   
+}

@@ -114,6 +114,22 @@ app.post('/categorias/receive', async (req, res) => {
     }
 })
 
+app.post('/subcategoria/receive', async (req, res) => {
+    const {nome, valor, categoriaID} = req.body
+
+    try {
+        const addSubcateg = await models.subcategorias.create({
+            nome, 
+            valor,
+            categoriaID
+        })
+        res.status(201).json(addSubcateg)
+    } catch (e) {
+        console.error(e)
+        res.status(500).json({error: e.message})
+    }
+})
+
 app.post('/transicoes/receive', async (req, res) => {
     const {descricao, horario, dia, comandaId, detalhesJson} = req.body
 

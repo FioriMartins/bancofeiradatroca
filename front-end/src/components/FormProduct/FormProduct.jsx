@@ -7,12 +7,13 @@ import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import EditIcon from '@mui/icons-material/Edit';
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+import Tooltip from "@mui/material/Tooltip";
 
 import Loading from "../Loading/Loading"
 import Alerta from "../Alerta/Alerta"
 import FormUser from "../FormUser/FormUser"
 import EditarCategoria from "../EditarCategoria/EditarCategoria.jsx"
+import AdicionarCategoria from "../AdicionarCategoria/AdicionarCategoria.jsx";
 
 import "./FormProduct.css";
 
@@ -60,7 +61,7 @@ const FormProduct = () => {
             setValueCategoria(newValue)
         } else if (newValue && newValue.inputValue) {
             setValueCategoria(newValue.inputValue)
-            handleSubmitCategoria(newValue.inputValue)
+            handleOpenAddCategory(true)
         } else {
             setValueCategoria(newValue || " ")
         }
@@ -128,9 +129,11 @@ const FormProduct = () => {
     };
 
     const [open, setOpen] = useState(false);
+    const [openAdd, setOpenAdd] = useState(false);
 
     const handleCloseBackdrop = () => {
         setOpen(false);
+        setOpenAdd(false);
     };
 
     const handleOpen = (nome, valor, categoria) => {
@@ -140,6 +143,15 @@ const FormProduct = () => {
             categoria,
         })
         setOpen(true);
+    };
+
+    const handleOpenAddCategory = (nome, valor, categoria) => {
+        setDados({
+            nome,
+            valor,
+            categoria,
+        })
+        setOpenAdd(true);
     };
 
     useEffect(() => {
@@ -214,7 +226,7 @@ const FormProduct = () => {
                             if (trimInput !== '' && !isExisting) {
                                 filtered.push({
                                     inputValue,
-                                    nome: `Adicionar "${inputValue}"?`,
+                                    nome: `Adicionar uma nova subcategoria "${inputValue}"?`,
                                 });
                             }
 
@@ -236,12 +248,12 @@ const FormProduct = () => {
                                 <li key={key} {...optionProps} className="li-option-icon">
                                     <div>{option.nome}</div>
                                     {option.nome.includes("?") ||
-                                            <IconButton onClick={() => {
-                                                handleOpen(option.nome, option.valor, option.categoriaNome)
-                                                setValueCategoria(option)
-                                            }}>
-                                                <EditIcon />
-                                            </IconButton>}
+                                        <IconButton onClick={() => {
+                                            handleOpen(option.nome, option.valor, option.categoriaNome)
+                                            setValueCategoria(option)
+                                        }}>
+                                            <EditIcon />
+                                        </IconButton>}
                                 </li>
                             );
                         }}
@@ -253,7 +265,7 @@ const FormProduct = () => {
                         )}
                         freeSolo
                         renderInput={(params) => (
-                            <TextField {...params} name="categoria" onChange={handleChange} onClick={fetchSubCategorias} label="Categoria" required />
+                            <TextField {...params} name="categoria" onChange={handleChange} onClick={fetchSubCategorias} label="Subcategoria" required />
                         )}
                         onKeyDown={(event) => {
                             if (event.key === "Enter") {
@@ -298,12 +310,15 @@ const FormProduct = () => {
                             }}
                             required
                         />
-                        <IconButton type="submit" size="large"><AddShoppingCartIcon fontSize="inherit" color="success" /></IconButton>
+                        <Tooltip title="Adicionar produto no carrinho">
+                            <IconButton type="submit" size="large"><AddShoppingCartIcon fontSize="inherit" color="success" /></IconButton>
+                        </Tooltip>
                     </div>
                 </div>
             </form>
             <FormUser />
             {open && <EditarCategoria fetchCategorias={fetchCategorias} fetchSubCategorias={fetchSubCategorias} open={open} setDados={setDados} dados={dados} setOpen={setOpen} handleCloseBackdrop={handleCloseBackdrop} valueCategoria={valueCategoria} setValueCategoria={setValueCategoria} categorias={categorias} stateLoading={stateLoading} />}
+            {openAdd && <AdicionarCategoria fetchCategorias={fetchCategorias} fetchSubCategorias={fetchSubCategorias} open={openAdd} setDados={setDados} dados={dados} setOpen={setOpen} handleCloseBackdrop={handleCloseBackdrop} valueCategoria={valueCategoria} setValueCategoria={setValueCategoria} categorias={categorias} stateLoading={stateLoading} />}
             <Alerta state={openAlertError} onClose={handleClose} text="Não foi possível acessar o banco de dados" severity="error" />
             <Loading state={stateLoading} />
         </div>

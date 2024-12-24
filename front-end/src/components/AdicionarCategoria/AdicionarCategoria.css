@@ -1,0 +1,69 @@
+.allContent {
+    font-family: "Alata", Arial;
+    /* background-color: var(--second-color); */
+    color: var(--fourth-color);
+    /* box-shadow: 1px 1px 50px 1px var(--shadow); */
+    padding: 20px;
+    border-radius: 10px;
+
+    width: 20%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+hr {
+    margin: 0;
+}
+
+.MuiAutocomplete-popper {
+    z-index: 9999 !important; /* Certifique-se de que está acima do modal */
+}  
+
+.formularioProdutos {
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.formularioProdutos h2,
+.formularioProdutos p {
+    margin: 0;
+}
+
+.li-option-icon {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.li-option-icon div {
+    padding: 6px 9px;
+}
+
+.form-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    padding-right: 1rem;
+}
+
+#buttonAdicionar {
+    background-color: var(--third-color);
+}
+
+.divInputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sendValor {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
