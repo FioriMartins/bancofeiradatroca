@@ -1,12 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Alata&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
 
-:root {
-  --primary-color: #ffffff;
-  --second-color: #f5f5f5;
-  --third-color: #44444c;
-  --fourth-color: #5a616d;
-}
-
 .container {
   display: flex;
   width: 85dvw;

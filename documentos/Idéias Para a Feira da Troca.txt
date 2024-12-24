@@ -9,3 +9,7 @@
 - Quando terminar a venda do produto, ele será deletado do banco
 
 - Plano B se der pau no banco: python ou NoSQL
+
+- Feature de linha de tempo para organização de horário de trabalho
+
+- feature de chat(junto com notiicações) para as pessoas se comunicarem mais facilmente

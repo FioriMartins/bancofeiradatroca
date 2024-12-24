@@ -1,13 +1,16 @@
 :root {
-    --primary-color: #ffffff;
-    --second-color:  #f5f5f5;
-    --third-color: #44444c;
-    --fourth-color: #5a616d;
+    --shadow: rgba(0, 0, 0, 0.039);
+    --primary-color: #f1f1f1;
+    --second-color:  #fff;
+    --third-color: #349854;
+    --fourth-color:#12222a;
+    --card-color1: #12222a;
+    --card-color2: #f2eee3;
 }
 
 html, body, #root {
     display: flex;
-    background-color: var(--second-color);
+    background-color: var(--primary-color);
 
     margin: 0;
     width: 100dvw;

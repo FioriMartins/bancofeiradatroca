@@ -18,7 +18,9 @@
     "sequelize-auto": "^0.8.8"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.3.0",
     "axios": "^1.7.7",
+    "faker": "^6.6.6",
     "node-cron": "^3.0.3",
     "xlsx": "^0.18.5"
   }

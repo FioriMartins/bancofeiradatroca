@@ -1,5 +1,5 @@
 .side-bar {
-  background-color: var(--primary-color);
+  background-color: var(--third-color);
   width: 95px;
   height: 100dvh;
 
@@ -10,7 +10,7 @@
   box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.26);
 
   position: fixed;
-  z-index: 9999;
+  z-index: 99999;
   transition: width 350ms;
 }
 
@@ -39,7 +39,7 @@
   align-items: center;
   width: 75%;
   height: 80px;
-  color: var(--fourth-color);
+  color: var(--primary-color);
   gap: 20px;
 
   cursor: pointer;
@@ -49,7 +49,7 @@
 }
 
 #icon path {
-  stroke: var(--fourth-color);
+  stroke: var(--primary-color);
 }
 
 #selected {
@@ -62,9 +62,9 @@
   align-items: center;
   width: 75%;
   height: 80px;
-  color: var(--primary-color);
+  color: var(--third-color);
   gap: 20px;
-  background-color: var(--fourth-color);
+  background-color: var(--primary-color);
 
   cursor: pointer;
 
@@ -84,7 +84,7 @@
 }
 
 #selected path {
-  stroke: var(--primary-color);
+  stroke: var(--third-color);
   justify-content: center;
 }
 

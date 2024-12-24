@@ -30,7 +30,7 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
     const [valueNome, setValueNome] = useState()
     const [cardQR, setCardQR] = useState()
 
-    const handleCloseConfirn = (event, reason) => {
+    const handleCloseConfirm = (event, reason) => {
         if (reason === 'clickaway') {
             return
         }
@@ -74,8 +74,8 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
                         width: 300,
                         margin: 4,
                         color: {
-                            dark: '#343c4c',
-                            light: '#ffffff',
+                            dark: '#12222a',
+                            light: '#f2eee3',
                         },
                         errorCorrectionLevel: 'H',
                     })
@@ -100,8 +100,8 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
                 width: 300,
                 margin: 4,
                 color: {
-                    dark: '#343c4c',
-                    light: '#ffffff',
+                    dark: '#12222a',
+                    light: '#f2eee3',
                 },
                 errorCorrectionLevel: 'H',
             })
@@ -301,14 +301,14 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
                                 <Button startIcon={<DeleteForeverIcon />} id='botoesDesativar' onClick={handleDisable} sx={{ width: `100%` }}>Desativar</Button>
                             </div>
                         ) : (
-                            <div className="form-buttons">
+                            <div className="9-buttons">
                                 <Button startIcon={<SendRoundedIcon />} id='botoes' onClick={handleSubmit} sx={{ width: `100%` }}>Cadastrar</Button>
                             </div>
                         )
                     }
-                    <Alerta state={open} onClose={handleCloseConfirn} text="Usuário cadastrado com sucesso!" severity="success" />
-                    <Alerta state={openError} onClose={handleCloseConfirn} text="Não foi possível cadastrar o Usuário!" severity="error" />
-                    <Loading state={stateLoading} onClose={handleCloseConfirn} />
+                    <Alerta state={open} onClose={handleCloseConfirm} text="Usuário cadastrado com sucesso!" severity="success" />
+                    <Alerta state={openError} onClose={handleCloseConfirm} text="Não foi possível cadastrar o Usuário!" severity="error" />
+                    <Loading state={stateLoading} onClose={handleCloseConfirm} />
                 </div>
             </div >
         </Backdrop >

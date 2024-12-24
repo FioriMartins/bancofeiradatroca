@@ -2,34 +2,33 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import EditIcon from '@mui/icons-material/Edit';
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from '@mui/material/IconButton';
-import Backdrop from '@mui/material/Backdrop'
+import Tooltip from '@mui/material/Tooltip';
 
 import Loading from "../Loading/Loading"
-import Alerta from "../Alerta/Alerta";
+import Alerta from "../Alerta/Alerta"
+import FormUser from "../FormUser/FormUser"
+import EditarCategoria from "../EditarCategoria/EditarCategoria.jsx"
 
 import "./FormProduct.css";
 
 const FormProduct = () => {
     const filter = createFilterOptions()
+
     const [stateLoading, setStateLoading] = useState(false)
     const [openAlertError, setOpenAlertError] = useState(false)
     const [subCategorias, setSubCategorias] = useState([]);
     const [categorias, setCategorias] = useState([]);
-    const [valueCategoria, setValueCategoria] = useState(null)
+    const [valueCategoria, setValueCategoria] = useState({})
 
-
-    // Não sei se ainda existe subcategoria nos dados, penso que só existe categoria
     const [dados, setDados] = useState({
         nome: "",
         valor: 0,
-        categoria: "",
-        subcategoria: ""
+        categoria: ""
     });
 
     const handleClose = (event, reason) => {
@@ -48,8 +47,26 @@ const FormProduct = () => {
         })
     }
 
+    const handleChangeValue = (event, newValue) => {
+        if (event.target.innerText) {
+            setDados({
+                ...dados,
+                valor: newValue.valor,
+                categoria: newValue
+            })
+        }
+
+        if (typeof newValue === 'string') {
+            setValueCategoria(newValue)
+        } else if (newValue && newValue.inputValue) {
+            setValueCategoria(newValue.inputValue)
+            handleSubmitCategoria(newValue.inputValue)
+        } else {
+            setValueCategoria(newValue || " ")
+        }
+    }
+
     const handleSubmitCategoria = async (categoria) => {
-        console.log(categoria)
         try {
             setDados({
                 ...dados,
@@ -83,17 +100,16 @@ const FormProduct = () => {
             const responde = await axios.get(`http://localhost:3000/subcategorias`)
             setSubCategorias(responde.data.map((subcat) => {
                 const categoria = categorias.find((cat) => cat.id === subcat.categoriaID)
-                
+
                 if (categoria) {
-                    return {...subcat, categoriaNome: categoria.nome}
+                    return { ...subcat, categoriaNome: categoria.nome }
                 }
             }))
+            setStateLoading(false)
         } catch (err) {
             setStateLoading(false)
             setOpenAlertError(true)
             console.log("Erro: ", err)
-        } finally {
-            setStateLoading(false)
         }
     }
 
@@ -112,12 +128,17 @@ const FormProduct = () => {
     };
 
     const [open, setOpen] = useState(false);
-    
+
     const handleCloseBackdrop = () => {
         setOpen(false);
     };
-    
-    const handleOpen = () => {
+
+    const handleOpen = (nome, valor, categoria) => {
+        setDados({
+            nome,
+            valor,
+            categoria,
+        })
         setOpen(true);
     };
 
@@ -125,194 +146,164 @@ const FormProduct = () => {
         fetchCategorias()
     }, [])
 
-    useEffect( () => {
+    useEffect(() => {
         fetchSubCategorias()
     }, [categorias])
-    
+
     return (
-        <div>
+        <div className="allContent">
             <form className="formularioProdutos" onSubmit={handleSubmitCarrinho}>
-                <h2>Formulário de Cadastro de Produtos</h2>
-                <p>Tente preencher todas as entradas.</p>
-                <TextField
-                    name="nome"
-                    onChange={handleChange}
-                    id="outlined-basic"
-                    label="Nome do produto"
-                    variant="outlined"
-                    sx={{
-                        "& .MuiOutlinedInput-root": {
-                            "& fieldset": {
-                                borderColor: "#343c4c",
+                <h2>Cadastro de Produtos</h2>
+                <p>É necessário preencher tudo.</p>
+                <div className="divInputs">
+                    <TextField
+                        name="nome"
+                        onChange={handleChange}
+                        id="outlined-basic"
+                        label="Nome do produto"
+                        variant="outlined"
+                        sx={{
+                            "& .MuiOutlinedInput-root": {
+                                "& fieldset": {
+                                    borderColor: "#28292b",
+                                },
+                                "&.Mui-focused fieldset": {
+                                    borderColor: "#28292b",
+                                },
                             },
-                            "&.Mui-focused fieldset": {
-                                borderColor: "#343c4c",
+                            "& .MuiInputLabel-root": {
+                                color: "#28292b",
                             },
-                        },
-                        "& .MuiInputLabel-root": {
-                            color: "#343c4c",
-                        },
-                        "& .Mui-focused label": {
-                            color: "#343c4c",
-                        },
-                    }}
-                    required
-                />
-                
-                <TextField
-                    id="outlined-basic"
-                    name="valor"
-                    slotProps={{
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position="start">ETC$</InputAdornment>
-                            ),
-                        },
-                    }}
-                    onChange={handleChange}
-                    type="number"
-                    min="1"
-                    label="Valor do produto"
-                    variant="outlined"
-                    value={dados.valor}
-                    sx={{
-                        "& .MuiOutlinedInput-root": {
-                            "& fieldset": {
-                                borderColor: "#343c4c",
+                            "& .Mui-focused label": {
+                                color: "#28292b",
                             },
-                            "&.Mui-focused fieldset": {
-                                borderColor: "#343c4c",
+                        }}
+                        required
+                    />
+                    <Autocomplete
+                        onChange={handleChangeValue}
+                        sx={(theme) => ({
+                            zIndex: theme.zIndex.drawer - 1199,
+                            "& .MuiOutlinedInput-root": {
+                                "& fieldset": {
+                                    borderColor: "#28292b",
+                                },
+                                "&.Mui-focused fieldset": {
+                                    borderColor: "#28292b",
+                                },
                             },
-                        },
-                        "& .MuiInputLabel-root": {
-                            color: "#343c4c",
-                        },
-                        "& .Mui-focused label": {
-                            color: "#343c4c",
-                        },
-                    }}
-                    required
-                />
+                            "& .MuiInputLabel-root": {
+                                color: "#28292b",
+                            },
+                            "& .Mui-focused label": {
+                                color: "#28292b",
+                            },
+                        })}
+                        selectOnFocus
+                        clearOnBlur
+                        handleHomeEndKeys
+                        id="free-solo-with-text-demo"
+                        options={subCategorias}
+                        value={valueCategoria.nome}
+                        filterOptions={(options, params) => {
+                            const filtered = filter(options, params);
+                            const { inputValue } = params;
+                            const trimInput = inputValue.trim().toLowerCase();
 
-                <Autocomplete
-                    onChange={(event, newValue) => {
-                        if (event.target.innerText) {
-                            setDados({
-                            ...dados,
-                            valor: newValue.valor,
-                            categoria: newValue
-                        })
-                        } else {
-                            setDados({
-                                ...dados,
-                                valor: 0
-                            })
-                        }
-                        
-                        if (typeof newValue === 'string') {
-                            setValueCategoria(newValue);
-                        } else if (newValue && newValue.inputValue) {
-                            setValueCategoria(newValue.inputValue);
-                            handleSubmitCategoria(newValue.inputValue)
-                        } else {
-                            setValueCategoria(newValue);
-                        }
-                    }}
-                    value={valueCategoria}
-                    sx={{
-                        width: 223,
-                        backgroundColor: "white",
-                        "& .MuiOutlinedInput-root": {
-                            "& fieldset": {
-                                borderColor: "#343c4c",
-                            },
-                            "&.Mui-focused fieldset": {
-                                borderColor: "#343c4c",
-                            },
-                        },
-                        "& .MuiInputLabel-root": {
-                            color: "#343c4c",
-                        },
-                        "& .Mui-focused label": {
-                            color: "#343c4c",
-                        },
-                    }}
-                    selectOnFocus
-                    clearOnBlur
-                    handleHomeEndKeys
-                    id="free-solo-with-text-demo"
-                    options={subCategorias}
-                    filterOptions={(options, params) => {
-                        const filtered = filter(options, params);
-                        const { inputValue } = params;
-                        const trimInput = inputValue.trim().toLowerCase();
+                            const isExisting = options.some((option) => trimInput === option?.nome.toLowerCase());
+                            if (trimInput !== '' && !isExisting) {
+                                filtered.push({
+                                    inputValue,
+                                    nome: `Adicionar "${inputValue}"?`,
+                                });
+                            }
 
-                        const isExisting = options.some((option) => trimInput === option.nome.toLowerCase());
-                        if (trimInput !== '' && !isExisting) {
-                            filtered.push({
-                                inputValue,
-                                nome: `Adicionar "${inputValue}"?`,
-                            });
-                        }
-                    
-                        return filtered;
-                    }}
-                    groupBy={(option) => option.categoriaNome}
-                    getOptionLabel={(option) => {
-                        // Value selected with enter, right from the input
-                        if (typeof option === 'string') {
-                            return (option);
-                        }
-                        // Add "xxx" option created dynamically
-                        if (option.inputValue) {
-                            return (option.inputValue);
-                        }
-                        // Regular option
-                        return (option.nome);
-                    }}
-                    renderOption={(props, option) => {
-                        const { key, ...optionProps } = props;
-                        return (
-                            <li key={key} {...optionProps} className="li-option-icon">
-                                <div>{option.nome}</div>
-                                <IconButton onClick={handleOpen}><EditIcon /></IconButton>
-                            </li>
-                        );
-                    }}
-                    freeSolo
-                    renderInput={(params) => (
-                        <TextField {...params} name="categoria" onChange={handleChange} onClick={fetchSubCategorias} label="Categoria" required />
-                    )}
-                    onKeyDown={(event) => {
-                        if (event.key === "Enter") {
-                            event.preventDefault()
-                            handleSubmitCategoria(event.target.value)
-                        }
-                    }}
-                />
-
-                <Button
-                    type="submit"
-                    variant="contained"
-                    endIcon={<AddShoppingCartIcon />}
-                    sx={{ backgroundColor: "#343c4c", color: "#e8f7f2" }}
-                >
-                    Adicionar
-                </Button>
-            </form>
-
-            <Backdrop
-                sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 9999 })}
-                open={open}
-                onClick={handleCloseBackdrop}
-            >
-                <div>
-                    <h1>Editar categoria</h1>
-                    <p>Preencha tudo cadela</p>
-                    <TextField></TextField>
+                            return filtered;
+                        }}
+                        groupBy={(option) => option?.categoriaNome}
+                        getOptionLabel={(option) => {
+                            if (typeof option === 'string') {
+                                return (option);
+                            }
+                            if (option.inputValue) {
+                                return (option.inputValue);
+                            }
+                            return (option.nome);
+                        }}
+                        renderOption={(props, option) => {
+                            const { key, ...optionProps } = props;
+                            return (
+                                <li key={key} {...optionProps} className="li-option-icon">
+                                    <div>{option.nome}</div>
+                                    {option.nome.includes("?") ||
+                                            <IconButton onClick={() => {
+                                                handleOpen(option.nome, option.valor, option.categoriaNome)
+                                                setValueCategoria(option)
+                                            }}>
+                                                <EditIcon />
+                                            </IconButton>}
+                                </li>
+                            );
+                        }}
+                        renderGroup={(params) => (
+                            <div key={params.key} className="group-options">
+                                <h3>{params.group}</h3>
+                                {params.children}
+                            </div>
+                        )}
+                        freeSolo
+                        renderInput={(params) => (
+                            <TextField {...params} name="categoria" onChange={handleChange} onClick={fetchSubCategorias} label="Categoria" required />
+                        )}
+                        onKeyDown={(event) => {
+                            if (event.key === "Enter") {
+                                event.preventDefault()
+                                handleSubmitCategoria(event.target.value)
+                            }
+                        }}
+                    />
+                    <div className="sendValor">
+                        <TextField
+                            id="outlined-basic"
+                            name="valor"
+                            slotProps={{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment position="start">ETC$</InputAdornment>
+                                    ),
+                                },
+                            }}
+                            onChange={handleChange}
+                            type="number"
+                            min="1"
+                            label="Valor do produto"
+                            variant="outlined"
+                            value={valueCategoria.valor}
+                            sx={{
+                                width: '300px',
+                                "& .MuiOutlinedInput-root": {
+                                    "& fieldset": {
+                                        borderColor: "#28292b",
+                                    },
+                                    "&.Mui-focused fieldset": {
+                                        borderColor: "#28292b",
+                                    },
+                                },
+                                "& .MuiInputLabel-root": {
+                                    color: "#28292b",
+                                },
+                                "& .Mui-focused label": {
+                                    color: "#28292b",
+                                },
+                            }}
+                            required
+                        />
+                        <IconButton type="submit" size="large"><AddShoppingCartIcon fontSize="inherit" color="success" /></IconButton>
+                    </div>
                 </div>
-            </Backdrop>
-
+            </form>
+            <FormUser />
+            {open && <EditarCategoria fetchCategorias={fetchCategorias} fetchSubCategorias={fetchSubCategorias} open={open} setDados={setDados} dados={dados} setOpen={setOpen} handleCloseBackdrop={handleCloseBackdrop} valueCategoria={valueCategoria} setValueCategoria={setValueCategoria} categorias={categorias} stateLoading={stateLoading} />}
             <Alerta state={openAlertError} onClose={handleClose} text="Não foi possível acessar o banco de dados" severity="error" />
             <Loading state={stateLoading} />
         </div>

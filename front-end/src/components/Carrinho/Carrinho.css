@@ -2,11 +2,9 @@
   /* border: 1px solid black; */
   color: var(--fourth-color);
   font-family: "Alata", Arial;
-  width: 709px;
-
+  /* width: 80%; */
   display: flex;
   flex-direction: column;
-
   align-items: center;
 }
 
@@ -24,11 +22,12 @@
 
 .carHeader {
   display: flex;
+  justify-content: space-evenly;
 }
 
 .boxProduct {
-  background-color: var(--primary-color);
-  width: 170px;
+  /* background-color: var(--second-color); */
+  /* width: 240px; */
   height: 100px;
   padding: 1px 15px 20px 15px;
   border-radius: 10px;
@@ -37,9 +36,9 @@
 }
 
 .boxProduct p {
-  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .boxProduct:hover {
@@ -48,8 +47,7 @@
 
 .valorecategoria {
   display: flex;
-  justify-content: space-around;
-  text-align: center;
+  justify-content: space-between; 
 }
 
 * {

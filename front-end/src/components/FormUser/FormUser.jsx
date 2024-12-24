@@ -8,6 +8,8 @@ import IconButton from "@mui/material/IconButton"
 import AddCardIcon from '@mui/icons-material/AddCard'
 import Autocomplete from "@mui/material/Autocomplete"
 import FormComandas from '../FormComandas/FormComandas'
+import Button from '@mui/material/Button'
+import SendRoundedIcon from '@mui/icons-material/SendRounded';
 
 import Alerta from '../Alerta/Alerta'
 import Loading from '../Loading/Loading'
@@ -86,74 +88,84 @@ export default function FormUser() {
 
     return (
         <div className="formUser">
-            <h2>Formulario do usuário</h2>
+            <h2>Formulário</h2>
             <p>Selecione ou cadastre uma comanda.</p>
             <div>
                 <p>ETC$: {carrinho.length === 0 ? (" Não há nenhum item no carrinho.") : (total)}</p>
             </div>
             <form className="classUser">
-                <Autocomplete
-                    value={value}
-                    id="free-solo-dialog-demo"
-                    options={comandas}
-                    getOptionLabel={(option) => {
-                        if (typeof option === "string") {
-                            return option;
-                        }
-                        if (option.inputValue) {
-                            return option.inputValue;
-                        }
-                        return option.id;
-                    }}
-                    onChange={(event, newValue) => {
-                        setDados({
-                            ...dados,
-                            id: newValue.id,
-                        });
-                    }}
-                    selectOnFocus
-                    clearOnBlur
-                    handleHomeEndKeys
-                    renderOption={(props, option) => {
-                        const { key, ...optionProps } = props;
-                        return (
-                            <li key={key} {...optionProps}>
-                                {option.id} - {option.nome}
-                            </li>
-                        );
-                    }}
-                    sx={{
-                        width: 223,
-                        "& .MuiOutlinedInput-root": {
-                            "& fieldset": {
-                                borderColor: "#343c4c",
+                <div className='inputoes'>
+                    <Autocomplete
+                        value={value}
+                        id="free-solo-dialog-demo"
+                        options={comandas}
+                        getOptionLabel={(option) => {
+                            if (typeof option === "string") {
+                                return option;
+                            }
+                            if (option.inputValue) {
+                                return option.inputValue;
+                            }
+                            return option.id;
+                        }}
+                        onChange={(event, newValue) => {
+                            setDados({
+                                ...dados,
+                                id: newValue.id,
+                            });
+                        }}
+                        selectOnFocus
+                        clearOnBlur
+                        handleHomeEndKeys
+                        renderOption={(props, option) => {
+                            const { key, ...optionProps } = props;
+                            return (
+                                <li key={key} {...optionProps}>
+                                    {option.id} - {option.nome}
+                                </li>
+                            );
+                        }}
+                        sx={{
+                            width: '275px',
+                            "& .MuiOutlinedInput-root": {
+                                "& fieldset": {
+                                    borderColor: "#343c4c",
+                                },
+                                "&.Mui-focused fieldset": {
+                                    borderColor: "#343c4c",
+                                },
                             },
-                            "&.Mui-focused fieldset": {
-                                borderColor: "#343c4c",
+                            "& .MuiInputLabel-root": {
+                                color: "#343c4c",
                             },
-                        },
-                        "& .MuiInputLabel-root": {
-                            color: "#343c4c",
-                        },
-                        "& .Mui-focused label": {
-                            color: "#343c4c",
-                        },
-                    }}
-                    freeSolo
-                    renderInput={(params) => (
-                        <TextField
-                            name="comanda"
-                            onChange={handleChange}
-                            {...params}
-                            label="Comanda"
-                            onClick={readComandas}
-                        />
-                    )}
-                    required
-                />
-                <IconButton onClick={handleClickOpen}>
-                    <AddCardIcon />
-                </IconButton>
+                            "& .Mui-focused label": {
+                                color: "#343c4c",
+                            },
+                        }}
+                        freeSolo
+                        renderInput={(params) => (
+                            <TextField
+                                name="comanda"
+                                onChange={handleChange}
+                                {...params}
+                                label="Comanda"
+                                onClick={readComandas}
+                            />
+                        )}
+                        required
+                    />
+                    <IconButton color='success' size='large' onClick={handleClickOpen}>
+                        <AddCardIcon fontSize='inherit' />
+                    </IconButton>
+                </div>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    endIcon={<SendRoundedIcon />}
+                    id='buttonEnviar'
+                >
+                    Enviar
+                </Button>
             </form>
             <FormComandas
                 edit={null}

@@ -30,9 +30,7 @@ export default function AllComandasComponent() {
         if (estado == 'true') {
             setOpenEdit(true)
             localStorage.setItem('alerta', 'false')
-        } else {
-            console.log(estado)
-        }
+        } 
     }, [])
 
     const readComandas = async () => {

@@ -60,7 +60,13 @@ app.get('/subcategorias', async (req, res) => {
     res.status(200).json(subcategory)
 })
 
+app.get('/produtos', async (req, res) => {
+    const produto = await models.produtos.findAll()
+    res.status(200).json(produto)
+})
+
 // endpoint method post para receber
+
 app.post('/turmas/receive', async (req, res) => {
     const {id, patrono, descricao } = req.body
     console.log(id, patrono, descricao)
@@ -125,6 +131,91 @@ app.post('/transicoes/receive', async (req, res) => {
         res.status(500).json({error: e.message})
     }
 })
+
+app.post('/produtos/receive', async (req, res) => {
+    const {nome, subcategoriaID, caixaID, estoqueStatus, valor} = req.body
+
+    try {
+        const addProduto = await models.produtos.create({
+            nome, 
+            subcategoriaID,
+            caixaID,
+            estoqueStatus,
+            valor
+        })
+        res.status(201).json(addProduto)
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({error: err.message})
+    }
+})
+
+// endpoint para deletar
+
+app.delete('/categorias/:id', async (req, res) => {
+    const {id} = req.params
+
+    try {
+        const categoria = await models.categorias.findByPk(id)
+
+        if (!categoria) {
+            return res.status(404).json({error: 'Categoria nao encontrada'})
+        }
+
+        await categoria.destroy()
+
+        res.status(200).json({message: 'Categoria deletada com sucesso!'})
+    } catch (err) {
+        console.error(err)
+        res.status(500).json(err)
+    }
+})
+
+app.delete('/subcategorias/:id', async (req, res) => {
+    const {id} = req.params
+
+    try {
+        const subcategoria = await models.subcategorias.findByPk(id)
+
+        if (!subcategoria) {
+            return res.status(404).json({error: 'Subcategoria nao encontrada'})
+        }
+
+        await subcategoria.destroy()
+
+        res.status(200).json({message: 'Subcategoria deletada com sucesso!'})
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({error: err.message})
+    }
+})
+
+// endpoint para put
+
+app.put('/subcategorias/edit/:id', async (req, res) => {
+    const {id} = req.params
+    const {nome, valor, categoriaID} = req.body
+
+    try {
+        const subcategoria = await models.subcategorias.findByPk(id)
+
+        if(!subcategoria) {
+            return res.status(404).json({error: 'Subcategoria nao encontrada'})
+        }
+
+        const subcategoriaAtualizado = await subcategoria.update({
+            nome,
+            valor,
+            categoriaID
+        })
+
+        res.status(201).json(subcategoriaAtualizado)
+    } catch (e) {
+        console.error(e)
+        res.status(500).json({error: e.message})
+    }
+})
+
 
 app.listen(PORT, () => {
     console.log('Servidor rodando')

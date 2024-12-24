@@ -10,7 +10,7 @@ export default function Alerta({state, onClose, text, severity}) {
                 onClose={onClose}
                 severity={severity}
                 variant="filled"
-                sx={{ width: '100%' }}
+                sx={{ zIndex: 9999, width: '100%' }}
             >
                 {text}
             </Alert>

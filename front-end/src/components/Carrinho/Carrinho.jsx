@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button"
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 import './Carrinho.css'
@@ -23,7 +24,7 @@ export default function Carrinho() {
                     {carrinho.map((produto, index) => (
                         <div key={index} className="boxProduct">
                             <div className="carHeader">
-                                <IconButton
+                                <Button 
                                     aria-label="delete"
                                     onClick={() => {
                                         let carrinho =
@@ -41,15 +42,15 @@ export default function Carrinho() {
                                             carrinho
                                         );
                                     }}
+                                    variant="outlined" 
+                                    sx={{ color: "red", border: 'none' }} 
+                                    startIcon={<DeleteForeverIcon />}
                                 >
-                                    <DeleteForeverIcon sx={{ color: "red" }} />
-                                </IconButton>
-                                <p>{produto.nome}</p>
+                                    {produto.nome}
+                                </Button>
                             </div>
-                            <div className="valorecategoria">
                                 <p>ETC$ {produto.valor}</p>
                                 <p>{produto.categoria.nome}</p>
-                            </div>
                         </div>
                     ))}
                 </div>
