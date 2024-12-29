@@ -1,17 +1,18 @@
 .formUser {
     font-family: "Alata", Arial;
-    /* background-color: var(--second-color); */
     color: var(--fourth-color);
-    /* box-shadow: 1px 1px 50px 1px var(--shadow); */
-    /* padding: 20px;   */
-    border-radius: 10px;
-  
-    /* width: 80%; */
-  
+    border-radius: 8px;
+    background-color: #f5f5f5;
+    padding: 15px;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* gap: 80px; */
+    gap: 15px;
+}
+
+.formUser p, .formUser h2 {
+    margin: 0;
 }
 
 .inputoes {
@@ -23,7 +24,7 @@
 .classUser {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 10px;
 }
 
 #buttonEnviar {

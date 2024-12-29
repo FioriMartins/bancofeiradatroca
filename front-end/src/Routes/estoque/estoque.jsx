@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
 
+import FilterProduct from "../../components/FilterProduct/FilterProduct.jsx"
+import ProductEstoque from "../../components/ProductEstoque/ProductEstoque.jsx"
+
+import './estoque.css'
+
 const Estoque = () => {
   const [produtos, setProdutos] = useState()
 
@@ -18,12 +23,9 @@ const Estoque = () => {
   }, [])
 
   return (
-    <div>
-      <div className="box">
-        {Array.isArray(produtos) && produtos.map((produto) => (
-          <p key={produto.id}>Nome: {produto.nome}, SubCatID: {produto.subcategoriaID}, CaixaID: {produto.caixaID}, Status: {produto.estoqueStatus}, Valor: {produto.valor}</p>
-        ))}
-      </div>
+    <div className="container-estoque">
+      <FilterProduct produtos={produtos} className="filter-produts" />
+      <ProductEstoque produtos={produtos} className="products-estoque" />
     </div>
   )
 }

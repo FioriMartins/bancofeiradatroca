@@ -1,6 +1,7 @@
 import './FormUser.css'
+import axios from 'axios'
 import { useState, useEffect } from "react"
-import { getDocs, collection } from "firebase/firestore"
+import { getDocs, collection, getFirestore, doc, updateDoc, increment } from "firebase/firestore"
 import { db } from '../../firebase/connect'
 
 import TextField from "@mui/material/TextField"
@@ -10,11 +11,12 @@ import Autocomplete from "@mui/material/Autocomplete"
 import FormComandas from '../FormComandas/FormComandas'
 import Button from '@mui/material/Button'
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
+import Backdrop from '@mui/material/Backdrop';
 
 import Alerta from '../Alerta/Alerta'
 import Loading from '../Loading/Loading'
 
-export default function FormUser() {
+export default function FormUser({openFormUser, setOpenFormUser}) {
     const [value, setValue] = useState(null)
     const [stateReadComanda, setStateReadComanda] = useState(false)
     const [stateLoading, setStateLoading] = useState(false)
@@ -22,6 +24,60 @@ export default function FormUser() {
     const [comandas, setComandas] = useState([])
     const [carrinho, setCarrinho] = useState([])
     const [total, setTotal] = useState(0)
+
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+        try {
+            const carrinho = JSON.parse(localStorage.getItem("carrinho"));
+            if (!carrinho || carrinho.length === 0) {
+                alert("O carrinho está vazio.")
+                return
+            }
+
+            const produtos = carrinho.map((item) => ({
+                nome: item.nome,
+                subcategoriaID: item.categoria.id,
+                valor: item.valor
+            }))
+
+            console.log("Carrinho ajustado:", produtos)
+
+            const response = await axios.post("http://localhost:3000/produtos/receive", {
+                produtos: produtos,
+                comandaId: dados.id,
+                tipo: "Troca por Créditos"
+            })
+
+            if (!response.status === 200) {
+                console.error("Erro ao cadastrar produtos no MySQL.")
+                return
+            }
+
+            const dinheiroTotal = carrinho.reduce((total, produto) => {
+                const preco = produto.valor
+                console.log(preco)
+                return total + (isNaN(preco) ? 0 : preco)
+            }, 0)
+
+            if (dinheiroTotal <= 0) {
+                alert("O valor total do carrinho é inválido.")
+                return
+            }
+
+            const comandaRef = doc(db, "comandas", dados.id)
+
+            await updateDoc(comandaRef, {
+                saldo: increment(dinheiroTotal),
+            });
+
+            alert("Compra realizada com sucesso!")
+            await localStorage.removeItem("carrinho")
+            location.reload()
+        } catch (error) {
+            console.error("Erro ao processar a compra:", error)
+            alert("Ocorreu um erro ao realizar a compra.")
+        }
+    }
 
     const handleCloseAlert = (event, reason) => {
         if (reason === 'clickaway') {
@@ -71,11 +127,15 @@ export default function FormUser() {
 
     const handleClickOpen = () => {
         setOpen(true);
-    };
+    }
 
     const handleClose = (valor) => {
-        setOpen(false);
-    };
+        setOpen(false)
+    }
+
+    const handleCloseFormUser = () => {
+        setOpenFormUser(false)
+    }
 
     useEffect(() => {
         const carrinhoSalvo = JSON.parse(localStorage.getItem("carrinho")) || []
@@ -87,94 +147,105 @@ export default function FormUser() {
     }, [])
 
     return (
-        <div className="formUser">
-            <h2>Formulário</h2>
-            <p>Selecione ou cadastre uma comanda.</p>
-            <div>
-                <p>ETC$: {carrinho.length === 0 ? (" Não há nenhum item no carrinho.") : (total)}</p>
+        <Backdrop
+            open={openFormUser}
+            onClick={handleCloseFormUser}
+        >
+            <div className="formUser" onClick={(e) => e.stopPropagation()}>
+                <h2>Formulário</h2>
+                <p>Selecione ou cadastre uma comanda.</p>
+                <form className="classUser" onSubmit={handleSubmit}>
+                    <p>ETC$: {carrinho.length === 0 ? (" Não há nenhum item no carrinho.") : (total)}</p>
+                    <div className='inputoes'>
+                        <Autocomplete
+                            value={dados.id}
+                            id="free-solo-dialog-demo"
+                            options={comandas}
+                            getOptionLabel={(option) => {
+                                if (typeof option === "string") {
+                                    return option;
+                                }
+                                if (option.inputValue) {
+                                    return option.inputValue;
+                                }
+                                return option.id;
+                            }}
+                            onChange={(event, newValue) => {
+                                if (newValue === null) {
+                                    setDados({
+                                        ...dados,
+                                        id: undefined,
+                                    })
+                                } else {
+                                    setDados({
+                                        ...dados,
+                                        id: newValue.id,
+                                    })
+                                }
+                            }}
+                            selectOnFocus
+                            clearOnBlur
+                            handleHomeEndKeys
+                            renderOption={(props, option) => {
+                                const { key, ...optionProps } = props;
+                                return (
+                                    <li key={key} {...optionProps}>
+                                        {option.id} - {option.nome}
+                                    </li>
+                                );
+                            }}
+                            sx={{
+                                width: '275px',
+                                "& .MuiOutlinedInput-root": {
+                                    "& fieldset": {
+                                        borderColor: "#343c4c",
+                                    },
+                                    "&.Mui-focused fieldset": {
+                                        borderColor: "#343c4c",
+                                    },
+                                },
+                                "& .MuiInputLabel-root": {
+                                    color: "#343c4c",
+                                },
+                                "& .Mui-focused label": {
+                                    color: "#343c4c",
+                                },
+                            }}
+                            freeSolo
+                            renderInput={(params) => (
+                                <TextField
+                                    name="comanda"
+                                    onChange={handleChange}
+                                    {...params}
+                                    label="Comanda"
+                                    onClick={readComandas}
+                                    required
+                                />
+                            )}
+                            required
+                        />
+                        <IconButton size='large' onClick={handleClickOpen}>
+                            <AddCardIcon fontSize='inherit' />
+                        </IconButton>
+                    </div>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        endIcon={<SendRoundedIcon />}
+                        id='buttonEnviar'
+                    >
+                        Enviar
+                    </Button>
+                </form>
+                <FormComandas
+                    edit={null}
+                    onClick={handleClickOpen}
+                    backdropOpen={open}
+                    onClose={handleClose}
+                />
+                <Alerta state={openAlertError} onClose={handleClose} text="Não foi possível acessar as comandas!" severity="error" />
+                <Loading state={stateLoading} />
             </div>
-            <form className="classUser">
-                <div className='inputoes'>
-                    <Autocomplete
-                        value={value}
-                        id="free-solo-dialog-demo"
-                        options={comandas}
-                        getOptionLabel={(option) => {
-                            if (typeof option === "string") {
-                                return option;
-                            }
-                            if (option.inputValue) {
-                                return option.inputValue;
-                            }
-                            return option.id;
-                        }}
-                        onChange={(event, newValue) => {
-                            setDados({
-                                ...dados,
-                                id: newValue.id,
-                            });
-                        }}
-                        selectOnFocus
-                        clearOnBlur
-                        handleHomeEndKeys
-                        renderOption={(props, option) => {
-                            const { key, ...optionProps } = props;
-                            return (
-                                <li key={key} {...optionProps}>
-                                    {option.id} - {option.nome}
-                                </li>
-                            );
-                        }}
-                        sx={{
-                            width: '275px',
-                            "& .MuiOutlinedInput-root": {
-                                "& fieldset": {
-                                    borderColor: "#343c4c",
-                                },
-                                "&.Mui-focused fieldset": {
-                                    borderColor: "#343c4c",
-                                },
-                            },
-                            "& .MuiInputLabel-root": {
-                                color: "#343c4c",
-                            },
-                            "& .Mui-focused label": {
-                                color: "#343c4c",
-                            },
-                        }}
-                        freeSolo
-                        renderInput={(params) => (
-                            <TextField
-                                name="comanda"
-                                onChange={handleChange}
-                                {...params}
-                                label="Comanda"
-                                onClick={readComandas}
-                            />
-                        )}
-                        required
-                    />
-                    <IconButton color='success' size='large' onClick={handleClickOpen}>
-                        <AddCardIcon fontSize='inherit' />
-                    </IconButton>
-                </div>
-                <Button
-                    type="submit"
-                    variant="contained"
-                    endIcon={<SendRoundedIcon />}
-                    id='buttonEnviar'
-                >
-                    Enviar
-                </Button>
-            </form>
-            <FormComandas
-                edit={null}
-                onClick={handleClickOpen}
-                backdropOpen={open}
-                onClose={handleClose}
-            />
-            <Alerta state={openAlertError} onClose={handleClose} text="Não foi possível acessar as comandas!" severity="error" />
-            <Loading state={stateLoading} />
-        </div>
+        </Backdrop>
     )
 }

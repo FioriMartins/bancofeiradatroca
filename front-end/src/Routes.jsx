@@ -8,21 +8,22 @@ import Estoque from './Routes/estoque/estoque.jsx'
 import Graficos from './Routes/graficos/graficos.jsx'
 
 import './Routes.css'
-import SideBar from './components/SideBar/SideBar.jsx'
+import SideBarFixed from './components/SideBarFixed/SideBarFixed.jsx'
+import PrivateRoute from './components/PrivateRoute/PrivateRoute.jsx'
 
 function AppRoutes() {
     return (
         <>
             <BrowserRouter>
-                <SideBar />
+                <SideBarFixed />
                 <div className='container'>
                     <Routes>
                         <Route path="/" element={<Produtos />} />
                         <Route path='/estoque' element={<Estoque />} />
                         <Route path='/graficos' element={<Graficos />} />
                         <Route path="/comandas" element={<Comandas />} />
-                        <Route path="/config" element={<Config />} />
-                        <Route path="/vender" element={<Venda />} />
+                        <Route path="/config" element={<PrivateRoute element={<Config />} />} />
+                        <Route path="/venda" element={<Venda />} />
                     </Routes>
                 </div>
             </BrowserRouter>

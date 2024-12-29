@@ -5,6 +5,7 @@ var _produtos = require("./produtos");
 var _subcategorias = require("./subcategorias");
 var _transacoes = require("./transacoes");
 var _turmas = require("./turmas");
+var _users = require("./users");
 
 function initModels(sequelize) {
   var caixas = _caixas(sequelize, DataTypes);
@@ -13,6 +14,7 @@ function initModels(sequelize) {
   var subcategorias = _subcategorias(sequelize, DataTypes);
   var transacoes = _transacoes(sequelize, DataTypes);
   var turmas = _turmas(sequelize, DataTypes);
+  var users = _users(sequelize, DataTypes);
 
   produtos.belongsTo(caixas, { as: "caixa", foreignKey: "caixaID"});
   caixas.hasMany(produtos, { as: "produtos", foreignKey: "caixaID"});
@@ -30,6 +32,7 @@ function initModels(sequelize) {
     subcategorias,
     transacoes,
     turmas,
+    users,
   };
 }
 module.exports = initModels;

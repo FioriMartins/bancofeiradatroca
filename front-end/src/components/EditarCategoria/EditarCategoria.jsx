@@ -8,33 +8,46 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
 import Backdrop from '@mui/material/Backdrop'
-import Collapse from '@mui/material/Collapse'
 import Alerta from "../Alerta/Alerta"
+import FormDeleteCategoria from "../FormDeleteCategoria/FormDeleteCategoria"
 
 import "./EditarCategoria.css";
 
-export default function EditarCategoria({ open, fetchCategorias, fetchSubCategorias, handleCloseBackdrop, valueCategoria, setValueCategoria, categorias, setDados, dados }) {
+export default function EditarCategoria({ open, setOpen, fetchCategorias, fetchSubCategorias, handleCloseBackdrop, valueCategoria, setValueCategoria, categorias, setDados, dados, subCategorias, valueNome, setValueNome, handleChangeValueName }) {
     const [openAlert, setOpenAlert] = useState(false)
     const [openAlertSubcategoria, setOpenAlertSubcategoria] = useState(false)
     const [openAlertAdd, setOpenAlertAdd] = useState(false)
+    const [openAlertExists, setOpenAlertExists] = useState(false)
     const [openOptions, setOpenOptions] = useState(false)
     const [categoriaID, setCategoriaID] = useState()
 
     const filter = createFilterOptions()
 
     const handleSubmit = async () => {
-        try {
-            await axios.put(`http://localhost:3000/subcategorias/edit/${valueCategoria.id}`, {
-                nome: valueCategoria.nome,
-                valor: valueCategoria.valor,
-                categoriaID: valueCategoria.categoriaID
-            })
-            setOpenAlertSubcategoria(true)
-        } catch (err) {
-            console.error(err.response.data)
-        } finally {
-            await fetchCategorias()
-            await fetchSubCategorias()
+        let exists = false
+
+        subCategorias.forEach(element => {
+            if (element.nome.toUpperCase() === valueCategoria.nome.toUpperCase()) {
+                setOpenAlertExists(true)
+                exists = true
+            }
+        })
+
+        if (exists === false) {
+            try {
+                await axios.put(`http://localhost:3000/subcategorias/edit/${valueCategoria.id}`, {
+                    nome: valueCategoria.nome,
+                    valor: valueCategoria.valor,
+                    categoriaID: valueCategoria.categoriaID
+                })
+                setOpenAlertSubcategoria(true)
+                await setValueNome({ nome: valueCategoria.nome })
+            } catch (err) {
+                console.error(err.response.data)
+            } finally {
+                await fetchCategorias()
+                await fetchSubCategorias()
+            }
         }
     }
 
@@ -51,8 +64,6 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
     const handleChange = (event, newValue) => {
         const { name, value } = event.target
 
-        console.log(valueCategoria)
-
         if (typeof newValue === 'string') {
             setValueCategoria({
                 ...valueCategoria,
@@ -60,12 +71,17 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
                 categoriaNome: newValue.nome,
                 categoriaID: newValue.id
             })
+            setValueNome({ [name]: value })
         } else if (newValue && newValue.inputValue) {
             setValueCategoria(newValue.inputValue)
+            setValueNome(newValue.inputValue)
             handleSubmitCategoria(newValue.inputValue)
         } else {
             setValueCategoria(newValue || {
                 ...valueCategoria,
+                [name]: value
+            })
+            setValueNome(newValue || {
                 [name]: value
             })
         }
@@ -77,10 +93,15 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
     }
 
     const handleCloseBackdropButton = () => {
+        if (openAlertSubcategoria === true) {
+            setOpenAlertSubcategoria(false)
+            setOpen(false)
+        }
+
         setOpenOptions(false)
         setOpenAlert(false)
-        setOpenAlertSubcategoria(false)
         setOpenAlertAdd(false)
+        setOpenAlertExists(false)
     }
 
     const handleDeleteCategoria = async (id) => {
@@ -106,7 +127,7 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
                 open={open}
                 onClick={handleCloseBackdrop}
             >
-                <form onSubmit={handleSubmit} >
+                <form onSubmit={handleSubmit}>
                     <div onClick={(e) => e.stopPropagation()}
                         style={{ background: `#f5f5f5`, color: `#343c4c`, width: `30dvw`, borderRadius: `10px`, paddingLeft: `1.5rem`, paddingBottom: `1.5rem` }}>
                         <h1>Editar subcategoria</h1>
@@ -189,7 +210,7 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
                         <TextField
                             id="outlined-basic"
                             name="nome"
-                            onChange={handleChange}
+                            onChange={handleChangeValueName}
                             type="string"
                             label="Subcategoria"
                             variant="standard"
@@ -247,7 +268,7 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
                             required
                         />
                         <div className="form-buttons">
-                            <Button onClick={handleSubmit}>
+                            <Button type='submit'>
                                 Enviar
                             </Button>
                             <Button onClick={handleDelete}>
@@ -256,37 +277,20 @@ export default function EditarCategoria({ open, fetchCategorias, fetchSubCategor
                         </div>
                     </div>
                 </form>
-                <Collapse in={openAlert}>
-                    <div onClick={(e) => e.stopPropagation()} >
-                        <Alerta state={openAlert} onClose={handleCloseBackdropButton} text="Categoria excluida com sucesso!" severity="warning" />
-                    </div>
-                </Collapse>
-                <Collapse in={openAlertAdd}>
-                    <div onClick={(e) => e.stopPropagation()}>
-                        <Alerta state={openAlertAdd} onClose={handleCloseBackdropButton}  text="Categoria adicionada com sucesso!" severity="success" />
-                    </div>
-                </Collapse>
-                <Collapse in={openAlertSubcategoria}>
-                    <div onClick={(e) => e.stopPropagation()}>
-                        <Alerta state={openAlertSubcategoria} onClose={handleCloseBackdropButton}  text="Subategoria editada com sucesso!" severity="success" />
-                    </div>
-                </Collapse>
-            </Backdrop>
-            <Backdrop
-                sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1000 })}
-                open={openOptions}
-                onClick={handleCloseBackdropButton}
-            >
-                <div onClick={(e) => e.stopPropagation()}
-                    className="form-buttons">
-                    <Button onClick={() => handleDeleteCategoria(categoriaID)}>
-                        SIM
-                    </Button>
-                    <Button onClick={handleCloseBackdropButton}>
-                        NÃO
-                    </Button>
+                <div onClick={(e) => e.stopPropagation()} >
+                    <Alerta state={openAlert} onClose={handleCloseBackdropButton} text="Categoria excluida com sucesso!" severity="warning" />
+                </div>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <Alerta state={openAlertAdd} onClose={handleCloseBackdropButton} text="Categoria adicionada com sucesso!" severity="success" />
+                </div>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <Alerta state={openAlertSubcategoria} onClose={handleCloseBackdropButton} text="Subcategoria editada com sucesso!" severity="success" />
+                </div>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <Alerta state={openAlertExists} onClose={handleCloseBackdropButton} text="Subcategoria já registrada com esse nome!" severity="error" />
                 </div>
             </Backdrop>
+            <FormDeleteCategoria openOptions={openOptions} handleCloseBackdropButton={handleCloseBackdropButton} handleDeleteCategoria={handleDeleteCategoria} />
         </>
     )
 }   

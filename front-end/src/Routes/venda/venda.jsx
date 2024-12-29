@@ -31,12 +31,7 @@ export default function Venda () {
 
     return (
         <> 
-            <input name='descricao' onChange={handleChange}/>
-            <input name='horario' onChange={handleChange}/>
-            <input name='dia' onChange={handleChange}/>
-            <input name='comandaId' onChange={handleChange}/>
-            <input name='detalhesJson' onChange={handleChange}/>
-            <button onClick={enviarDados}>Enviar Dados</button>
+            <p>vender vender vender</p>
         </>
     )
 }

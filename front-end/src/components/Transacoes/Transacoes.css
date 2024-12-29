@@ -1,0 +1,34 @@
+.allContentTransacoes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+}
+
+.log {
+    padding: 10px;
+    width: 200px;
+}
+
+.log:hover {
+    cursor: pointer;
+}
+
+.log p {
+    margin: 4px;
+}
+
+.log i {
+    font-size: 15px;
+    color: rgba(0, 0, 0, 0.486);
+}
+
+.log hr {
+    margin: 5px;
+    border-color: rgba(0, 0, 0, 0.185);
+}
+
+.timestamp {
+    width: 100%;
+    text-align: center;
+}

@@ -8,68 +8,81 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
 import Backdrop from '@mui/material/Backdrop'
-import Collapse from '@mui/material/Collapse'
 import Alerta from "../Alerta/Alerta"
+import FormDeleteCategoria from "../FormDeleteCategoria/FormDeleteCategoria"
 
 import "./AdicionarCategoria.css";
 
-export default function AdicionarCategoria({ open, fetchCategorias, fetchSubCategorias, handleCloseBackdrop, valueCategoria, setValueCategoria, categorias, setDados, dados }) {
+export default function AdicionarCategoria({ open, setOpenAdd, fetchCategorias, fetchSubCategorias, handleCloseBackdrop, valueCategoria, setValueCategoria, categorias, setDados, dados, subCategorias }) {
     const [openAlert, setOpenAlert] = useState(false)
     const [openAlertSubcategoria, setOpenAlertSubcategoria] = useState(false)
     const [openAlertAdd, setOpenAlertAdd] = useState(false)
+    const [openAlertExists, setOpenAlertExists] = useState(false)
     const [openOptions, setOpenOptions] = useState(false)
     const [categoriaID, setCategoriaID] = useState()
 
     const filter = createFilterOptions()
 
-    // ! Falta passar valores
     const handleSubmit = async () => {
-        try {
-            await axios.post('http://localhost:3000/subcategorias/receive', {
-                nome,
-                valor,
-                categoriaID
-            })
-            setOpenAlertSubcategoria(true)
-        } catch (err) {
-            console.log(err)
+        let exists = false
+
+        subCategorias.forEach(element => {
+            if (element.nome.toUpperCase() === valueCategoria.nome.toUpperCase()) {
+                setOpenAlertExists(true)
+                exists = true
+            }
+        })
+
+        if (exists === false) {
+            try {
+                await axios.post('http://localhost:3000/subcategorias/receive', {
+                    nome: valueCategoria.nome,
+                    valor: valueCategoria.valor,
+                    categoriaID: valueCategoria.categoriaID
+                })
+                setOpenAlertSubcategoria(true)
+            } catch (err) {
+                console.log(err)
+            }
         }
     }
-
     const handleAddCategoria = async (nomeCategoria) => {
         try {
-            await axios.post('http://localhost:3000/categorias/receive', {
+            const response = await axios.post('http://localhost:3000/categorias/receive', {
                 nome: nomeCategoria
-            })
-            setOpenAlertAdd(true)
-        } catch (err) {
-            console.log(err)
-        } finally {
-            await fetchCategorias()
-            await fetchSubCategorias()
-        }
-    }
+            });
 
+            const novaCategoria = response.data; // * Supondo que o backend retorna a categoria criada com o ID
+            setValueCategoria({
+                ...valueCategoria,
+                categoriaNome: novaCategoria.nome,
+                categoriaID: novaCategoria.id // * Atualiza com o ID retornado
+            });
+
+            setOpenAlertAdd(true);
+        } catch (err) {
+            console.log(err);
+        } finally {
+            await fetchCategorias();
+            await fetchSubCategorias();
+        }
+    };
+
+    // ! não está sendo usado
     const handleChange = (event, newValue) => {
         const { name, value } = event.target
 
         if (typeof newValue === 'string') {
             setValueCategoria({
                 ...valueCategoria,
-                [name]: value,
                 categoriaNome: newValue.nome,
                 categoriaID: newValue.id
             })
+            console.log(newValue)
         } else if (newValue && newValue.inputValue) {
             setValueCategoria(newValue.inputValue)
             handleAddCategoria(newValue.inputValue)
         } else {
-            console.log(newValue)
-            setValueCategoria(newValue || {
-                ...valueCategoria,
-                categoriaNome: newValue.nome,
-                categoriaID: newValue.id
-            })
             console.log(valueCategoria)
         }
     }
@@ -80,10 +93,15 @@ export default function AdicionarCategoria({ open, fetchCategorias, fetchSubCate
     }
 
     const handleCloseBackdropButton = () => {
+        if (openAlertSubcategoria === true) {
+            setOpenAlertSubcategoria(false)
+            setOpenAdd(false)
+        }
+
         setOpenOptions(false)
         setOpenAlert(false)
-        setOpenAlertSubcategoria(false)
         setOpenAlertAdd(false)
+        setOpenAlertExists(false)
     }
 
     const handleDeleteCategoria = async (id) => {
@@ -93,6 +111,7 @@ export default function AdicionarCategoria({ open, fetchCategorias, fetchSubCate
                 console.log('Resposta do servidor: ', response.data)
                 setOpenOptions(false)
                 setOpenAlert(true)
+                fetchCategorias()
             } catch (err) {
                 setOpenOptions(false)
                 console.error(err)
@@ -111,22 +130,22 @@ export default function AdicionarCategoria({ open, fetchCategorias, fetchSubCate
                 open={open}
                 onClick={handleCloseBackdrop}
             >
-                <form onSubmit={handleSubmit} >
+                <form onSubmit={handleSubmit}>
                     <div onClick={(e) => e.stopPropagation()}
                         style={{ background: `#f5f5f5`, color: `#343c4c`, width: `30dvw`, borderRadius: `10px`, paddingLeft: `1.5rem`, paddingBottom: `1.5rem` }}>
                         <h1>Adicionar subcategoria</h1>
                         <Autocomplete
                             onChange={(event, newValue) => {
-                                setValueCategoria({
-                                    ...valueCategoria,
-                                    categoriaNome: newValue.nome,
-                                    categoriaID: newValue.id
-                                })
                                 if (newValue && newValue.inputValue) {
-                                    handleAddCategoria(valueCategoria.categoriaNome)
+                                    handleAddCategoria(newValue.inputValue)
+                                } else {
+                                    setValueCategoria({
+                                        ...valueCategoria,
+                                        categoriaNome: newValue.nome,
+                                        categoriaID: newValue.id
+                                    })
                                 }
                             }}
-                            // onChange={(event, newValue) => {handleChange(event, newValue)}}
                             sx={{
                                 "& .MuiOutlinedInput-root": {
                                     "& fieldset": {
@@ -188,17 +207,16 @@ export default function AdicionarCategoria({ open, fetchCategorias, fetchSubCate
                             renderInput={(params) => (
                                 <TextField {...params} name="categoriaNome" label="Categoria" variant="standard" required />
                             )}
-                            onKeyDown={(event) => {
-                                if (event.key === "Enter") {
-                                    event.preventDefault()
-                                    handleSubmitCategoria(event.target.value)
-                                }
-                            }}
                         />
                         <TextField
                             id="outlined-basic"
                             name="nome"
-                            onChange={handleChange}
+                            onChange={(event) => {
+                                setValueCategoria({
+                                    ...valueCategoria,
+                                    nome: event.target.value
+                                })
+                            }}
                             type="string"
                             label="Subcategoria"
                             variant="standard"
@@ -231,7 +249,12 @@ export default function AdicionarCategoria({ open, fetchCategorias, fetchSubCate
                                     ),
                                 },
                             }}
-                            onChange={handleChange}
+                            onChange={(event) => {
+                                setValueCategoria({
+                                    ...valueCategoria,
+                                    valor: event.target.value
+                                })
+                            }}
                             type="number"
                             min="1"
                             label="Valor do produto"
@@ -256,7 +279,7 @@ export default function AdicionarCategoria({ open, fetchCategorias, fetchSubCate
                             required
                         />
                         <div className="form-buttons">
-                            <Button onClick={handleSubmit}>
+                            <Button type='submit'>
                                 Enviar
                             </Button>
                             <Button onClick={handleCloseBackdrop}>
@@ -265,37 +288,20 @@ export default function AdicionarCategoria({ open, fetchCategorias, fetchSubCate
                         </div>
                     </div>
                 </form>
-                <Collapse in={openAlert}>
-                    <div onClick={(e) => e.stopPropagation()} >
-                        <Alerta state={openAlert} onClose={handleCloseBackdropButton} text="Categoria excluida com sucesso!" severity="warning" />
-                    </div>
-                </Collapse>
-                <Collapse in={openAlertAdd}>
-                    <div onClick={(e) => e.stopPropagation()}>
-                        <Alerta state={openAlertAdd} onClose={handleCloseBackdropButton}  text="Categoria adicionada com sucesso!" severity="success" />
-                    </div>
-                </Collapse>
-                <Collapse in={openAlertSubcategoria}>
-                    <div onClick={(e) => e.stopPropagation()}>
-                        <Alerta state={openAlertSubcategoria} onClose={handleCloseBackdropButton}  text="Subategoria editada com sucesso!" severity="success" />
-                    </div>
-                </Collapse>
-            </Backdrop>
-            <Backdrop
-                sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1000 })}
-                open={openOptions}
-                onClick={handleCloseBackdropButton}
-            >
-                <div onClick={(e) => e.stopPropagation()}
-                    className="form-buttons">
-                    <Button onClick={() => handleDeleteCategoria(categoriaID)}>
-                        SIM
-                    </Button>
-                    <Button onClick={handleCloseBackdropButton}>
-                        NÃO
-                    </Button>
+                <div onClick={(e) => e.stopPropagation()} >
+                    <Alerta state={openAlert} onClose={handleCloseBackdropButton} text="Categoria excluida com sucesso!" severity="warning" />
+                </div>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <Alerta state={openAlertAdd} onClose={handleCloseBackdropButton} text="Categoria adicionada com sucesso!" severity="success" />
+                </div>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <Alerta state={openAlertSubcategoria} onClose={handleCloseBackdropButton} text="Subategoria editada com sucesso!" severity="success" />
+                </div>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <Alerta state={openAlertExists} onClose={handleCloseBackdropButton} text="Subcategoria já registrada com esse nome!" severity="error" />
                 </div>
             </Backdrop>
+            <FormDeleteCategoria openOptions={openOptions} handleCloseBackdropButton={handleCloseBackdropButton} handleDeleteCategoria={handleDeleteCategoria} />
         </>
     )
 }

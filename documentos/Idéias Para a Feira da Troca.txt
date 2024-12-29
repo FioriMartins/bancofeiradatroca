@@ -12,4 +12,6 @@
 
 - Feature de linha de tempo para organização de horário de trabalho
 
-- feature de chat(junto com notiicações) para as pessoas se comunicarem mais facilmente
+- Feature de chat(junto com notificações) para as pessoas se comunicarem mais facilmente
+
+- Feature de ordenar produtos por data de entrega, poderiamos utilizar um calendário

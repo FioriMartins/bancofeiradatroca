@@ -20,7 +20,10 @@
   "dependencies": {
     "@faker-js/faker": "^9.3.0",
     "axios": "^1.7.7",
+    "bcrypt": "^5.1.1",
+    "chalk": "^4.1.2",
     "faker": "^6.6.6",
+    "jsonwebtoken": "^9.0.2",
     "node-cron": "^3.0.3",
     "xlsx": "^0.18.5"
   }

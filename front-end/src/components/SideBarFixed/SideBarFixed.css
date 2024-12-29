@@ -1,16 +1,12 @@
 .side-bar {
   background-color: #eeeeee;
-  width: 95px;
+  min-width: 260px;
   height: 100dvh;
 
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  flex-direction: column; 
   align-items: center;
-  box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.137);
-
-  position: fixed;
-  z-index: 99999;
+  box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.082);
   transition: width 350ms;
 }
 
@@ -22,23 +18,17 @@
   gap: 25px;
 }
 
-.buttons {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-  gap: 25px;
-}
 
 #icon {
+  margin: 13px 0;
   display: flex;
+  padding: 0 10px;
   flex-direction: row;
   border-radius: 8px;
-  /* margin: 0 15px; */
   justify-content: start;
   align-items: center;
-  width: 75%;
-  height: 80px;
+  width: 90%;
+  height: 70px;
   color: var(--third-color);
   gap: 20px;
 
@@ -48,24 +38,30 @@
   transition: transform 350ms;
 }
 
+.buttons svg {
+  min-width: 40px;
+  min-height: 40px;
+  max-width: 40px;
+  max-height: 40px;
+}
+
 #icon path {
   stroke: var(--third-color);
 }
 
 #selected {
+  margin: 13px 0;
   display: flex;
-  padding: 0 5px;
+  padding: 0 10px;
   flex-direction: row;
   border-radius: 8px;
-  /* margin: 0 15px; */
   justify-content: start;
   align-items: center;
-  width: 75%;
-  height: 80px;
+  width: 90%;
+  height: 70px;
   color: #eee;
   gap: 20px;
   background-color: var(--third-color);
-  /* box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.048); */
 
   cursor: pointer;
 
@@ -75,10 +71,7 @@
 }
 
 #selected p {
-  opacity: 0;
-  display: none;
-
-  font-size: 36px;
+  font-size: 30px;
   font-family: "Alata", Arial;
 
   transition: opacity 500ms;
@@ -90,10 +83,7 @@
 }
 
 #icon p {
-  opacity: 0;
-  display: none;
-
-  font-size: 36px;
+  font-size: 30px;
   font-family: "Alata", Arial;
 
   transition: opacity 500ms;
@@ -103,4 +93,42 @@
 #selected:hover {
   transition: transform 350ms;
   transform: scale(1.05);
+}
+
+.footerSideBar {
+  display: flex;
+  margin-top: auto;
+  margin-bottom: 18px;
+  width: 90%;
+  justify-content: center;
+}
+
+.accountSideBar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+}
+
+.accountSideBar:hover {
+  cursor: pointer;
+}
+
+.logInButtonDiv {
+  display: flex;
+  width: 90%;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  font-size: 30px;
+  color: rgba(0, 0, 0, 0.445);
+}
+
+.logInButtonDiv:hover {
+  cursor: pointer;
+}
+
+.logInButtonDiv p {
+  margin: 0;
 }

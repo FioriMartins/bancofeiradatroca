@@ -16,19 +16,21 @@
   background-color: #91a9994d;
 }
 
+.allContentFormProduct {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .allContent {
   font-family: "Alata", Arial;
-  /* background-color: var(--second-color); */
   color: var(--fourth-color);
-  /* box-shadow: 1px 1px 50px 1px var(--shadow); */
-  padding: 20px;  
-  border-radius: 10px;
 
-  width: 20%;
+  /* !? Tirei o comentário abaixo pois a visualização estava pequena */
+  width: 70%; 
 
   display: flex;
   flex-direction: column;
-  gap: 40px;
 }
 
 hr {
