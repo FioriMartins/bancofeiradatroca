@@ -1,12 +1,13 @@
 .side-bar {
-  background-color: #eeeeee;
+  background-color: var(--third-color);
   min-width: 260px;
-  height: 100dvh;
+  height: 90dvh;
+  padding: 30px 0;
 
   display: flex;
   flex-direction: column; 
   align-items: center;
-  box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.082);
+  /* box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.082); */
   transition: width 350ms;
 }
 
@@ -29,7 +30,7 @@
   align-items: center;
   width: 90%;
   height: 70px;
-  color: var(--third-color);
+  color: var(--second-color);
   gap: 20px;
 
   cursor: pointer;
@@ -46,7 +47,7 @@
 }
 
 #icon path {
-  stroke: var(--third-color);
+  stroke: var(--second-color);
 }
 
 #selected {
@@ -59,9 +60,10 @@
   align-items: center;
   width: 90%;
   height: 70px;
-  color: #eee;
+  color: var(--primary-color);
   gap: 20px;
-  background-color: var(--third-color);
+  background-color: #ffffff2d;
+  box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.021); 
 
   cursor: pointer;
 
@@ -72,19 +74,19 @@
 
 #selected p {
   font-size: 30px;
-  font-family: "Alata", Arial;
+  font-family: GilroyMedium;
 
   transition: opacity 500ms;
 }
 
 #selected path {
-  stroke: #eee;
+  stroke: var(--primary-color);
   justify-content: center;
 }
 
 #icon p {
   font-size: 30px;
-  font-family: "Alata", Arial;
+  font-family: 'GilroyMedium';
 
   transition: opacity 500ms;
 }

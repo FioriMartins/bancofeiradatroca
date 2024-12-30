@@ -1,7 +1,7 @@
 :root {
     --shadow: rgba(0, 0, 0, 0.039);
     --primary-color: #f1f1f1;
-    --second-color:  #fff;
+    --second-color:  #ffffff8c;
     --third-color: #349854;
     --fourth-color:#12222a;
     --card-color1: #12222a;
@@ -10,7 +10,7 @@
 
 html, body, #root {
     display: flex;
-    background-color: var(--primary-color);
+    background-color: var(--third-color);
 
     margin: 0;
     width: 100dvw;

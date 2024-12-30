@@ -1,8 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Alata&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
 
+@font-face {
+  font-family: GilroyMedium;
+  src: url('./assets/gilroy/Gilroy-Medium.ttf');
+}
+
 .container {
   display: flex;
   width: 85dvw;
-  margin-left: 20px;
-  margin-top: 20px;
+  margin: 15px 10px 15px 0;
+  padding: 10px;
+  background-color: var(--primary-color);
+  box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.062); 
+  border-radius: 15px;
 }

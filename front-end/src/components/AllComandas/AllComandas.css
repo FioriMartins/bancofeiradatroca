@@ -19,7 +19,21 @@
     width: 100%;
     flex-direction: row;
     align-content: start;
+    overflow-y: auto;
 }
+
+.comandas::-webkit-scrollbar {
+    width: 6px;
+}
+
+.comandas::-webkit-scrollbar-thumb {
+    background-color: var(--fourth-color);
+    border-radius: 8px;
+}
+
+.comandas::-webkit-scrollbar-thumb:hover {
+    transform: scale(1.1);}
+
 
 .boxComanda {
     background-color: rgba(0, 128, 0, 0.113);
