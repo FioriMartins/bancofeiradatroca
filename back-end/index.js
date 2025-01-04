@@ -1,15 +1,17 @@
-const Sequelize = require('sequelize')
+const { Sequelize, fn, Op, where } = require('sequelize')
+const moment = require("moment")
 const express = require('express')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const cors = require('cors')
-const initModels = require('./init-models').initModels
+const initModels = require('./models/init-models').initModels
 
 const chalk = require('chalk');
 
 require('dotenv').config();
 
 const app = express()
+exports.app = app
 const PORT = process.env.PORT
 const HOST = process.env.DB_HOST
 const ADDRESS = process.env.ADDRESS
@@ -19,6 +21,7 @@ const corsOptions = {
     methods: 'GET,POST,PUT,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type', 'Authorization'],
 }
+exports.corsOptions = corsOptions
 
 app.use(cors(corsOptions))
 
@@ -50,6 +53,7 @@ const log = (level, message, data = null) => {
     );
     if (data) console.log(chalk.gray(`Detalhes: ${JSON.stringify(data, null, 2)}`))
 };
+exports.log = log
 
 sequelize.authenticate().then(() => {
     console.log('A conexão com o banco foi realizada com sucesso!')
@@ -59,6 +63,7 @@ sequelize.authenticate().then(() => {
 // log("INFO", "Produto adicionado com sucesso!");
 
 const models = initModels(sequelize)
+exports.models = models
 
 // login de usuario
 
@@ -95,7 +100,6 @@ const authenticateToken = (req, res, next) => {
 };
 
 app.get('/protected', authenticateToken, (req, res) => {
-    console.log("ue")
     res.send(`Olá, usuário ${req.user.id}. Esta é uma rota protegida.`);
 })
 
@@ -247,6 +251,7 @@ app.post("/produtos/receive", async (req, res) => {
                 subcategoriaID: produto.subcategoriaID,
                 valor: produto.valor,
                 estoqueStatus: 0,
+                data: fn('CURDATE')
             }))
         )
 
@@ -258,6 +263,7 @@ app.post("/produtos/receive", async (req, res) => {
         })
         log("INFO", "Produtos adicionados com sucesso!", produtos)
     } catch (error) {
+        console.warn(error)
         log("ERROR", "Erro ao adicionar produtos.", error)
         res.status(500).json({ error: "Erro interno do servidor." })
     }
@@ -332,6 +338,155 @@ app.put('/subcategorias/edit/:id', async (req, res) => {
     }
 })
 
+// dados metricos
+
+// controller para metricas
+
+const getMetrics = async (req, res) => {
+    const { filter } = req.query; // captura o filtro enviado pelo cliente
+    let startDate, endDate;
+
+    // Define as datas com base no filtro
+    switch (filter) {
+        case "week":
+            startDate = moment().startOf("week").format("YYYY-MM-DD");
+            endDate = moment().endOf("week").format("YYYY-MM-DD");
+            break;
+        case "month":
+            startDate = moment().startOf("month").format("YYYY-MM-DD");
+            endDate = moment().endOf("month").format("YYYY-MM-DD");
+            break;
+        case "year":
+            startDate = moment().startOf("year").format("YYYY-MM-DD");
+            endDate = moment().endOf("year").format("YYYY-MM-DD");
+            break;
+        default:
+            return res.status(400).json({ error: "Filtro inválido" });
+    }
+
+    console.log(`Filtros aplicados: startDate = ${startDate}, endDate = ${endDate}`); // Log para verificar as datas
+
+    try {
+        // Consulta no banco de dados com Sequelize
+        const metrics = await models.produtos.findAll({
+            where: sequelize.where(
+                sequelize.fn("DATE", sequelize.col("data")), // Extrai apenas a data
+                {
+                    [Op.between]: [startDate, endDate], // Filtra entre as datas
+                }
+            ),
+        });
+
+        console.log(`Produtos no período atual: ${metrics.length}`); // Verifica quantos produtos estão retornando
+
+        // Contagem de produtos no período atual
+        const currentPeriodCount = metrics.length;
+
+        // Calcula a quantidade de produtos no período anterior
+        const previousPeriodCount = await calculatePreviousPeriod(filter);
+
+        console.log(`Produtos no período anterior: ${previousPeriodCount}`); // Verifica a quantidade do período anterior
+
+        // Cálculo da variação percentual
+        const increasePercentage = previousPeriodCount > 0
+            ? ((currentPeriodCount - previousPeriodCount) / previousPeriodCount) * 100
+            : 0;
+
+        console.log(`Variação percentual: ${increasePercentage}`); // Verifica o cálculo da variação
+
+        // Retorna os dados
+        res.json({
+            filter,
+            currentPeriodCount,
+            increasePercentage: increasePercentage.toFixed(2), // Formata com 2 casas
+            data: metrics,
+        });
+
+        log("DEBUG", "Sucesso no getMetrics.");
+    } catch (error) {
+        log("ERROR", "Erro total no getMetrics.");
+        console.error(error); // Log do erro
+        res.status(500).json({ error: "Erro ao buscar métricas" });
+    }
+};
+
+const calculatePreviousPeriod = async (filter) => {
+    let startDate, endDate;
+
+    switch (filter) {
+        case "week":
+            startDate = moment().subtract(1, "week").startOf("week").format("YYYY-MM-DD");
+            endDate = moment().subtract(1, "week").endOf("week").format("YYYY-MM-DD");
+            break;
+        case "month":
+            startDate = moment().subtract(1, "month").startOf("month").format("YYYY-MM-DD");
+            endDate = moment().subtract(1, "month").endOf("month").format("YYYY-MM-DD");
+            break;
+        case "year":
+            startDate = moment().subtract(1, "year").startOf("year").format("YYYY-MM-DD");
+            endDate = moment().subtract(1, "year").endOf("year").format("YYYY-MM-DD");
+            break;
+        default:
+            return 0; // Caso o filtro não seja válido
+    }
+
+    console.log(`Datas do período anterior: startDate = ${startDate}, endDate = ${endDate}`); // Log para verificar as datas
+
+    // Consulta no banco de dados para o período anterior
+    const previousMetrics = await models.produtos.findAll({
+        where: sequelize.where(
+            sequelize.fn("DATE", sequelize.col("data")), // Extrai apenas a data
+            {
+                [Op.between]: [startDate, endDate], // Filtra entre as datas
+            }
+        ),
+    });
+
+    console.log(`Produtos no período anterior: ${previousMetrics.length}`); // Verifica quantos produtos retornaram
+
+    // Retorna a contagem de produtos no período anterior
+    return previousMetrics.length;
+};
+
+app.get('/metricsTest', getMetrics);
+
+
+
+app.get('/graficos/transacoes/tipos', async (req, res) => {
+    try {
+        const quantidadeEntrada = await models.transacoes.count({
+            where: {
+                tipo: "Entrada"
+            }
+        })
+
+        const quantidadeSaida = await models.transacoes.count({
+            where: {
+                tipo: "Saída"
+            }
+        })
+
+        res.json({
+            entrada: quantidadeEntrada,
+            saida: quantidadeSaida
+        })
+    } catch (err) {
+        log("ERROR", "Erro ao calcular as metricas de transacoes.", err)
+        res.status(500).json({ message: 'Erro ao buscar transacoes' })
+    }
+})
+
+app.get('/graficos/produtos/quantidade', async (req, res) => {
+    try {
+        const quantidade = await models.produtos.count()
+
+        res.json(quantidade)
+    } catch (err) {
+        log("ERROR", "Erro ao calcular as metricas de produtos.", err)
+        res.status(500).json({ message: 'Erro ao buscar produtos' })
+    }
+})
+
 // funcao para log de transacao
 
 async function LogTrans(produtos, comandaId, tipo) {
@@ -342,7 +497,8 @@ async function LogTrans(produtos, comandaId, tipo) {
             comandaId: comandaId,
             detalhesJson: produtos,
             timestamp: timestamp,
-            tipo: tipo
+            tipo: tipo,
+            data: fn('CURDATE')
         })
     } catch (err) {
 

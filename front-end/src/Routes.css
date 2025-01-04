@@ -7,7 +7,7 @@
 
 .container {
   display: flex;
-  width: 85dvw;
+  width: 95dvw;
   margin: 15px 10px 15px 0;
   padding: 10px;
   background-color: var(--primary-color);

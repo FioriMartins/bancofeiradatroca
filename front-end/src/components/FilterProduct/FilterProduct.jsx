@@ -140,7 +140,7 @@ const FilterProduct = ({produtos}) => {
 
                 <TextField
                     variant="outlined"
-                    placeholder="Preço Máximo"
+                    placeholder="Preço máximo"
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
@@ -167,6 +167,7 @@ const FilterProduct = ({produtos}) => {
                     color="success"
                     sx={{
                         textTransform: 'none',
+                        borderRadius: '1rem'
                     }}
                     startIcon={<RestoreIcon />}
                 >

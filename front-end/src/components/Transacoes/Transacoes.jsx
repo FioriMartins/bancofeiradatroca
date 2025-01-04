@@ -22,7 +22,7 @@ export default function Transacoes() {
     }, [])
     return (
         <div className='allContentTransacoes'>
-            <h2>Histórico de transações</h2>
+            <h1>Histórico de transações</h1>
             {Array.isArray(transacoes) && transacoes.map((transacao) => (
                 <Paper key={transacao.id} className='log' elevation={4}>
                     <p>Comanda ID: {transacao.comandaId}</p>

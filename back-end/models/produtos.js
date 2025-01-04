@@ -34,6 +34,10 @@ module.exports = function(sequelize, DataTypes) {
     valor: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    data: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
     }
   }, {
     sequelize,

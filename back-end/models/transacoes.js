@@ -22,6 +22,10 @@ module.exports = function(sequelize, DataTypes) {
     tipo: {
       type: DataTypes.STRING(45),
       allowNull: true
+    },
+    data: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
     }
   }, {
     sequelize,

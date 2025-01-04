@@ -1,0 +1,16 @@
+.contentCronograma {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+
+#dateCronogram {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.671);
+    width: 60%;
+}
+
+#contentCronogram {
+    color: rgba(0, 0, 0, 0.76);
+    width: 90%;
+}

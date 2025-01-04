@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "cd front-end && npm install && echo 'Dependencias do Front-end instaladas' && cd .. && cd back-end && npm install && echo 'Dependencias do back-end instaladas' && cd .. && echo 'Tudo joia!'",
     "front": "cd front-end && echo 'Ligando a parte do front-end!!' && npm run dev -- --host",
-    "back": "cd back-end/models/ && nodemon connection.js",
+    "back": "cd back-end/ && nodemon index.js",
     "create-models": "cd back-end && node createmodels.js && cd .. && echo 'Models atualizados!'"
   },
   "repository": {
@@ -18,15 +18,5 @@
   "bugs": {
     "url": "https://github.com/FioriMartins/bancofeiradatroca/issues"
   },
-  "homepage": "https://github.com/FioriMartins/bancofeiradatroca#readme",
-  "devDependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
-    "@mui/icons-material": "^6.1.10",
-    "@mui/material": "^6.1.7"
-  }
+  "homepage": "https://github.com/FioriMartins/bancofeiradatroca#readme"
 }

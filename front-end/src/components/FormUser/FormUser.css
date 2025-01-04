@@ -1,14 +1,14 @@
 .formUser {
     font-family: "Alata", Arial;
     color: var(--fourth-color);
-    border-radius: 8px;
+    /* border-radius: 8px; */
     background-color: #f5f5f5;
-    padding: 15px;
+    /* padding: 15px; */
 
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 15px;
+    /* gap: 15px; */
 }
 
 .formUser p, .formUser h2 {
@@ -29,4 +29,9 @@
 
 #buttonEnviar {
     background-color: var(--third-color);
+}
+
+/* * NOVO */
+.formUser h1 {
+    margin-top: 0;
 }

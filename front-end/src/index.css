@@ -1,11 +1,11 @@
 :root {
     --shadow: rgba(0, 0, 0, 0.039);
-    --primary-color: #f1f1f1;
+    --primary-color: #f9f9f9;
     --second-color:  #ffffff8c;
     --third-color: #349854;
     --fourth-color:#12222a;
     --card-color1: #12222a;
-    --card-color2: #f2eee3;
+    --card-color2: #f9f9f9;
 }
 
 html, body, #root {

@@ -23,12 +23,16 @@ export default function Carrinho() {
                 <div className="carrinhoProd">
                     {carrinho.map((produto, index) => (
                         <div key={index} className="boxProduct">
-                            <div className="carHeader">
+                                <p>Nome: {produto.nomeProduto}</p>
+                                <p>ETC$ {produto.valorProduto}</p>
+                                <p>Quantidade: {produto.quantidade}</p>
+                                <p>Categoria: {produto.categoriaProduto}</p>
+                                <p>Subcategoria: {produto.subcategoriaProduto}</p>
+                                <div className="carHeader">
                                 <Button 
                                     aria-label="delete"
                                     onClick={() => {
-                                        let carrinho =
-                                            JSON.parse(localStorage.getItem("carrinho")) || [];
+                                        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
 
                                         // Remover o produto pelo índice
                                         carrinho.splice(index, 1);
@@ -36,6 +40,8 @@ export default function Carrinho() {
                                         // Atualizar o localStorage
                                         localStorage.setItem("carrinho", JSON.stringify(carrinho));
 
+                                        // * Talvez tenha uma forma de não precisar dar reloading e recarregar tudo de novo, 
+                                        // * mas sim só o conteúdo do carrinho
                                         window.location.reload();
                                         console.log(
                                             "Produto removido. Carrinho atualizado:",
@@ -46,11 +52,9 @@ export default function Carrinho() {
                                     sx={{ color: "red", border: 'none' }} 
                                     startIcon={<DeleteForeverIcon />}
                                 >
-                                    {produto.nome}
+                                    {produto.nomeProduto}
                                 </Button>
                             </div>
-                                <p>ETC$ {produto.valor}</p>
-                                <p>{produto.categoria.nome}</p>
                         </div>
                     ))}
                 </div>

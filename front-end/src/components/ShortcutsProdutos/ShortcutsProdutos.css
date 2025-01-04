@@ -1,0 +1,14 @@
+.shortcuts-container {
+      background-color: #F2F2F2;
+      border-radius: 1rem;
+      width: 300px;
+      height: 4rem;
+      margin-top: 1rem;
+      margin-left: 1.5rem;
+}
+
+.shortcuts {
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 1rem;
+}

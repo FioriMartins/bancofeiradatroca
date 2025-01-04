@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize')
 const cors = require('cors')
-const initModels = require('./init-models').initModels
+const initModels = require('../models/init-models').initModels
 const XLSX = require('xlsx')
 
 require('dotenv').config();

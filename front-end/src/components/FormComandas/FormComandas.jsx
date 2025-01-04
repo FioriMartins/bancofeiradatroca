@@ -75,7 +75,7 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
                         margin: 4,
                         color: {
                             dark: '#12222a',
-                            light: '#f2eee3',
+                            light: '#f9f9f9',
                         },
                         errorCorrectionLevel: 'H',
                     })
@@ -101,7 +101,7 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
                 margin: 4,
                 color: {
                     dark: '#12222a',
-                    light: '#f2eee3',
+                    light: '#f9f9f9',
                 },
                 errorCorrectionLevel: 'H',
             })

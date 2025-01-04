@@ -1,16 +1,15 @@
-.allContent {
-    font-family: "Alata", Arial;
-    /* background-color: var(--second-color); */
-    color: var(--fourth-color);
-    /* box-shadow: 1px 1px 50px 1px var(--shadow); */
-    padding: 20px;
-    border-radius: 10px;
-
-    width: 20%;
-
+.box-form-add-category-backdrop {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    width: 90%;
+    padding-right: 1.5rem;
+    padding-bottom: 1rem;
+    background: #EBEBEB;
+    border-radius: 1rem;
+}
+
+.box-form-add-category-backdrop p {
+    margin-left:1rem;
 }
 
 hr {
@@ -19,10 +18,9 @@ hr {
 
 .MuiAutocomplete-popper {
     z-index: 9999 !important; /* Certifique-se de que está acima do modal */
-}  
+}
 
 .formularioProdutos {
-
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -35,12 +33,14 @@ hr {
 
 .li-option-icon {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     align-content: center;
 }
 
 .li-option-icon div {
     padding: 6px 9px;
+    width: 100px;
+    margin-right: 35%;
 }
 
 .form-buttons {
@@ -50,6 +50,8 @@ hr {
     align-items: center;
     align-content: center;
     padding-right: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
 #buttonAdicionar {

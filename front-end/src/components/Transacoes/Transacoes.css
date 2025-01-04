@@ -1,8 +1,26 @@
 .allContentTransacoes {
     display: flex;
     flex-direction: column;
+    position: relative;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none; 
+    overflow-x: hidden;
     align-items: center;
     width: 300px;
+    margin-top: 1rem;
+    background-color: #F2F2F2;
+    border-radius: 1rem;
+    margin-left: 1.5rem;
+    height: 638px;
+}
+
+.allContentTransacoes::-webkit-scrollbar {
+    display: none;
+}
+
+.allContentTransacoes h1 {
+    padding-left: 4rem
 }
 
 .log {

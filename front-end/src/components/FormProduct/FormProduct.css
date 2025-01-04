@@ -1,4 +1,4 @@
-.MuiAutocomplete-listbox {
+/* .MuiAutocomplete-listbox {
   max-height: 200px;
   overflow: auto;
 }
@@ -26,7 +26,6 @@
   font-family: "Alata", Arial;
   color: var(--fourth-color);
 
-  /* !? Tirei o comentário abaixo pois a visualização estava pequena */
   width: 70%; 
 
   display: flex;
@@ -85,4 +84,98 @@ hr {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+} */
+
+.box-form-comanda-carrinho {
+  display: flex;
+  flex-direction: column;
+}
+
+.content-product {
+  display: flex;
+  margin-top: 1rem;
+  margin-left: -1rem;
+  gap: 1.5rem;
+}
+
+.form-product {
+  background-color: #F2F2F2;
+  max-width: 632px;
+  padding: 0 1rem 1rem 1rem;
+  border-radius: 1rem;
+}
+
+.box-form-product {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+
+  & P {
+    opacity: 0.7;
+    margin: 17px 0 5px 15px;
+    font-size: 0.875rem;
+  }
+
+  & .left-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    & .nome-produto {
+      width: 300px;
+      height: 90px;
+      background-color: #EBEBEB;
+      border-radius: 1rem;
+    }
+
+    & .valor-quantidade-produto {
+      display: flex;
+      flex-direction: row;
+      width: 300px;
+      height: 90px;
+      background-color: #EBEBEB;
+      border-radius: 1rem;
+
+      & .valor-produto {
+        display: flex;
+        flex-direction: column;
+      }
+      
+      & .quantidade-produto {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+
+  & .categoria-produto {
+    width: 300px;
+    height: 196px;
+    background-color: #EBEBEB;
+    border-radius: 1rem;
+
+    & p:last-of-type {
+      margin-top: 8px;
+    }
+  }
+}
+
+.box-comanda {
+  width: 210px;
+  height: 324px;
+  padding: 1rem;
+  background-color: #F2F2F2;
+  border-radius: 1rem;
+}
+
+.box-carrinho {
+  background-color: #F2F2F2;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: row;
+  margin-top: 1rem;
+  margin-left: -1rem;
+  padding-left: 1rem;
+  flex: 1;
 }

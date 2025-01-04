@@ -28,11 +28,12 @@
 .boxProduct {
   /* background-color: var(--second-color); */
   /* width: 240px; */
-  height: 100px;
+  /* height: 100px; */
   padding: 1px 15px 20px 15px;
   border-radius: 10px;
   box-shadow: 1px 1px 50px 1px rgba(0, 0, 0, 0.096);
   transition-duration: 250ms;
+  flex: 1;
 }
 
 .boxProduct p {
