@@ -49,27 +49,27 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
         }
     }
 
-    const handleAddCategoria = async (nomeCategoria) => {
-        try {
-            const response = await axios.post('http://localhost:3000/categorias/receive', {
-                nome: nomeCategoria
-            });
+    // const handleAddCategoria = async (nomeCategoria) => {
+    //     try {
+    //         const response = await axios.post('http://localhost:3000/categorias/receive', {
+    //             nome: nomeCategoria
+    //         });
 
-            const novaCategoria = response.data; // * Supondo que o backend retorna a categoria criada com o ID
-            setDadosFormProduct({
-                ...dadosFormProduct,
-                categoriaNome: novaCategoria.nome,
-                categoriaID: novaCategoria.id // * Atualiza com o ID retornado
-            });
+    //         const novaCategoria = response.data; // * Supondo que o backend retorna a categoria criada com o ID
+    //         setDadosFormProduct({
+    //             ...dadosFormProduct,
+    //             categoriaNome: novaCategoria.nome,
+    //             categoriaID: novaCategoria.id // * Atualiza com o ID retornado
+    //         });
 
-            setOpenAlertAdd(true);
-        } catch (err) {
-            console.log(err);
-        } finally {
-            await fetchCategorias();
-            await fetchSubCategorias();
-        }
-    };
+    //         setOpenAlertAdd(true);
+    //     } catch (err) {
+    //         console.log(err);
+    //     } finally {
+    //         await fetchCategorias();
+    //         await fetchSubCategorias();
+    //     }
+    // };
 
     // // ! não está sendo usado
     // const handleChange = (event, newValue) => {
@@ -96,6 +96,7 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
             ...prev,
             [name]: value,
         }))
+        console.log("CategoriaForm: ", dadosFormProduct.categoriaProduto)
     }
 
     const handleOpenBackdropButton = (option) => {
@@ -134,33 +135,38 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
         }
     }
 
-    // * subcategorias e valores
+    // * categoria, subcategorias e valores
+    const [categoria, setCategoria] = useState('');
     const [subcategorias, setSubcategorias] = useState([]);
     const [valores, setValores] = useState([]);
+    const [inputValue, setInputValue] = useState('')
+
+    const handleAddCategoria = (event, newValue) => {
+        setCategoria(newValue);
+    };
 
     const handleAddSubcategoria = (event, newValue) => {
-        setSubcategorias(newValue);
+        if (newValue.trim() === '') {
+            setSubcategorias(newValue);
+        }
     };
 
     const handleAddValor = (event, newValue) => {
-        setValores(newValue);
+        if (!newValue || newValue.length === 0) {
+            setValores([]);
+        } else if (newValue.length < valores.length) {
+            setValores((prev) => prev.slice(0, newValue.length));
+        } else if (valores.length < subcategorias.length) {
+            const valorAdicionado = newValue[newValue.length - 1];
+            setValores((prev) => [
+                ...prev,
+                { valor: valorAdicionado, subcategoria: subcategorias[prev.length % subcategorias.length] }
+            ]);
+        }
     };
 
-    const [inputValue, setInputValue] = useState('')
-
-    const handleAddValorOnEnter = (event, newValue) => {
-        if (event.key === 'Enter' && typeof newValue === 'string' && newValue.trim() !== '') {
-            event.preventDefault();
-            if (valores.length < subcategorias.length) {
-                setValores((prev) => [
-                    ...prev,
-                    { valor: newValue.trim(), subcategoria: subcategorias[valores.length] }
-                ]);
-                setInputValue('');
-            } else {
-                setInputValue('');
-            }
-        }
+    const handleDeleteValor = (index) => {
+        setValores((prev) => prev.filter((_, i) => i !== index));
     };
 
     return (
@@ -366,21 +372,8 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                         <div className="box-form-add-category-backdrop">
                             <p>Categoria:</p>
                             <Autocomplete
-                                value={dadosFormProduct.categoriaProduto}
-                                name="categoriaProduto"
-                                onChange={handleChange}
-                                size="small"
-                                variant="standard"
                                 sx={{
-                                    height: '39px',
-                                    '& .MuiInputBase-input': {
-                                        fontSize: '14px',
-                                        lineHeight: '1.2',
-                                        padding: '4px 8px',
-                                    },
-                                    '& .MuiOutlinedInput-root': {
-                                        height: '36px',
-                                    },
+                                    width: '100%',
                                     '& .MuiInput-underline:before': {
                                         borderBottom: 'none',
                                     },
@@ -390,27 +383,17 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                     '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
                                         borderBottom: 'none',
                                     },
-                                    "& .MuiOutlinedInput-root": {
-                                        "& fieldset": {
-                                            borderColor: "#28292b",
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "#28292b",
-                                        },
-                                    },
-                                    "& .MuiInputLabel-root": {
-                                        color: "#28292b",
-                                    },
-                                    "& .Mui-focused label": {
-                                        color: "#28292b",
-                                    },
                                     marginLeft: '12px',
                                     backgroundColor: '#DDDDDD',
                                     borderRadius: '8px',
-                                    textDecoration: 'none'
+                                    textDecoration: 'none',
                                 }}
-                                selectOnFocus
+                                size="small"
+                                variant="standard"
+                                freeSolo
                                 options={categorias}
+                                value={categoria}
+                                onChange={handleAddCategoria}
                                 getOptionLabel={(option) => {
                                     if (typeof option === 'string') {
                                         return (option);
@@ -423,65 +406,51 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                 renderOption={(props, option) => {
                                     const { key, ...optionProps } = props;
                                     return (
-                                        <li key={key} {...optionProps} className="li-option-icon">
+                                        <li 
+                                            key={key} 
+                                            {...optionProps} 
+                                            className="li-option-icon"
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                            }}
+                                            style={{ cursor: 'default' }}
+                                        >
                                             <div>{option.nome}</div>
-                                            <IconButton onClick={() => handleOpenBackdropButton(option.id)}>
+                                            <IconButton
+                                                onClick={(event) => {
+                                                    event.stopPropagation();
+                                                    handleOpenBackdropButton(option.id);
+                                                }}
+                                            >
                                                 <MoreVertIcon />
                                             </IconButton>
-                                            <IconButton onClick={() => handleOpenBackdropButton(option.id)}>
+                                            <IconButton
+                                                onClick={(event) => {
+                                                    event.stopPropagation();
+                                                    handleOpenBackdropButton(option.id);
+                                                }}
+                                            >
                                                 <DeleteForeverIcon />
                                             </IconButton>
                                         </li>
                                     );
                                 }}
-                                freeSolo
                                 renderInput={(params) => (
-                                    <TextField 
+                                    <TextField
                                         {...params}
-                                        value={dadosFormProduct.categoriaProduto}
-                                        name="categoriaProduto"
                                         placeholder="Digite uma categoria"
                                         size="small"
                                         variant="standard"
                                         required
                                         sx={{
+                                            height: '39px',
                                             '& .MuiInputBase-input': {
                                                 fontSize: '17px',
-                                                lineHeight: '1.2',
-                                                padding: '4px 8px',
                                             },
-                                            '& .MuiOutlinedInput-root': {
-                                                height: '36px',
-                                            },
-                                            '& .MuiInput-underline:before': {
-                                                borderBottom: 'none',
-                                            },
-                                            '& .MuiInput-underline:after': {
-                                                borderBottom: 'none',
-                                            },
-                                            '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
-                                                borderBottom: 'none',
-                                            },
-                                            "& .MuiOutlinedInput-root": {
-                                                "& fieldset": {
-                                                    borderColor: "#28292b",
-                                                },
-                                                "&.Mui-focused fieldset": {
-                                                    borderColor: "#28292b",
-                                                },
-                                            },
-                                            "& .MuiInputLabel-root": {
-                                                color: "#28292b",
-                                            },
-                                            "& .Mui-focused label": {
-                                                color: "#28292b",
-                                            },
-                                            marginLeft: '12px',
-                                            backgroundColor: '#DDDDDD',
-                                            borderRadius: '8px',
-                                            textDecoration: 'none',
-                                            paddingTop: '5px',
-                                            paddingBottom: '4px',
+                                            paddingRight: '12px',
+                                            paddingLeft: '12px',
+                                            width: '94%',
+                                            justifyContent: 'center',
                                         }}
                                     />
                                 )}
@@ -490,15 +459,7 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                             <Autocomplete
                                 multiple
                                 sx={{
-                                    height: '39px',
-                                    '& .MuiInputBase-input': {
-                                        fontSize: '14px',
-                                        lineHeight: '1.2',
-                                        padding: '4px 8px',
-                                    },
-                                    '& .MuiOutlinedInput-root': {
-                                        height: '36px',
-                                    },
+                                    width: '100%',
                                     '& .MuiInput-underline:before': {
                                         borderBottom: 'none',
                                     },
@@ -508,36 +469,22 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                     '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
                                         borderBottom: 'none',
                                     },
-                                    "& .MuiOutlinedInput-root": {
-                                        "& fieldset": {
-                                            borderColor: "#28292b",
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "#28292b",
-                                        },
-                                    },
-                                    "& .MuiInputLabel-root": {
-                                        color: "#28292b",
-                                    },
-                                    "& .Mui-focused label": {
-                                        color: "#28292b",
-                                    },
                                     marginLeft: '12px',
                                     backgroundColor: '#DDDDDD',
                                     borderRadius: '8px',
-                                    textDecoration: 'none'
+                                    textDecoration: 'none',
                                 }}
                                 variant="standard"
                                 freeSolo
-                                options={[]} // Não usamos opções predefinidas aqui
-                                value={subcategorias} // Subcategorias selecionadas
+                                options={[]}
+                                value={subcategorias}
                                 onChange={handleAddSubcategoria}
                                 renderTags={(value, getTagProps) =>
                                     value.map((option, index) => (
                                         <Chip
                                             variant="outlined"
                                             label={option}
-                                            key={index}
+                                            key={option}
                                             {...getTagProps({ index })}
                                         />
                                     ))
@@ -545,43 +492,14 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                 renderInput={(params) => (
                                     <TextField
                                         sx={{
+                                            minHeight: '39px',
                                             '& .MuiInputBase-input': {
                                                 fontSize: '17px',
-                                                lineHeight: '1.2',
-                                                padding: '4px 8px',
                                             },
-                                            '& .MuiOutlinedInput-root': {
-                                                height: '36px',
-                                            },
-                                            '& .MuiInput-underline:before': {
-                                                borderBottom: 'none',
-                                            },
-                                            '& .MuiInput-underline:after': {
-                                                borderBottom: 'none',
-                                            },
-                                            '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
-                                                borderBottom: 'none',
-                                            },
-                                            "& .MuiOutlinedInput-root": {
-                                                "& fieldset": {
-                                                    borderColor: "#28292b",
-                                                },
-                                                "&.Mui-focused fieldset": {
-                                                    borderColor: "#28292b",
-                                                },
-                                            },
-                                            "& .MuiInputLabel-root": {
-                                                color: "#28292b",
-                                            },
-                                            "& .Mui-focused label": {
-                                                color: "#28292b",
-                                            },
+                                            paddingRight: '12px',
                                             paddingLeft: '12px',
-                                            backgroundColor: '#DDDDDD',
-                                            borderRadius: '8px',
-                                            textDecoration: 'none',
-                                            paddingTop: '3px',
-                                            paddingBottom: '1px',
+                                            width: '94%',
+                                            justifyContent: 'center',
                                         }}
                                         variant="standard"
                                         {...params}
@@ -594,15 +512,7 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                             <Autocomplete
                                 multiple
                                 sx={{
-                                    height: '39px',
-                                    '& .MuiInputBase-input': {
-                                        fontSize: '14px',
-                                        lineHeight: '1.2',
-                                        padding: '4px 8px',
-                                    },
-                                    '& .MuiOutlinedInput-root': {
-                                        height: '36px',
-                                    },
+                                    width: '100%',
                                     '& .MuiInput-underline:before': {
                                         borderBottom: 'none',
                                     },
@@ -612,46 +522,30 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                     '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
                                         borderBottom: 'none',
                                     },
-                                    "& .MuiOutlinedInput-root": {
-                                        "& fieldset": {
-                                            borderColor: "#28292b",
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "#28292b",
-                                        },
-                                    },
-                                    "& .MuiInputLabel-root": {
-                                        color: "#28292b",
-                                    },
-                                    "& .Mui-focused label": {
-                                        color: "#28292b",
-                                    },
                                     marginLeft: '12px',
                                     backgroundColor: '#DDDDDD',
                                     borderRadius: '8px',
-                                    textDecoration: 'none'
+                                    textDecoration: 'none',
                                 }}
                                 variant="standard"
                                 freeSolo
                                 options={[]}
                                 value={valores.map((item) => item.valor)}
-                                // onChange={handleAddValor}
-                                inputValue={inputValue}
-                                onInputChange={(event, newInputValue) => {
-                                    setInputValue(newInputValue);
-                                }}
-                                onKeyDown={(event) => handleAddValorOnEnter(event, inputValue)}
+                                onChange={(event, newValue) => handleAddValor(event, newValue)}
+                                clearOnEscape
+                                getOptionLabel={(option) => option.toString()}
+                                isOptionEqualToValue={(option, value) => false}
                                 disabled={subcategorias.length === 0}
                                 renderTags={(value, getTagProps) =>
                                     value.map((option, index) => {
-                                        const { key, ...optionProps } = option;
                                         const item = valores[index];
                                         return (
                                             <Chip
                                                 variant="outlined"
                                                 label={`${item.subcategoria}: ${item.valor}`}
-                                                key={key}
+                                                key={option}
                                                 {...getTagProps({ index })}
+                                                onDelete={() => handleDeleteValor(index)}
                                             />
                                         )
                                     })
@@ -659,24 +553,13 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                 renderInput={(params) => (
                                     <TextField
                                         sx={{
+                                            minHeight: '39px',
                                             '& input[type=number]': {
                                                 MozAppearance: 'textfield',
                                             },
-                                            '& input[type=number]::-webkit-inner-spin-button': {
+                                            '& input[type=number]::-webkit-inner-spin-button, & input[type=number]::-webkit-outer-spin-button': {
                                                 WebkitAppearance: 'none',
                                                 margin: 0,
-                                            },
-                                            '& input[type=number]::-webkit-outer-spin-button': {
-                                                WebkitAppearance: 'none',
-                                                margin: 0,
-                                            },
-                                            '& .MuiInputBase-input': {
-                                                fontSize: '17px',
-                                                lineHeight: '1.2',
-                                                padding: '4px 8px',
-                                            },
-                                            '& .MuiOutlinedInput-root': {
-                                                height: '36px',
                                             },
                                             '& .MuiInput-underline:before': {
                                                 borderBottom: 'none',
@@ -687,26 +570,12 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                             '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
                                                 borderBottom: 'none',
                                             },
-                                            "& .MuiOutlinedInput-root": {
-                                                "& fieldset": {
-                                                    borderColor: "#28292b",
-                                                },
-                                                "&.Mui-focused fieldset": {
-                                                    borderColor: "#28292b",
-                                                },
-                                            },
-                                            "& .MuiInputLabel-root": {
-                                                color: "#28292b",
-                                            },
-                                            "& .Mui-focused label": {
-                                                color: "#28292b",
+                                            '& .MuiInputBase-input': {
+                                                fontSize: '17px',
                                             },
                                             paddingRight: '12px',
-                                            backgroundColor: '#DDDDDD',
-                                            borderRadius: '8px',
-                                            textDecoration: 'none',
-                                            paddingTop: '3px',
-                                            paddingBottom: '1px',
+                                            width: '94%',
+                                            justifyContent: 'center',
                                         }}
                                         variant="standard"
                                         {...params}

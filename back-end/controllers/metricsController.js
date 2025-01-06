@@ -1,7 +1,12 @@
 const sequelize = require('../config/mysql/database');
 const initModels = require('../models/init-models').initModels
+const moment = require("moment")
+const { Sequelize, fn, Op, where } = require('sequelize')
 const models = initModels(sequelize)
 const log = require('../utils/logger')
+
+const { getDocs, collection, query, where: firestoreWhere, Timestamp } = require('firebase/firestore')
+const { db } = require('../config/firebase/connect')
 
 const getMetricsStuff = async (req, res) => {
     const { filter } = req.query; // captura o filtro enviado pelo cliente
@@ -103,32 +108,244 @@ const calculatePreviousPeriod = async (filter) => {
 
     console.log(`Produtos no período anterior: ${previousMetrics.length}`); // Verifica quantos produtos retornaram
 
-    // Retorna a contagem de produtos no período anterior
     return previousMetrics.length;
 };
 
-const transTipos = async (req, res) => {
-    try {
-        const quantidadeEntrada = await models.transacoes.count({
-            where: {
-                tipo: "Entrada"
-            }
-        })
+const getMetricsTrans = async (req, res) => {
+    const { filter } = req.query;
+    let startDate, endDate;
 
-        const quantidadeSaida = await models.transacoes.count({
-            where: {
-                tipo: "Saída"
+    switch (filter) {
+        case "week":
+            startDate = moment().startOf("week").format("YYYY-MM-DD")
+            endDate = moment().endOf("week").format("YYYY-MM-DD")
+            break;
+        case "month":
+            startDate = moment().startOf("month").format("YYYY-MM-DD")
+            endDate = moment().endOf("month").format("YYYY-MM-DD")
+            break;
+        case "year":
+            startDate = moment().startOf("year").format("YYYY-MM-DD")
+            endDate = moment().endOf("year").format("YYYY-MM-DD")
+            break;
+        default:
+            return res.status(400).json({ error: "Filtro inválido" });
+    }
+
+    try {
+        const metrics = await models.transacoes.findAll({
+            where: sequelize.where(
+                sequelize.fn("DATE", sequelize.col("data")),
+                {
+                    [Op.between]: [startDate, endDate],
+                }
+            ),
+        });
+
+        const quantidadeElementos = metrics.length
+
+        const previousPeriodCount = await calculatePreviousPeriodTransacoes(filter);
+
+        const increasePercentage = previousPeriodCount > 0
+            ? ((quantidadeElementos - previousPeriodCount) / previousPeriodCount) * 100
+            : 0;
+
+        const currentPeriodCount = { entrada: 0, saida: 0 }
+
+        metrics.forEach(e => {
+            if (e.tipo === "Entrada") {
+                currentPeriodCount.entrada += 1
+            } else if (e.tipo === "Saída") {
+                currentPeriodCount.saida += 1
             }
-        })
+        });
 
         res.json({
-            entrada: quantidadeEntrada,
-            saida: quantidadeSaida
+            filter,
+            currentPeriodCount,
+            increasePercentage: increasePercentage.toFixed(1),
+            data: metrics,
+        });
+
+        log("DEBUG", "Sucesso no getMetrics.");
+    } catch (error) {
+        log("ERROR", "Erro total no getMetrics.", error);
+        res.status(500).json({ error: "Erro ao buscar métricas" });
+    }
+};
+
+const calculatePreviousPeriodTransacoes = async (filter) => {
+    let startDate, endDate;
+
+    switch (filter) {
+        case "week":
+            startDate = moment().subtract(1, "week").startOf("week").format("YYYY-MM-DD")
+            endDate = moment().subtract(1, "week").endOf("week").format("YYYY-MM-DD")
+            break;
+        case "month":
+            startDate = moment().subtract(1, "month").startOf("month").format("YYYY-MM-DD")
+            endDate = moment().subtract(1, "month").endOf("month").format("YYYY-MM-DD")
+            break;
+        case "year":
+            startDate = moment().subtract(1, "year").startOf("year").format("YYYY-MM-DD")
+            endDate = moment().subtract(1, "year").endOf("year").format("YYYY-MM-DD")
+            break;
+        default:
+            return 0; // Caso o filtro não seja válido
+    }
+
+    // Consulta no banco de dados para o período anterior
+    const previousMetrics = await models.transacoes.findAll({
+        where: sequelize.where(
+            sequelize.fn("DATE", sequelize.col("data")), // Extrai apenas a data
+            {
+                [Op.between]: [startDate, endDate], // Filtra entre as datas
+            }
+        ),
+    });
+
+    // Retorna a contagem de produtos no período anterior
+    return previousMetrics.length;
+}; 
+
+const getMetricsComandas = async (req, res) => {
+    const { filter } = req.query
+    let startDate, endDate
+
+    switch (filter) {
+        case "week":
+            const currentDate = new Date();
+            const dayOfWeek = currentDate.getDay();
+            
+            // Ajuste para começar a semana na segunda-feira (se necessário)
+            const startOfWeek = new Date(currentDate);
+            startOfWeek.setDate(currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1)); // Se for domingo, ajusta para segunda-feira
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6); // Último dia da semana (sábado)
+            
+            startDate = startOfWeek;
+            endDate = endOfWeek;
+            break
+        case "month":
+            startDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+            endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+            break
+        case "year":
+            startDate = new Date(new Date().getFullYear(), 0, 1)
+            endDate = new Date(new Date().getFullYear(), 11, 31)
+            break
+        default:
+            return res.status(400).json({ error: "Filtro inválido" })
+    }
+
+    const startTimestamp = Timestamp.fromDate(startDate)
+    const endTimestamp = Timestamp.fromDate(endDate)
+
+    try {
+        const dataComandas = collection(db, "comandas")
+        const q = query(
+            dataComandas,
+            firestoreWhere("ultima_atualizacao", ">=", startTimestamp),
+            firestoreWhere("ultima_atualizacao", "<=", endTimestamp)
+        )
+
+        const querySnapshot = await getDocs(q)
+        const metrics = []
+        querySnapshot.forEach((doc) => {
+            metrics.push(doc.data())
         })
-    } catch (err) {
-        log("ERROR", "Erro ao calcular as metricas de transacoes.", err)
-        res.status(500).json({ message: 'Erro ao buscar transacoes' })
+
+        const currentPeriodCount = { ativado: 0, desativado: 0 }
+        metrics.forEach(e => {
+            if (e.ativo === true) {
+                currentPeriodCount.ativado += 1
+            } else if (e.ativo === false) {
+                currentPeriodCount.desativado += 1
+            }
+        })
+
+        const previousPeriodCount = await calculatePreviousPeriodComandas(filter)
+
+        const increasePercentageAtivados = previousPeriodCount.ativado > 0
+            ? ((currentPeriodCount.ativado - previousPeriodCount.ativado) / previousPeriodCount.ativado) * 100
+            : 0
+
+        const increasePercentageDesativados = previousPeriodCount.desativado > 0
+            ? ((currentPeriodCount.desativado - previousPeriodCount.desativado) / previousPeriodCount.desativado) * 100
+            : 0
+
+        res.json({
+            filter,
+            currentPeriodCount,
+            increasePercentageAtivados: increasePercentageAtivados.toFixed(1),
+            increasePercentageDesativados: increasePercentageDesativados.toFixed(1),
+            data: metrics
+        })
+
+        console.log("Sucesso no getMetrics.")
+    } catch (error) {
+        console.error("Erro ao buscar métricas:", error)
+        res.status(500).json({ error: "Erro ao buscar métricas" })
     }
 }
 
-module.exports = {getMetricsStuff, transTipos}
+const calculatePreviousPeriodComandas = async (filter) => {
+    let startDate, endDate
+
+    switch (filter) {
+        case "week":
+            const currentDate = new Date()
+            const dayOfWeek = currentDate.getDay()
+
+            const startOfWeek = new Date(currentDate)
+            startOfWeek.setDate(currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1))
+            const endOfWeek = new Date(startOfWeek)
+            endOfWeek.setDate(startOfWeek.getDate() + 6)
+            
+            startDate = startOfWeek
+            endDate = endOfWeek
+            break
+        case "month":
+            startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
+            endDate = new Date(new Date().getFullYear(), new Date().getMonth(), 0)
+            break
+        case "year":
+            startDate = new Date(new Date().getFullYear() - 1, 0, 1)
+            endDate = new Date(new Date().getFullYear() - 1, 11, 31)
+            break
+        default:
+            return { ativado: 0, desativado: 0 }
+    }
+
+    const startTimestamp = Timestamp.fromDate(startDate)
+    const endTimestamp = Timestamp.fromDate(endDate)
+
+    try {
+        const dataComandas = collection(db, "comandas")
+        const q = query(
+            dataComandas,
+            firestoreWhere("ultima_atualizacao", ">=", startTimestamp),
+            firestoreWhere("ultima_atualizacao", "<=", endTimestamp)
+        )
+
+        const querySnapshot = await getDocs(q)
+        const previousMetrics = { ativado: 0, desativado: 0 }
+        querySnapshot.forEach((doc) => {
+            const docData = doc.data()
+            if (docData.ativo === true) {
+                previousMetrics.ativado += 1
+            } else if (docData.ativo === false) {
+                previousMetrics.desativado += 1
+            }
+        })
+
+        return previousMetrics
+    } catch (error) {
+        console.error("Erro ao buscar métricas do período anterior:", error)
+        return { ativado: 0, desativado: 0 }
+    }
+}
+
+
+
+module.exports = { getMetricsStuff, getMetricsTrans, getMetricsComandas }  

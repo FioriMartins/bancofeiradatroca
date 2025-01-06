@@ -379,8 +379,6 @@ const FormProduct = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("SubCategorias: ", subCategorias)
-    console.log("Categorias: ", categorias)
     adicionarAoCarrinho(dadosFormProduct)
   };
 
@@ -391,7 +389,7 @@ const FormProduct = () => {
     const fetchCategorias = async () => {
         // setStateLoading(true)
         try {
-            const responde = await axios.get("http://localhost:3000/categorias");
+            const responde = await axios.get("http://localhost:3000/categories/get");
             setCategorias(responde.data);
             // setStateLoading(false)
         } catch (err) {
@@ -403,7 +401,7 @@ const FormProduct = () => {
 
     const fetchSubCategorias = async () => {
         try {
-            const responde = await axios.get(`http://localhost:3000/subcategorias`);
+            const responde = await axios.get(`http://localhost:3000/categories/get/sub`);
             setSubCategorias(responde.data)
             // setStateLoading(false)
         } catch (err) {

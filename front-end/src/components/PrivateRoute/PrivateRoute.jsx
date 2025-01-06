@@ -19,7 +19,7 @@ const PrivateRoute = ({ element, ...rest }) => {
         
         if (token) {
             axios
-                .get('http://localhost:3000/protected', {
+                .get('http://localhost:3000/auth/protected', {
                     headers: { Authorization: `Bearer ${token}` },
                 })
                 .then((response) => {

@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { getDocs, collection } from "firebase/firestore"
-import { db } from '../../firebase/connect'
+import axios from 'axios'
 
 import FormComandas from '../FormComandas/FormComandas'
 import Loading from '../Loading/Loading'
@@ -13,6 +12,7 @@ import TextField from "@mui/material/TextField";
 import './AllComandas.css'
 
 export default function AllComandasComponent() {
+    const [openComandas, setOpenComandas] = useState(false)
     const [comandas, setComandas] = useState([])
     const [stateLoading, setStateLoading] = useState(false)
     const [idSearch, setIdSearch] = useState("")
@@ -36,14 +36,8 @@ export default function AllComandasComponent() {
     const readComandas = async () => {
         setStateLoading(true)
         try {
-            const cArray = []
-            const querySnapshot = await getDocs(collection(db, "comandas"))
-
-            querySnapshot.forEach(async (doc) => {
-                cArray.push({ id: doc.id, ...doc.data() })
-            })
-
-            setComandas(cArray)
+            const response = await axios.get('http://localhost:3000/comandas/get')
+            setComandas(response.data)
 
             setStateLoading(false)
         } catch (err) {
@@ -115,6 +109,15 @@ export default function AllComandasComponent() {
         ));
     };
 
+    
+    const handleClickFormComandas = () => {
+        setOpenComandas(true);
+    }
+
+    const handleCloseComandas = () => {
+        setOpenComandas(false)
+    }
+
     return (
         <div className="button-container">
             <div className='form-search'>
@@ -134,6 +137,9 @@ export default function AllComandasComponent() {
                         onChange={handleChange}
                     />
                 </form>
+                <button onClick={() => {
+                    setOpenComandas(true)
+                }}>Cadastrar</button>
             </div>
             <div className='comandas'>
                 {nameSearch || idSearch ? filteredComandas() : 
@@ -157,6 +163,12 @@ export default function AllComandasComponent() {
             <Loading state={stateLoading} onClose={handleCloseLoading} />
             <Alerta state={openEdit} onClose={handleClose} text="Comanda editada com sucesso!" severity="info" />
             <Alerta state={openError} onClose={handleClose} text="Não é possivel selecionar a comanda!" severity="error" />
+            <FormComandas
+                edit={null}
+                onClick={handleClickFormComandas}
+                backdropOpen={openComandas}
+                onClose={handleCloseComandas}
+            />
         </div>
     )
 }

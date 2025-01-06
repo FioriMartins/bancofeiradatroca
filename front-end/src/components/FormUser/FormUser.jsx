@@ -44,10 +44,10 @@ export default function FormUser({openFormUser, setOpenFormUser}) {
 
             console.log("Carrinho ajustado:", produtos)
 
-            const response = await axios.post("http://localhost:3000/produtos/receive", {
+            const response = await axios.post("http://localhost:3000/stock/receive", {
                 produtos: produtos,
                 comandaId: dados.id,
-                tipo: "Troca por Créditos"
+                tipo: "Saida"
             })
 
             if (!response.status === 200) {
@@ -93,14 +93,15 @@ export default function FormUser({openFormUser, setOpenFormUser}) {
         setStateLoading(true)
         try {
             if (!stateReadComanda) {
+                const response = await axios.get('http://localhost:3000/comandas/get')
                 const cArray = []
-                const querySnapshot = await getDocs(collection(db, "comandas"))
 
-                querySnapshot.forEach(async (doc) => {
-                    if (doc.data().ativo) {
-                        cArray.push({ id: doc.id, ...doc.data() })
+                response.data.forEach((doc) => {
+                    if (doc.ativo) {
+                        cArray.push(doc)
                     }
                 })
+
                 setStateReadComanda(true)
                 setComandas(cArray)
             }

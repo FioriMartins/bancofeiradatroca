@@ -9,8 +9,8 @@ const router = express.Router()
 
 const {getCategorias, getSubcategorias, postCategorias, postSubcategorias} = require('../controllers/categoryController');
 
-router.get('/query', getCategorias)
-router.get('/query/sub', getSubcategorias)
+router.get('/get', getCategorias)
+router.get('/get/sub', getSubcategorias)
 router.post('/post', postCategorias)
 router.post('/post/sub', postSubcategorias)
 

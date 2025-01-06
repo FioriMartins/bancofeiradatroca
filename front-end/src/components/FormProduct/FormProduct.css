@@ -174,8 +174,17 @@ hr {
   border-radius: 1rem;
   display: flex;
   flex-direction: row;
+  position: relative;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none; 
+  overflow-x: hidden;
   margin-top: 1rem;
   margin-left: -1rem;
   padding-left: 1rem;
   flex: 1;
+}
+
+.box-carrinho::-webkit-scrollbar {
+  display: none;
 }

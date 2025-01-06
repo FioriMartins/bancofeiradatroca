@@ -5,22 +5,26 @@ import PieChartIcon from '@mui/icons-material/PieChart';
 
 import './graficos.css'
 
-const Graficos = () => {
+const Graficos = (filtro) => {
     const [quantidades, setQuantidades] = useState({ entrada: 0, saida: 0 })
     const [resumo, setResumo] = useState("Indefinido")
 
     const fetchMetricas = async () => {
         try {
-            const response = await axios.get("http://localhost:3000/graficos/transacoes/tipos")
-            setQuantidades(response.data)
+            const response = await axios.get("http://localhost:3000/metrics/getTrans", { params: { filter: `${filtro.filtro}` } })
+            setQuantidades(response.data.currentPeriodCount)
         } catch (err) {
-            console.log(e)
+            console.log(err)
         }
     }
 
     useEffect(() => {
         fetchMetricas()
     }, [])
+
+    useEffect(() => {
+        fetchMetricas()
+    }, [filtro])
 
     useEffect(() => {
         if (quantidades.entrada > quantidades.saida) {

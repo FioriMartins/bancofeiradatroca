@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef, keyboardEvent } from 'react'
-import { getDocs, getDoc, collection, doc, updateDoc } from "firebase/firestore"
+import axios from 'axios'
+import { useState, useEffect, useRef } from 'react'
+import { getDoc, doc } from "firebase/firestore"
 import { db } from '../../firebase/connect'
 import Tilt from 'react-vanilla-tilt'
 import QRcode from 'qrcode'
@@ -47,15 +48,10 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
     const readComandas = async () => {
         setStateLoading(true)
         try {
-            const cArray = []
-            const querySnapshot = await getDocs(collection(db, "comandas"))
-
-            querySnapshot.forEach(async (doc) => {
-                cArray.push({ id: doc.id, ...doc.data() })
-            })
+            const response = await axios.get('http://localhost:3000/comandas/get')
 
             setStateLoading(false)
-            setComandas(cArray)
+            setComandas(response.data)
         } catch (err) {
             console.error(err)
         }
@@ -130,16 +126,16 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
         setValueNome(value)
     }
 
-    const handleSubmit = async ({ }) => {
+    const handleSubmit = async () => {
         try {
             const referencia = doc(db, "comandas", valueID)
             const docSnap = await getDoc(referencia)
 
             if (docSnap.exists() && !docSnap.data().ativo) {
-                await updateDoc(referencia, {
-                    nome: valueNome,
-                    ativo: true
-                });
+                const response = await axios.post("http://localhost:3000/comandas/post", {
+                    valueID: valueID,
+                    valueNome: valueNome
+                })
                 setStateLoading(false);
                 setOpen(true);
                 await readComandas();
@@ -161,9 +157,10 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
             const docSnap = await getDoc(referencia)
 
             if (docSnap.exists() && docSnap.data().ativo) {
-                await updateDoc(referencia, {
-                    nome: valueNome
-                });
+                const response = await axios.post("http://localhost:3000/comandas/edit", {
+                    valueIDedit: edit,
+                    valueNome: valueNome
+                })
                 localStorage.setItem('alerta', 'true')
                 setStateLoading(false);
                 setOpenEdit(true);
@@ -182,54 +179,13 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
 
     const handleKeyDown = async (e) => {
         if (e.key === "Enter") {
-            try {
-                const referencia = doc(db, "comandas", edit)
-                const docSnap = await getDoc(referencia)
-    
-                if (docSnap.exists() && docSnap.data().ativo) {
-                    await updateDoc(referencia, {
-                        nome: valueNome
-                    });
-                    localStorage.setItem('alerta', 'true')
-                    setStateLoading(false);
-                    setOpenEdit(true);
-                    location.reload()
-                } else {
-                    console.error("Erro ao editar a comanda.")
-                    setOpenError(true)
-                    setStateLoading(false)
-                }
-            } catch (erro) {
-                console.error("Erro ao editar: ", erro)
-                setOpenError(true)
-            }
+            handleEdit()
         }
     }
 
     const handleKeyDownCadastro = async (e) => {
         if (e.key === "Enter") {
-            try {
-                const referencia = doc(db, "comandas", valueID)
-                const docSnap = await getDoc(referencia)
-    
-                if (docSnap.exists() && !docSnap.data().ativo) {
-                    await updateDoc(referencia, {
-                        nome: valueNome,
-                        ativo: true
-                    });
-                    setStateLoading(false);
-                    setOpen(true);
-                    await readComandas();
-                    nextID();
-                } else {
-                    console.error("O cartão já foi cadastrado por outro usuário.")
-                    setOpenError(true)
-                    setStateLoading(false)
-                }
-            } catch (erro) {
-                console.error("Erro ao atualizar:", erro)
-                setOpenError(true)
-            }
+            await handleSubmit()
         }
     }
 
@@ -239,11 +195,10 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
             const docSnap = await getDoc(referencia)
 
             if (docSnap.exists() && docSnap.data().ativo) {
-                await updateDoc(referencia, {
-                    nome: "Desconhecido",
-                    ativo: false,
-                    saldo: 0
-                });
+                const response = await axios.post("http://localhost:3000/comandas/disable", {
+                    valueIDedit: edit,
+                    valueNome: valueNome
+                })
                 location.reload()
                 setStateLoading(false);
             } else {
@@ -255,7 +210,7 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
         }
     }
 
-    function handleSelectText () {
+    function handleSelectText() {
         inputNome.current.select()
     }
 
@@ -285,11 +240,11 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
                                 {
                                     edit !== null ? (
                                         <>
-                                            <input type='text' defaultValue={name} ref={inputNome} id={option} onChange={handleChange} onKeyDown={valueNome && handleKeyDown}/>
+                                            <input type='text' defaultValue={name} ref={inputNome} id={option} onChange={handleChange} onKeyDown={valueNome && handleKeyDown} />
                                             <IconButton sx={{ color: 'white' }} onClick={valueNome && handleEdit}>{valueNome ? <CreditScoreIcon /> : <EditIcon onClick={handleSelectText} />}</IconButton>
                                         </>
                                     ) : (
-                                        <input type='text' placeholder='Desconhecido' ref={inputNome} id={option} onChange={handleChange} onKeyDown={valueNome && handleKeyDownCadastro}/>
+                                        <input type='text' placeholder='Desconhecido' ref={inputNome} id={option} onChange={handleChange} onKeyDown={valueNome && handleKeyDownCadastro} />
                                     )
                                 }
                             </div>

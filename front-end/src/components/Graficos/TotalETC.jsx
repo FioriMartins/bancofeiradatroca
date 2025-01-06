@@ -15,6 +15,8 @@ export default function TotalETC(filtro) {
     const [totalQuantidadeProdutos, setQuantidadeProdutos] = useState(0)
     const [statusQuantidadeProdutos, setStatusQuantidadeProdutos] = useState(0)
 
+    const [quantidadeComandaAtiva, setQuantidadeComandaAtiva] = useState(0)
+
     const fetchComandas = async () => {
         try {
             const q = query(collection(db, "comandas"), where("ativo", "==", true))
@@ -33,7 +35,7 @@ export default function TotalETC(filtro) {
 
     const fetchQuantidadeProdutos = async () => {
         try {
-            const response = await axios.get("http://localhost:3000/metricsTest", { params: { filter: `${filtro.filtro}` } })
+            const response = await axios.get("http://localhost:3000/metrics/getStuff", { params: { filter: `${filtro.filtro}` } })
 
             setQuantidadeProdutos(response.data.currentPeriodCount)
             setStatusQuantidadeProdutos(response.data.increasePercentage)
@@ -42,12 +44,24 @@ export default function TotalETC(filtro) {
         }
     }
 
+    const fetchQuantidadeComandas = async () => {
+        try {
+            const response = await axios.get("http://localhost:3000/metrics/getComandas", { params: { filter: `${filtro.filtro}` } })
+            setQuantidadeComandaAtiva(response.data.currentPeriodCount.ativado)
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
     useEffect(() => {
         fetchComandas()
+        fetchQuantidadeProdutos()
+        fetchQuantidadeComandas()
     }, [])
 
     useEffect(() => {
         fetchQuantidadeProdutos()
+        fetchQuantidadeComandas()
     }, [filtro])
 
     return (
@@ -87,7 +101,7 @@ export default function TotalETC(filtro) {
                     </div>
                 </div>
                 <div className='comandascadastradas'>
-                    <p id='metric'>2/551</p>
+                    <p id='metric'>{quantidadeComandaAtiva}/550</p>
                     <p id='subtitlemetric'>comandas cadastradas</p>
                 </div>
             </div>

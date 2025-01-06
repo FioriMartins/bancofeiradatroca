@@ -46,7 +46,7 @@ function ConfirmLogIn({ handleClose, open, username }) {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/login', { username, password })
+      const response = await axios.post('http://localhost:3000/auth/login', { username, password })
       let account = {
         token: response.data.token,
         username: username,
@@ -166,7 +166,7 @@ export default function SideBar() {
 
   const fetchUsernames = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/users")
+      const response = await axios.get("http://localhost:3000/auth/users")
       setUsernames(response.data)
     } catch (e) {
       console.log(e)

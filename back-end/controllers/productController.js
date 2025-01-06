@@ -2,6 +2,7 @@ const sequelize = require('../config/mysql/database');
 const initModels = require('../models/init-models').initModels
 const models = initModels(sequelize)
 const log = require('../utils/logger')
+const LogTrans = require('../controllers/transitionController')
 
 exports.models = models
 

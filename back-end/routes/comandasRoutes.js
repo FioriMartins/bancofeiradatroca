@@ -5,12 +5,13 @@ const models = initModels(sequelize)
 const log = require('../utils/logger')
 exports.models = models
 
-const {getMetricsStuff, getMetricsTrans, getMetricsComandas} = require('../controllers/metricsController')
+const {getComanda, postComanda, disableComanda, editComanda} = require('../controllers/comandasController')
 
 const router = express.Router()
 
-router.get('/getStuff', getMetricsStuff)
-router.get('/getTrans', getMetricsTrans)
-router.get('/getComandas', getMetricsComandas)
+router.get('/get', getComanda)
+router.post('/post', postComanda)
+router.post('/disable', disableComanda)
+router.post('/edit', editComanda)
 
 module.exports = router

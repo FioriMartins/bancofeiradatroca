@@ -69,7 +69,7 @@ const Graficos = () => {
         </div>
         <div className='graficosContentAll'>
           <TotalETC filtro={alignment} />
-          <TransacoesTipos />
+          <TransacoesTipos filtro={alignment} />
         </div>
       </div>
       <CronogramaMetrics />

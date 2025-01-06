@@ -1,5 +1,5 @@
-const { doc, updateDoc } = require("firebase/firestore");
-const { db } = require("../firebase/connect.js");
+const { doc, updateDoc, Timestamp } = require("firebase/firestore");
+const { db } = require("../config/firebase/connect");
 // Função para adicionar o campo 'detalhes' aos documentos existentes
 async function adicionarCampoDetalhes() {
   for (let i = 1; i <= 550; i++) {
@@ -11,7 +11,7 @@ async function adicionarCampoDetalhes() {
 
     // Dados a serem atualizados (campo 'detalhes' como Map vazio)
     const dadosAtualizados = {
-      detalhes: {}  // Campo 'detalhes' do tipo Map vazio
+      ultima_atualizacao: Timestamp.fromDate(new Date()),  // Campo 'detalhes' do tipo Map vazio
     };
 
     try {

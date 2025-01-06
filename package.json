@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/FioriMartins/bancofeiradatroca/issues"
   },
-  "homepage": "https://github.com/FioriMartins/bancofeiradatroca#readme"
+  "homepage": "https://github.com/FioriMartins/bancofeiradatroca#readme",
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
 }

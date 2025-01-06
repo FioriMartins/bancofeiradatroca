@@ -11,7 +11,7 @@ const Estoque = () => {
 
   const fetchProdutos = async () => {
     try {
-      const responde = await axios.get("http://localhost:3000/produtos")
+      const responde = await axios.get("http://localhost:3000/stock/get")
       setProdutos(responde.data)
     } catch (err) {
       console.error(err)

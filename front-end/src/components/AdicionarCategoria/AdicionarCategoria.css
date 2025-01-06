@@ -1,46 +1,34 @@
 .box-form-add-category-backdrop {
     display: flex;
     flex-direction: column;
+    flex-wrap: nowrap;
     width: 90%;
     padding-right: 1.5rem;
     padding-bottom: 1rem;
     background: #EBEBEB;
     border-radius: 1rem;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .box-form-add-category-backdrop p {
     margin-left:1rem;
 }
 
-hr {
-    margin: 0;
-}
-
 .MuiAutocomplete-popper {
-    z-index: 9999 !important; /* Certifique-se de que está acima do modal */
-}
-
-.formularioProdutos {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.formularioProdutos h2,
-.formularioProdutos p {
-    margin: 0;
+    z-index: 9999 !important;
 }
 
 .li-option-icon {
     display: flex;
-    /* justify-content: space-between; */
     align-content: center;
 }
 
 .li-option-icon div {
     padding: 6px 9px;
     width: 100px;
-    margin-right: 35%;
+    margin-right: 55%;
 }
 
 .form-buttons {
@@ -52,20 +40,4 @@ hr {
     padding-right: 1rem;
     padding-top: 1rem;
     padding-bottom: 1rem;
-}
-
-#buttonAdicionar {
-    background-color: var(--third-color);
-}
-
-.divInputs {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.sendValor {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
 }
