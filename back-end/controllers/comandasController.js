@@ -24,6 +24,23 @@ async function readComandas () {
     }
 }
 
+async function readRegistros () {
+    try {
+        const registros = []
+        const querySnapshot = await getDocs(collection(db, "registro"))
+        // new Date(el.data_hora.seconds * 1000 + el.data_hora.nanoseconds / 1_000_000
+        querySnapshot.forEach(async (doc) => {
+            let form =  doc.data().data_hora.seconds * 1000 + doc.data().data_hora.nanoseconds / 1_000_000
+            let horaedata = new Date(form)
+            registros.push({ id: doc.id, ...doc.data(), data_hora: horaedata.toLocaleString('pt-BR') })
+        })
+
+        return registros
+    } catch (err) {
+
+    }
+}
+
 async function registro (comandaID, exData, tipo) {
     try {
         const comandaRef = doc(db, "comandas", comandaID)
@@ -48,6 +65,17 @@ const getComanda = async (req, res) => {
         res.json(comandas)
     } catch (err) {
         console.error("Erro ao buscar comandas: ", err)
+        res.status("400").json({ error: err })
+    }
+}
+
+const getRegistro = async (req, res) => {
+    try {
+        const registros = await readRegistros()
+
+        res.json(registros)
+    } catch (err) {
+        console.error("Erro ao buscar o registro: ", err)
         res.status("400").json({ error: err })
     }
 }
@@ -85,7 +113,7 @@ const disableComanda = async (req, res) => {
         const docSnap = await getDoc(referencia)
 
         if (docSnap.exists() && docSnap.data().ativo) {
-            await registro (valueIDedit, docSnap.data(), "edição")
+            await registro (valueIDedit, docSnap.data(), "desativação")
 
             await updateDoc(referencia, {
                 nome: "Desconhecido",
@@ -112,7 +140,7 @@ const editComanda = async (req, res) => {
         const docSnap = await getDoc(referencia)
 
         if (docSnap.exists() && docSnap.data().ativo) {
-            await registro (valueIDedit, docSnap.data(), "desativação")
+            await registro (valueIDedit, docSnap.data(), "edição")
 
             await updateDoc(referencia, {
                 nome: valueNome,
@@ -126,4 +154,4 @@ const editComanda = async (req, res) => {
     }
 }
 
-module.exports = { getComanda, postComanda, disableComanda, editComanda }
+module.exports = { getComanda, postComanda, disableComanda, editComanda, getRegistro }

@@ -20,6 +20,9 @@
   },
   "homepage": "https://github.com/FioriMartins/bancofeiradatroca#readme",
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/x-charts-pro": "^7.23.2",
     "qrcode": "^1.5.4"
   }
 }

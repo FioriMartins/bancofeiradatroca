@@ -1,0 +1,33 @@
+.registros {
+    width: 250px;
+    height: 90dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #f2f2f2;
+    border-radius: 1rem;
+    margin: 3px;
+    padding: 0 25px 0 25px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.registros::-webkit-scrollbar {
+    width: 3px;
+}
+
+.registros::-webkit-scrollbar-thumb {
+    background-color: rgba(128, 128, 128, 0.153);
+    border-radius: 8px;
+}
+
+.registros::-webkit-scrollbar-thumb:hover {
+    transform: scale(1.1);
+}
+
+.log {
+    background-color: #ebebeb;
+    border-radius: 1rem;
+}

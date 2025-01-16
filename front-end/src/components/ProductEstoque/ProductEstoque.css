@@ -1,0 +1,19 @@
+.container-estoque-produtos {
+    display: flex;
+    flex-direction: row;
+    width: 85dvw;
+}
+
+.estoque-content-produtos {
+    position: relative;
+    bottom: 20px;
+    width: 400px;
+    max-width: 500px;
+}
+
+.estoque-content-produtos p {
+    opacity: 0.7;
+    margin: 0 auto;
+    font-size: 0.875rem;
+    margin-left: -5px;
+}

@@ -1,0 +1,26 @@
+.comandascadastradas {
+    display: flex;
+}
+
+.comandascadastradas p {
+    font-size: 16px;
+    margin: 0;
+}
+
+.comandascadastradas #metric {
+    font-weight: bold;
+}
+
+.comandascadastradas #subtitlemetric {
+    color: rgba(0, 0, 0, 0.589);
+}
+
+#comandasBox {
+    width: 230px;
+    height: 70px;
+    justify-content: space-between;
+}
+
+#comandasBox p {
+    margin: 5px;
+}

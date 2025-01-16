@@ -10,7 +10,7 @@ export default function Transacoes() {
 
     const fetchTransacoes = async () => {
         try {
-            const responde = await axios.get("http://localhost:3000/transacoes")
+            const responde = await axios.get("http://localhost:3000/log/transacoes")
             setTransacoes(responde.data)
         } catch (err) {
             console.error(err)
@@ -20,6 +20,7 @@ export default function Transacoes() {
     useEffect(() => {
         fetchTransacoes()
     }, [])
+    
     return (
         <div className='allContentTransacoes'>
             <h1>Histórico de transações</h1>

@@ -7,27 +7,25 @@ import ProductEstoque from "../../components/ProductEstoque/ProductEstoque.jsx"
 import './estoque.css'
 
 const Estoque = () => {
-  const [produtos, setProdutos] = useState()
+    // * Pegando os produtos
+    const [produtos, setProdutos] = useState([])
 
-  const fetchProdutos = async () => {
-    try {
-      const responde = await axios.get("http://localhost:3000/stock/get")
-      setProdutos(responde.data)
-    } catch (err) {
-      console.error(err)
+    const fetchProdutos = async () => {
+        try {
+            const responde = await axios.get("http://localhost:3000/stock/get")
+            setProdutos(responde.data)
+        } catch (err) {
+            console.error("Erro: ", err)
+        }
     }
-  }
 
-  useEffect(() => {
-    fetchProdutos()
-  }, [])
+    useEffect(() => {
+        fetchProdutos()
+    }, [])
 
-  return (
-    <div className="container-estoque">
-      <FilterProduct produtos={produtos} className="filter-produts" />
-      <ProductEstoque produtos={produtos} className="products-estoque" />
-    </div>
-  )
+    return (
+        <FilterProduct produtos={produtos} className="filter-produts" />
+    )
 }
 
 export default Estoque

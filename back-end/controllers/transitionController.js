@@ -21,4 +21,10 @@ async function LogTrans(produtos, comandaId, tipo) {
     }
 }
 
-module.exports = {LogTrans}
+const getTrans = async (req, res) => {
+    const trans = await models.transacoes.findAll()
+    res.status(200).json(trans)
+    log("INFO", "Query produtos executada com sucesso!")
+}
+
+module.exports = {LogTrans, getTrans}

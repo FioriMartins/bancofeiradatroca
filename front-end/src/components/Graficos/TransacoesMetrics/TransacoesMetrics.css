@@ -1,13 +1,14 @@
 .graficoBox {
     display: flex;
     flex-direction: column;
-    height: 300px;
+    height: 360px;
     background-color: #FFF;
     color: rgba(0, 0, 0, 0.774);
     border-radius: 14px;
 
     width: 410px;
-    padding: 15px;
+    
+    padding: 15px 25px 15px 20px;
 }
 
 .graficoBox:hover {
@@ -22,20 +23,6 @@
     margin: 0;
     margin-bottom: 15px;
     color: rgba(0, 0, 0, 0.562);
-}
-
-#totalETC {
-    width: 230px;
-    height: 70px;
-    justify-content: space-between;
-}
-
-#totalETC p {
-    margin: 5px;
-}
-
-#totalETC b {
-    font-size: 18px;
 }
 
 #trendinggraphic {
@@ -60,31 +47,23 @@
     justify-content: space-between;
 }
 
-/* comandas metrics */
 
-.comandascadastradas {
+.listGraphicLegal {
     display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+    justify-content: center;
 }
 
-.comandascadastradas p {
-    font-size: 16px;
-    margin: 0;
+.legendGraphic {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
 }
 
-.comandascadastradas #metric {
-    font-weight: bold;
-}
-
-.comandascadastradas #subtitlemetric {
-    color: rgba(0, 0, 0, 0.589);
-}
-
-#comandasBox {
-    width: 230px;
-    height: 70px;
-    justify-content: space-between;
-}
-
-#comandasBox p {
-    margin: 5px;
+.pieChart {
+    display: flex;
+    align-items: center;
 }

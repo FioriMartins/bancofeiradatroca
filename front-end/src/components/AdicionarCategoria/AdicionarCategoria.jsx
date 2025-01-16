@@ -12,91 +12,114 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Backdrop from '@mui/material/Backdrop'
 import Alerta from "../Alerta/Alerta"
 import FormDeleteCategoria from "../FormDeleteCategoria/FormDeleteCategoria"
+import EditarCategoria from "../EditarCategoria/EditarCategoria"
 
 import "./AdicionarCategoria.css";
 
-export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fetchSubCategorias, handleCloseBackdrop, dadosFormProduct, setDadosFormProduct, categorias, subCategorias }) {
+export default function AdicionarCategoria({ 
+    open,
+    setOpen,
+    fetchCategorias,
+    fetchSubCategorias,
+    handleCloseBackdrop,
+    dadosFormProduct,
+    setDadosFormProduct,
+    categorias,
+    subCategorias
+}) {
     const [openAlert, setOpenAlert] = useState(false)
     const [openAlertSubcategoria, setOpenAlertSubcategoria] = useState(false)
     const [openAlertAdd, setOpenAlertAdd] = useState(false)
     const [openAlertExists, setOpenAlertExists] = useState(false)
+    const [openAlertDuplicate, setOpenAlertDuplicate] = useState(false)
+    const [openAlertSubcategorias, setOpenAlertSubcategorias] = useState(false)
     const [openOptions, setOpenOptions] = useState(false)
+    const [openEdit, setOpenEdit] = useState(false)
     const [categoriaID, setCategoriaID] = useState()
 
-    const filter = createFilterOptions()
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        let exists = false
+    
+        if (subcategorias.length === 0 || valor.length === 0) {
+            console.error('Subcategorias e valores devem ser preenchidos.');
+            setOpenAlertDuplicate(true)
+            exists = true
+            return;
+        }
 
-    const handleSubmit = async () => {
+        if (valores.length > 0) {
+            const subcategoriasSet = new Set();
+            const hasDuplicateSubcategoria = valores.some(({ subcategoria }) => {
+                if (subcategoriasSet.has(subcategoria)) {
+                    return true;
+                }
+                subcategoriasSet.add(subcategoria);
+                return false;
+            });
+
+            if (hasDuplicateSubcategoria) {
+                console.error('Existem subcategorias duplicadas.');
+                setOpenAlertDuplicate(true)
+                exists = true
+                return;
+            }
+
+            categorias.forEach(element => {
+                if (element.nome.toUpperCase() === categoria.toUpperCase()) {
+                    setOpenAlertExists(true)
+                    exists = true
+                }
+            })
+
+            if (!exists) {
+                try {
+                    const response = await axios.post('http://localhost:3000/categories/post', {
+                        nome: categoria
+                    });
+                    console.log("Resposta do servidor: ", response.data)
+                    handleAddSubCategoria(response.data.id)
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }
+    };
+
+    const handleAddSubCategoria = async (categoriaID) => {
         let exists = false
 
-        subCategorias.forEach(element => {
-            if (element.nome.toUpperCase() === dadosFormProduct.nome.toUpperCase()) {
-                setOpenAlertExists(true)
-                exists = true
-            }
+        subCategorias.forEach((sub) => {
+            subcategorias.forEach((newSub) => {
+                if (sub.nome.toUpperCase() === newSub.toUpperCase()) {
+                    setOpenAlertExists(true)
+                    exists = true
+                }
+            })
         })
 
-        if (exists === false) {
+        if (!exists) {
             try {
-                await axios.post('http://localhost:3000/subcategorias/receive', {
-                    nome: dadosFormProduct.nome,
-                    valor: dadosFormProduct.valor,
-                    categoriaID: dadosFormProduct.categoriaID
-                })
-                setOpenAlertSubcategoria(true)
+                if (subcategorias.length !== valor.length) {
+                    console.error('Os arrays subcategorias e valor devem ter o mesmo comprimento.');
+                    setOpenAlertDuplicate(true)
+                    return;
+                }
+
+                const data = subcategorias.map((subcategoria, index) => ({
+                    nome: subcategoria,
+                    valor: valor[index],
+                    categoriaID: categoriaID
+                }))
+
+                const response = await axios.post('http://localhost:3000/categories/post/sub', {subcategorias: data})
+                console.log("Resposta do servidor: ", response.data) 
+                setOpenAlertAdd(true);
             } catch (err) {
                 console.log(err)
             }
         }
-    }
-
-    // const handleAddCategoria = async (nomeCategoria) => {
-    //     try {
-    //         const response = await axios.post('http://localhost:3000/categorias/receive', {
-    //             nome: nomeCategoria
-    //         });
-
-    //         const novaCategoria = response.data; // * Supondo que o backend retorna a categoria criada com o ID
-    //         setDadosFormProduct({
-    //             ...dadosFormProduct,
-    //             categoriaNome: novaCategoria.nome,
-    //             categoriaID: novaCategoria.id // * Atualiza com o ID retornado
-    //         });
-
-    //         setOpenAlertAdd(true);
-    //     } catch (err) {
-    //         console.log(err);
-    //     } finally {
-    //         await fetchCategorias();
-    //         await fetchSubCategorias();
-    //     }
-    // };
-
-    // // ! não está sendo usado
-    // const handleChange = (event, newValue) => {
-    //     const { name, value } = event.target
-
-    //     if (typeof newValue === 'string') {
-    //         setDadosFormProduct({
-    //             ...dadosFormProduct,
-    //             categoriaNome: newValue.nome,
-    //             categoriaID: newValue.id
-    //         })
-    //         console.log(newValue)
-    //     } else if (newValue && newValue.inputValue) {
-    //         setDadosFormProduct(newValue.inputValue)
-    //         handleAddCategoria(newValue.inputValue)
-    //     } else {
-    //         console.log(dadosFormProduct)
-    //     }
-    // }
-
-    const handleChange = (e) => {
-        const {name, value} = e.target
-        setDadosFormProduct((prev) => ({
-            ...prev,
-            [name]: value,
-        }))
-        console.log("CategoriaForm: ", dadosFormProduct.categoriaProduto)
     }
 
     const handleOpenBackdropButton = (option) => {
@@ -105,21 +128,32 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
     }
 
     const handleCloseBackdropButton = () => {
-        if (openAlertSubcategoria === true) {
-            setOpenAlertSubcategoria(false)
-            setOpenAdd(false)
+        if (openAlertAdd === true) {
+            setOpenAlertAdd(false)
+            setOpen(false)
+            window.location.reload()
         }
 
         setOpenOptions(false)
         setOpenAlert(false)
         setOpenAlertAdd(false)
         setOpenAlertExists(false)
+        setOpenAlertDuplicate(false)
+        setOpenAlertSubcategorias(false)
+    }
+
+    const handleEditCategoria = (id) => {
+        setOpenEdit(true)
+        setCategoriaID(id)
+    }
+    const handleCloseEditCategoria = (id) => {
+        setOpenEdit(false)
     }
 
     const handleDeleteCategoria = async (id) => {
         if (openOptions) {
             try {
-                const response = await axios.delete(`http://localhost:3000/categorias/${id}`)
+                const response = await axios.delete(`http://localhost:3000/categories/delete/${id}`)
                 console.log('Resposta do servidor: ', response.data)
                 setOpenOptions(false)
                 setOpenAlert(true)
@@ -129,7 +163,7 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                 console.error(err)
 
                 if (err.response.data.original.errno === 1451) {
-                    alert("Voce nao pode apagar porque tem subcategorias dentro desta categoria")
+                    setOpenAlertSubcategorias(true)
                 }
             }
         }
@@ -139,14 +173,15 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
     const [categoria, setCategoria] = useState('');
     const [subcategorias, setSubcategorias] = useState([]);
     const [valores, setValores] = useState([]);
-    const [inputValue, setInputValue] = useState('')
+    const [valor, setValor] = useState([]);
 
-    const handleAddCategoria = (event, newValue) => {
-        setCategoria(newValue);
+    const handleAddCategoria = (event) => {
+        const value = event.target
+        setCategoria(value.value);
     };
 
     const handleAddSubcategoria = (event, newValue) => {
-        if (newValue.trim() === '') {
+        if (!newValue.some(value => value.includes(' '))) {
             setSubcategorias(newValue);
         }
     };
@@ -160,196 +195,21 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
             const valorAdicionado = newValue[newValue.length - 1];
             setValores((prev) => [
                 ...prev,
-                { valor: valorAdicionado, subcategoria: subcategorias[prev.length % subcategorias.length] }
+                { valor: parseInt(valorAdicionado, 10), subcategoria: subcategorias[prev.length % subcategorias.length] }
             ]);
+            setValor((prev) => [
+                ...prev,
+                parseInt(valorAdicionado, 10)
+            ])
         }
     };
 
     const handleDeleteValor = (index) => {
         setValores((prev) => prev.filter((_, i) => i !== index));
+        setValor((prev) => prev.filter((_, i) => i !== index));
     };
 
     return (
-        // <>
-        //     <Backdrop
-        //         sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1000 })}
-        //         open={open}
-        //         onClick={handleCloseBackdrop}
-        //     >
-        //         <form onSubmit={handleSubmit}>
-        //             <div onClick={(e) => e.stopPropagation()}
-        //                 style={{ background: `#f5f5f5`, color: `#343c4c`, width: `30dvw`, borderRadius: `10px`, paddingLeft: `1.5rem`, paddingBottom: `1.5rem` }}>
-        //                 <h1>Adicionar subcategoria</h1>
-        //                 <Autocomplete
-        //                     onChange={(event, newValue) => {
-        //                         if (newValue && newValue.inputValue) {
-        //                             handleAddCategoria(newValue.inputValue)
-        //                         } else {
-        //                             setDadosFormProduct({
-        //                                 ...dadosFormProduct,
-        //                                 categoriaNome: newValue.nome,
-        //                                 categoriaID: newValue.id
-        //                             })
-        //                         }
-        //                     }}
-        //                     sx={{
-        //                         "& .MuiOutlinedInput-root": {
-        //                             "& fieldset": {
-        //                                 borderColor: "#28292b",
-        //                             },
-        //                             "&.Mui-focused fieldset": {
-        //                                 borderColor: "#28292b",
-        //                             },
-        //                         },
-        //                         "& .MuiInputLabel-root": {
-        //                             color: "#28292b",
-        //                         },
-        //                         "& .Mui-focused label": {
-        //                             color: "#28292b",
-        //                         },
-        //                     }}
-        //                     selectOnFocus
-        //                     clearOnBlur
-        //                     handleHomeEndKeys
-        //                     id="free-solo-with-text-demo"
-        //                     options={categorias}
-        //                     value={dadosFormProduct.categoriaNome}
-        //                     filterOptions={(options, params) => {
-        //                         const filtered = filter(options, params);
-        //                         const { inputValue } = params;
-        //                         const trimInput = inputValue.trim().toLowerCase();
-
-        //                         const isExisting = options.some((option) => trimInput === option?.nome.toLowerCase());
-        //                         if (trimInput !== '' && !isExisting) {
-        //                             filtered.push({
-        //                                 inputValue,
-        //                                 nome: `Adicionar categoria "${inputValue}"?`,
-        //                             });
-        //                         }
-
-        //                         return filtered;
-        //                     }}
-        //                     getOptionLabel={(option) => {
-        //                         if (typeof option === 'string') {
-        //                             return (option);
-        //                         }
-        //                         if (option.inputValue) {
-        //                             return (option.inputValue);
-        //                         }
-        //                         return (option.nome);
-        //                     }}
-        //                     renderOption={(props, option) => {
-        //                         const { key, ...optionProps } = props;
-        //                         return (
-        //                             <li key={key} {...optionProps} className="li-option-icon">
-        //                                 <div>{option.nome}</div>
-        //                                 {option.nome.includes("?") || <IconButton onClick={() => handleOpenBackdropButton(option.id)}>
-        //                                     <DeleteForeverIcon />
-        //                                 </IconButton>}
-        //                             </li>
-        //                         );
-        //                     }}
-        //                     freeSolo
-        //                     renderInput={(params) => (
-        //                         <TextField {...params} name="categoriaNome" label="Categoria" variant="standard" required />
-        //                     )}
-        //                 />
-        //                 <TextField
-        //                     id="outlined-basic"
-        //                     name="nome"
-        //                     onChange={(event) => {
-        //                         setDadosFormProduct({
-        //                             ...dadosFormProduct,
-        //                             nome: event.target.value
-        //                         })
-        //                     }}
-        //                     type="string"
-        //                     label="Subcategoria"
-        //                     variant="standard"
-        //                     value={dadosFormProduct.nome}
-        //                     sx={{
-        //                         "& .MuiOutlinedInput-root": {
-        //                             "& fieldset": {
-        //                                 borderColor: "#343c4c",
-        //                             },
-        //                             "&.Mui-focused fieldset": {
-        //                                 borderColor: "#343c4c",
-        //                             },
-        //                         },
-        //                         "& .MuiInputLabel-root": {
-        //                             color: "#343c4c",
-        //                         },
-        //                         "& .Mui-focused label": {
-        //                             color: "#343c4c",
-        //                         },
-        //                     }}
-        //                     required
-        //                 />
-        //                 <TextField
-        //                     id="outlined-basic"
-        //                     name="valor"
-        //                     slotProps={{
-        //                         input: {
-        //                             startAdornment: (
-        //                                 <InputAdornment position="start">ETC$</InputAdornment>
-        //                             ),
-        //                         },
-        //                     }}
-        //                     onChange={(event) => {
-        //                         setDadosFormProduct({
-        //                             ...dadosFormProduct,
-        //                             valor: event.target.value
-        //                         })
-        //                     }}
-        //                     type="number"
-        //                     min="1"
-        //                     label="Valor do produto"
-        //                     variant="standard"
-        //                     value={dadosFormProduct.valor}
-        //                     sx={{
-        //                         "& .MuiOutlinedInput-root": {
-        //                             "& fieldset": {
-        //                                 borderColor: "#343c4c",
-        //                             },
-        //                             "&.Mui-focused fieldset": {
-        //                                 borderColor: "#343c4c",
-        //                             },
-        //                         },
-        //                         "& .MuiInputLabel-root": {
-        //                             color: "#343c4c",
-        //                         },
-        //                         "& .Mui-focused label": {
-        //                             color: "#343c4c",
-        //                         },
-        //                     }}
-        //                     required
-        //                 />
-        //                 <div className="form-buttons">
-        //                     <Button type='submit'>
-        //                         Enviar
-        //                     </Button>
-        //                     <Button onClick={handleCloseBackdrop}>
-        //                         Cancelar
-        //                     </Button>
-        //                 </div>
-        //             </div>
-        //         </form>
-        //         <div onClick={(e) => e.stopPropagation()} >
-        //             <Alerta state={openAlert} onClose={handleCloseBackdropButton} text="Categoria excluida com sucesso!" severity="warning" />
-        //         </div>
-        //         <div onClick={(e) => e.stopPropagation()}>
-        //             <Alerta state={openAlertAdd} onClose={handleCloseBackdropButton} text="Categoria adicionada com sucesso!" severity="success" />
-        //         </div>
-        //         <div onClick={(e) => e.stopPropagation()}>
-        //             <Alerta state={openAlertSubcategoria} onClose={handleCloseBackdropButton} text="Subategoria editada com sucesso!" severity="success" />
-        //         </div>
-        //         <div onClick={(e) => e.stopPropagation()}>
-        //             <Alerta state={openAlertExists} onClose={handleCloseBackdropButton} text="Subcategoria já registrada com esse nome!" severity="error" />
-        //         </div>
-        //     </Backdrop>
-        //     <FormDeleteCategoria openOptions={openOptions} handleCloseBackdropButton={handleCloseBackdropButton} handleDeleteCategoria={handleDeleteCategoria} />
-        // </>
-
         <div>
             <Backdrop
                 sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1000 })}
@@ -392,8 +252,6 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                 variant="standard"
                                 freeSolo
                                 options={categorias}
-                                value={categoria}
-                                onChange={handleAddCategoria}
                                 getOptionLabel={(option) => {
                                     if (typeof option === 'string') {
                                         return (option);
@@ -406,9 +264,9 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                 renderOption={(props, option) => {
                                     const { key, ...optionProps } = props;
                                     return (
-                                        <li 
-                                            key={key} 
-                                            {...optionProps} 
+                                        <li
+                                            key={key}
+                                            {...optionProps}
                                             className="li-option-icon"
                                             onClick={(event) => {
                                                 event.stopPropagation();
@@ -419,7 +277,7 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                             <IconButton
                                                 onClick={(event) => {
                                                     event.stopPropagation();
-                                                    handleOpenBackdropButton(option.id);
+                                                    handleEditCategoria(option.id);
                                                 }}
                                             >
                                                 <MoreVertIcon />
@@ -437,6 +295,8 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                 }}
                                 renderInput={(params) => (
                                     <TextField
+                                        value={categoria}
+                                        onChange={handleAddCategoria}
                                         {...params}
                                         placeholder="Digite uma categoria"
                                         size="small"
@@ -480,14 +340,18 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                 value={subcategorias}
                                 onChange={handleAddSubcategoria}
                                 renderTags={(value, getTagProps) =>
-                                    value.map((option, index) => (
-                                        <Chip
-                                            variant="outlined"
-                                            label={option}
-                                            key={option}
-                                            {...getTagProps({ index })}
-                                        />
-                                    ))
+                                    value.map((option, index) => {
+                                        const tagProps = getTagProps({ index });
+                                        const { key, ...restTagProps } = tagProps;
+                                        return (
+                                            <Chip
+                                                variant="outlined"
+                                                label={option}
+                                                key={key}
+                                                {...restTagProps}
+                                            />
+                                        )
+                                    })
                                 }
                                 renderInput={(params) => (
                                     <TextField
@@ -504,7 +368,6 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                         variant="standard"
                                         {...params}
                                         placeholder="Digite e pressione Enter"
-                                        required
                                     />
                                 )}
                             />
@@ -539,12 +402,14 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                 renderTags={(value, getTagProps) =>
                                     value.map((option, index) => {
                                         const item = valores[index];
+                                        const tagProps = getTagProps({ index });
+                                        const { key, ...restTagProps } = tagProps;
                                         return (
                                             <Chip
                                                 variant="outlined"
                                                 label={`${item.subcategoria}: ${item.valor}`}
-                                                key={option}
-                                                {...getTagProps({ index })}
+                                                key={key}
+                                                {...restTagProps}
                                                 onDelete={() => handleDeleteValor(index)}
                                             />
                                         )
@@ -601,7 +466,6 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                                             ...params.inputProps,
                                             min: 1,
                                         }}
-                                        required
                                     />
                                 )}
                             />
@@ -622,7 +486,24 @@ export default function AdicionarCategoria({ open, setOpen, fetchCategorias, fet
                         </div>
                     </div>
                 </form>
+                <div onClick={(e) => e.stopPropagation()} >
+                    <Alerta state={openAlert} onClose={handleCloseBackdropButton} text="Categoria excluida com sucesso!" severity="warning" />
+                </div>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <Alerta state={openAlertAdd} onClose={handleCloseBackdropButton} text="Categoria adicionada com sucesso!" severity="success" />
+                </div>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <Alerta state={openAlertExists} onClose={handleCloseBackdropButton} text="Subcategoria já registrada com esse nome!" severity="error" />
+                </div>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <Alerta state={openAlertDuplicate} onClose={handleCloseBackdropButton} text="Verifique se preencheu os dados corretamente!" severity="error" />
+                </div>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <Alerta state={openAlertSubcategorias} onClose={handleCloseBackdropButton} text="Você não pode apagar porque tem subcategorias dentro desta categoria!" severity="error" />
+                </div>
             </Backdrop>
+            <FormDeleteCategoria openOptions={openOptions} handleCloseBackdropButton={handleCloseBackdropButton} handleDeleteCategoria={handleDeleteCategoria} categoriaID={categoriaID} />
+            {openEdit && <EditarCategoria open={open} setOpen={setOpen} fetchCategorias={fetchCategorias} fetchSubCategorias={fetchSubCategorias} handleCloseEditCategoria={handleCloseEditCategoria} dadosFormProduct={dadosFormProduct} setDadosFormProduct={setDadosFormProduct} categorias={categorias} subCategorias={subCategorias} categoriaID={categoriaID} setCategoriaID={setCategoriaID} subcategorias={subcategorias} valores={valores} handleEditCategoria={handleEditCategoria} />}
         </div>
     )
 }

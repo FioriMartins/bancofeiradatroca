@@ -4,6 +4,10 @@
     width: 300px;
 }
 
+.cronogramaContent h2 {
+    margin-top: 32px;
+}
+
 #dateCronogram {
     font-size: 14px;
     color: rgba(0, 0, 0, 0.671);

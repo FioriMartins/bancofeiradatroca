@@ -10,6 +10,14 @@ module.exports = function(sequelize, DataTypes) {
     nome: {
       type: DataTypes.STRING(255),
       allowNull: false
+    },
+    ultimaAtualizacao: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
+    },
+    quantidade: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,

@@ -206,7 +206,7 @@ const calculatePreviousPeriodTransacoes = async (filter) => {
 
     // Retorna a contagem de produtos no período anterior
     return previousMetrics.length;
-}; 
+};
 
 const getMetricsComandas = async (req, res) => {
     const { filter } = req.query
@@ -216,13 +216,14 @@ const getMetricsComandas = async (req, res) => {
         case "week":
             const currentDate = new Date();
             const dayOfWeek = currentDate.getDay();
-            
-            // Ajuste para começar a semana na segunda-feira (se necessário)
+
+            // Ajuste para começar a semana no domingo
             const startOfWeek = new Date(currentDate);
-            startOfWeek.setDate(currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1)); // Se for domingo, ajusta para segunda-feira
+            startOfWeek.setDate(currentDate.getDate() - dayOfWeek); // Subtrai o dia da semana para chegar no domingo
+
             const endOfWeek = new Date(startOfWeek);
             endOfWeek.setDate(startOfWeek.getDate() + 6); // Último dia da semana (sábado)
-            
+
             startDate = startOfWeek;
             endDate = endOfWeek;
             break
@@ -237,7 +238,6 @@ const getMetricsComandas = async (req, res) => {
         default:
             return res.status(400).json({ error: "Filtro inválido" })
     }
-
     const startTimestamp = Timestamp.fromDate(startDate)
     const endTimestamp = Timestamp.fromDate(endDate)
 
@@ -294,16 +294,18 @@ const calculatePreviousPeriodComandas = async (filter) => {
 
     switch (filter) {
         case "week":
-            const currentDate = new Date()
-            const dayOfWeek = currentDate.getDay()
+            const currentDate = new Date();
+            const dayOfWeek = currentDate.getDay();
 
-            const startOfWeek = new Date(currentDate)
-            startOfWeek.setDate(currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1))
-            const endOfWeek = new Date(startOfWeek)
-            endOfWeek.setDate(startOfWeek.getDate() + 6)
-            
-            startDate = startOfWeek
-            endDate = endOfWeek
+            // Ajuste para começar a semana no domingo
+            const startOfWeek = new Date(currentDate);
+            startOfWeek.setDate(currentDate.getDate() - dayOfWeek); // Subtrai o dia da semana para chegar no domingo
+
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6); // Último dia da semana (sábado)
+
+            startDate = startOfWeek;
+            endDate = endOfWeek;
             break
         case "month":
             startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
@@ -346,6 +348,266 @@ const calculatePreviousPeriodComandas = async (filter) => {
     }
 }
 
+const getMetricsComandasAtivas = async (req, res) => {
+    const { filter } = req.query
+    let startDate, endDate
+
+    switch (filter) {
+        case "week":
+            const currentDate = new Date();
+            const dayOfWeek = currentDate.getDay();
+
+            // Ajuste para começar a semana na segunda-feira (se necessário)
+            const startOfWeek = new Date(currentDate)
+            startOfWeek.setDate(currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1))
+            const endOfWeek = new Date(startOfWeek)
+            endOfWeek.setDate(startOfWeek.getDate() + 6)
+
+            startDate = startOfWeek;
+            endDate = endOfWeek;
+            break
+        case "month":
+            startDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+            endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+            break
+        case "year":
+            startDate = new Date(new Date().getFullYear(), 0, 1)
+            endDate = new Date(new Date().getFullYear(), 11, 31)
+            break
+        default:
+            return res.status(400).json({ error: "Filtro inválido" })
+    }
+
+    const startTimestamp = Timestamp.fromDate(startDate)
+    const endTimestamp = Timestamp.fromDate(endDate)
+
+    try {
+        const q = query(collection(db, "comandas"), firestoreWhere("ativo", "==", true));
+
+        const querySnapshot = await getDocs(q);
+        const metrics = [];
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.ultima_atualizacao >= startTimestamp && data.ultima_atualizacao <= endTimestamp) {
+                metrics.push(data);
+            }
+        });
+
+        const currentPeriodCount = { ativado: 0, desativado: 0 }
+        const totalSaldo = metrics.reduce((total, comanda) => {
+            const saldo = comanda.saldo || 0
+            return Number(total) + saldo
+        }, 0)
+
+        const previousPeriodCount = await calculatePreviousPeriodComandasAtivas(filter)
+
+        let variacaoPercentual
+
+        if (previousPeriodCount !== 0) {
+            variacaoPercentual = ((totalSaldo - previousPeriodCount) / previousPeriodCount) * 100
+        } else {
+            variacaoPercentual = 0
+        }
+
+        res.json({
+            filter,
+            currentPeriodCount,
+            increasePercentage: variacaoPercentual.toFixed(1),
+            data: totalSaldo
+        })
+
+        console.log("Sucesso no getMetrics.")
+    } catch (error) {
+        console.error("Erro ao buscar métricas:", error)
+        res.status(500).json({ error: "Erro ao buscar métricas" })
+    }
+}
+
+const calculatePreviousPeriodComandasAtivas = async (filter) => {
+    let startDate, endDate
+
+    switch (filter) {
+        case "week":
+            const currentDate = new Date();
+
+            currentDate.setDate(currentDate.getDate() - 7);
+
+            const dayOfWeek = currentDate.getDay();
+
+            const startOfWeek = new Date(currentDate);
+            startOfWeek.setDate(currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
+
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+            startDate = startOfWeek;
+            endDate = endOfWeek;
+            break
+        case "month":
+            startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
+            endDate = new Date(new Date().getFullYear(), new Date().getMonth(), 0)
+            break
+        case "year":
+            startDate = new Date(new Date().getFullYear() - 1, 0, 1)
+            endDate = new Date(new Date().getFullYear() - 1, 11, 31)
+            break
+        default:
+            return { ativado: 0, desativado: 0 }
+    }
+
+    const startTimestamp = Timestamp.fromDate(startDate)
+    const endTimestamp = Timestamp.fromDate(endDate)
+
+    try {
+        const q = query(collection(db, "comandas"), firestoreWhere("ativo", "==", true));
+
+        const querySnapshot = await getDocs(q);
+        const metrics = [];
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.ultima_atualizacao >= startTimestamp && data.ultima_atualizacao <= endTimestamp) {
+                metrics.push(data);
+            }
+        });
+
+        const previousMetrics = metrics.reduce((total, comanda) => {
+            console.log("semana passada", comanda)
+            const saldo = comanda.saldo || 0
+            return Number(total) + saldo
+        }, 0) || 0
+
+        return previousMetrics
+    } catch (error) {
+        console.error("Erro ao buscar métricas do período anterior:", error)
+        return 0
+    }
+}
+
+const getMetricsCategorias = async (req, res) => {
+    const { filter } = req.query;
+    let startDate, endDate;
+
+    switch (filter) {
+        case "week":
+            startDate = moment().startOf("week").format("YYYY-MM-DD")
+            endDate = moment().endOf("week").format("YYYY-MM-DD")
+            break;
+        case "month":
+            startDate = moment().startOf("month").format("YYYY-MM-DD")
+            endDate = moment().endOf("month").format("YYYY-MM-DD")
+            break;
+        case "year":
+            startDate = moment().startOf("year").format("YYYY-MM-DD")
+            endDate = moment().endOf("year").format("YYYY-MM-DD")
+            break;
+        default:
+            return res.status(400).json({ error: "Filtro inválido" });
+    }
+
+    try {
+        const metrics = await models.categorias.findAll({
+            where: sequelize.where(
+                sequelize.fn("DATE", sequelize.col("ultimaAtualizacao")),
+                {
+                    [Op.between]: [startDate, endDate],
+                }
+            ),
+            order: [["quantidade", "DESC"]],
+        })
+
+        const palette = [
+            "#349854", // Cor inicial
+            "#4CAF77", // Tonalidade mais clara
+            "#66C49C", // Tonalidade ainda mais clara
+            "#81D1C1", // Cor mais clara
+            "#A4E7E5"  // Cor mais clara de todas
+        ]
+
+        const metricsAjustado = metrics
+            .slice(0, 5)
+            .map((e, index) => ({
+                id: e.id,
+                label: e.nome,
+                value: e.quantidade,
+                color: palette[index]
+            }))
+
+        res.json({
+            filter,
+            data: metricsAjustado,
+        })
+
+        log("DEBUG", "Sucesso no getMetrics.");
+    } catch (error) {
+        log("ERROR", "Erro total no getMetrics.", error);
+        res.status(500).json({ error: "Erro ao buscar métricas" });
+    }
+}
+
+const getMetricsSubCategorias = async (req, res) => {
+    const { filter } = req.query;
+    let startDate, endDate;
+
+    switch (filter) {
+        case "week":
+            startDate = moment().startOf("week").format("YYYY-MM-DD")
+            endDate = moment().endOf("week").format("YYYY-MM-DD")
+            break;
+        case "month":
+            startDate = moment().startOf("month").format("YYYY-MM-DD")
+            endDate = moment().endOf("month").format("YYYY-MM-DD")
+            break;
+        case "year":
+            startDate = moment().startOf("year").format("YYYY-MM-DD")
+            endDate = moment().endOf("year").format("YYYY-MM-DD")
+            break;
+        default:
+            return res.status(400).json({ error: "Filtro inválido" });
+    }
+
+    try {
+        const metrics = await models.subcategorias.findAll({
+            where: sequelize.where(
+                sequelize.fn("DATE", sequelize.col("ultimaAtualizacao")),
+                {
+                    [Op.between]: [startDate, endDate],
+                }
+            ),
+            order: [["quantidade", "DESC"]],
+        })
+
+        const palette = [
+            "#349854", // Cor inicial
+            "#4CAF77", // Tonalidade mais clara
+            "#66C49C", // Tonalidade ainda mais clara
+            "#81D1C1", // Cor mais clara
+            "#A4E7E5"  // Cor mais clara de todas
+        ]
+
+        const metricsAjustado = metrics
+            .slice(0, 5)
+            .map((e, index) => ({
+                id: e.id,
+                label: e.nome,
+                value: e.quantidade,
+                categoriaID: e.categoriaID,
+                color: palette[index]
+            }))
+
+        res.json({
+            filter,
+            data: metricsAjustado,
+        })
+
+        log("DEBUG", "Sucesso no getMetrics.")
+    } catch (error) {
+        log("ERROR", "Erro total no getMetrics.", error)
+        res.status(500).json({ error: "Erro ao buscar métricas" })
+    }
+}
 
 
-module.exports = { getMetricsStuff, getMetricsTrans, getMetricsComandas }  
+
+module.exports = { getMetricsStuff, getMetricsTrans, getMetricsComandas, getMetricsComandasAtivas, getMetricsCategorias, getMetricsSubCategorias }  

@@ -1,0 +1,13 @@
+.estoque-content-caixas {
+    position: relative;
+    bottom: 20px;
+    width: 400px;
+    max-width: 500px;
+}
+
+.estoque-content-caixas p {
+    opacity: 0.7;
+    margin: 0 auto;
+    font-size: 0.875rem;
+    margin-left: -5px;
+}

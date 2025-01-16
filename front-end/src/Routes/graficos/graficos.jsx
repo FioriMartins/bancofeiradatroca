@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
-
-import TransacoesTipos from '../../components/Graficos/TransacoesTipos'
-import TotalETC from '../../components/Graficos/TotalETC'
-import CronogramaMetrics from '../../components/CronogramaMetrics/CronogramaMetrics';
-
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+
+import TransacoesMetrics from '../../components/Graficos/TransacoesMetrics/TransacoesTipos'
+import TotalETC from '../../components/Graficos/TotalETC/TotalETC'
+import ProdutosMetrics from '../../components/Graficos/ProdutosMetrics/ProdutosMetrics'
+import ComandasMetrics from '../../components/Graficos/ComandasMetrics/ComandasMetrics';
+import CategoriasMetrics from '../../components/Graficos/CategoriasMetrics/CategoriasMetrics';
+
+import CronogramaMetrics from '../../components/CronogramaMetrics/CronogramaMetrics';
 
 import './graficos.css'
 
@@ -54,22 +57,86 @@ const Graficos = () => {
           </div>
           <div className='optionsGraficos'>
             <ToggleButtonGroup
-              sx={{ height: "60px" }}
+              sx={{gap: 1, border: '1px solid #80808045', borderRadius: 4, padding: '5px' }}
               color="success"
               value={alignment}
               exclusive
               onChange={handleChange}
               aria-label="Platform"
             >
-              <ToggleButton value="week">Semana</ToggleButton>
-              <ToggleButton value="month">Mês</ToggleButton>
-              <ToggleButton value="year">Ano</ToggleButton>
+              <ToggleButton
+                sx={{
+                  color: "#349854",
+                  border: '1px solid transparent',
+                  borderRadius: 1,
+                  height: 40,
+                  width: 76,
+                  "&:hover": {
+                    borderRadius: 3
+                  },
+                  "&.Mui-selected": {
+                    backgroundColor: "#349854",
+                    color: "white",
+                    borderRadius: 3
+                  },
+                  "&.Mui-selected:hover": {
+                    backgroundColor: "#349854",
+                    color: "white",
+                    borderRadius: 3
+                  },
+                }}
+                value="week">Semana</ToggleButton>
+              <ToggleButton sx={{
+                color: "#349854",
+                border: '1px solid transparent',
+                borderRadius: 1,
+                height: 40,
+                width: 76,
+                "&:hover": {
+                  borderRadius: 3
+                },
+                "&.Mui-selected": {
+                  backgroundColor: "#349854",
+                  color: "white",
+                  borderRadius: 3
+                },
+                "&.Mui-selected:hover": {
+                  backgroundColor: "#349854",
+                  color: "white",
+                  borderRadius: 3
+                },
+              }}
+                value="month">Mês</ToggleButton>
+              <ToggleButton sx={{
+                color: "#349854",
+                border: '1px solid transparent',
+                borderRadius: 1,
+                height: 40,
+                width: 76,
+                "&:hover": {
+                  borderRadius: 3
+                },
+                "&.Mui-selected": {
+                  backgroundColor: "#349854",
+                  color: "white",
+                  borderRadius: 3
+                },
+                "&.Mui-selected:hover": {
+                  backgroundColor: "#349854",
+                  color: "white",
+                  borderRadius: 3
+                },
+              }}
+                value="year">Ano</ToggleButton>
             </ToggleButtonGroup>
           </div>
         </div>
         <div className='graficosContentAll'>
           <TotalETC filtro={alignment} />
-          <TransacoesTipos filtro={alignment} />
+          <ComandasMetrics filtro={alignment} />
+          <ProdutosMetrics filtro={alignment} />
+          <TransacoesMetrics filtro={alignment} />
+          <CategoriasMetrics filtro={alignment} />
         </div>
       </div>
       <CronogramaMetrics />

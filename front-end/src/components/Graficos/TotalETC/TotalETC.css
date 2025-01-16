@@ -1,0 +1,35 @@
+#totalETC {
+    width: 230px;
+    height: 70px;
+    justify-content: space-between;
+}
+
+#totalETC p {
+    margin: 5px;
+}
+
+#totalETC b {
+    font-size: 18px;
+}
+
+#trendinggraphic {
+    font-size: 14px;
+    color: #2e7d32;
+}
+
+#title {
+    font-size: 18px;
+}
+
+.iconetitle .left, .iconetitle .right {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.iconetitle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}

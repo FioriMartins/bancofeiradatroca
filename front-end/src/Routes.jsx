@@ -16,7 +16,7 @@ const tokenData = localStorage.getItem('token')
 
 if (!tokenData || tokenData === " " || tokenData === "{}") {
     localStorage.setItem('token', JSON.stringify({ token: '', username: 'LogIn necessario', status: 401 }))
-} 
+}
 
 function AppRoutes() {
     return (

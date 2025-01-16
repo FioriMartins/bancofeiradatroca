@@ -35,8 +35,12 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
         if (reason === 'clickaway') {
             return
         }
+        
+        if (open === true) {
+            setOpen(false)
+            window.location.reload()
+        }
 
-        setOpen(false)
         setOpenError(false)
         setStateLoading(false)
     };
@@ -70,7 +74,7 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
                         width: 300,
                         margin: 4,
                         color: {
-                            dark: '#12222a',
+                            dark: '#10251d',
                             light: '#f9f9f9',
                         },
                         errorCorrectionLevel: 'H',
@@ -96,7 +100,7 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
                 width: 300,
                 margin: 4,
                 color: {
-                    dark: '#12222a',
+                    dark: '#10251d',
                     light: '#f9f9f9',
                 },
                 errorCorrectionLevel: 'H',
@@ -221,7 +225,8 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
                 zIndex: theme.zIndex.drawer + 9999,
             })}
             onClick={handleClose}
-            open={backdropOpen}>
+            open={backdropOpen}
+        >
             <div onClick={(e) => e.stopPropagation()}>
                 <div className='content-comanda'>
                     <Tilt className="card-comanda" options={{
@@ -261,9 +266,13 @@ export default function FormComandas({ backdropOpen, onClose, selectedValue, edi
                             </div>
                         )
                     }
-                    <Alerta state={open} onClose={handleCloseConfirm} text="Usuário cadastrado com sucesso!" severity="success" />
-                    <Alerta state={openError} onClose={handleCloseConfirm} text="Não foi possível cadastrar o Usuário!" severity="error" />
-                    <Loading state={stateLoading} onClose={handleCloseConfirm} />
+                    <div onClick={(e) => e.stopPropagation()} >
+                        <Alerta state={open} onClose={handleCloseConfirm} text="Usuário cadastrado com sucesso!" severity="success" />
+                    </div>
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <Alerta state={openError} onClose={handleCloseConfirm} text="Não foi possível cadastrar o Usuário!" severity="error" />
+                    </div>
+                    {/* <Loading state={stateLoading} onClose={handleCloseConfirm} /> */}
                 </div>
             </div >
         </Backdrop >

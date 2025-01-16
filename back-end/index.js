@@ -8,6 +8,7 @@ const metricsRoutes = require('./routes/metricsRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
 const comandasRoutes = require('./routes/comandasRoutes')
+const logRoutes = require('./routes/logRoutes')
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,6 +23,7 @@ app.use('/metrics', metricsRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/stock', productRoutes);
 app.use('/comandas', comandasRoutes)
+app.use('/log', logRoutes)
 
 // Testar conexão com o banco de dados
 sequelize.authenticate()

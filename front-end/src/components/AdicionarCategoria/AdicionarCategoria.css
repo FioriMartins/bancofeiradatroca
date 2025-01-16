@@ -23,11 +23,13 @@
 .li-option-icon {
     display: flex;
     align-content: center;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .li-option-icon div {
-    padding: 6px 9px;
-    width: 100px;
+    padding: 6px 0 6px 9px;
+    width: 900px;
     margin-right: 55%;
 }
 

@@ -1,0 +1,72 @@
+.graficoBoxCategories {
+    display: flex;
+    flex-direction: column;
+    height: 360px;
+    background-color: #FFF;
+    color: rgba(0, 0, 0, 0.774);
+    border-radius: 14px;
+
+    width: 450px;
+    padding: 15px 20px 15px 20px;
+}
+
+.graficoBoxCategories:hover {
+    cursor: default;
+}
+
+.graficoBoxCategories h3 {
+    margin: 0;
+}
+
+.graficoBoxCategories h4 {
+    margin: 0;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    color: rgba(0, 0, 0, 0.562);
+    height: 44px;
+}
+
+#trendinggraphic {
+    font-size: 14px;
+    color: #2e7d32;
+}
+
+#title {
+    font-size: 18px;
+}
+
+.iconetitle .left, .iconetitle .right {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.iconetitle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.graficoFoda {
+    display: flex;
+    flex-direction: row;
+}
+
+.listGraphic {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.legendGraphic {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+.pieChart {
+    display: flex;
+    align-items: center;
+}

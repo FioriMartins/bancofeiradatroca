@@ -26,10 +26,15 @@ module.exports = function(sequelize, DataTypes) {
         model: 'categorias',
         key: 'id'
       }
+    },
+    ultimaAtualizacao: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
     }
   }, {
     sequelize,
     tableName: 'subcategorias',
+    hasTrigger: true,
     timestamps: false,
     indexes: [
       {
