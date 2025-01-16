@@ -13,5 +13,6 @@
 > **Afim de melhorar a experiência e extinguir os problemas acarretados**, decidimos criar um banco, que pode ser utilizado até o fim do projeto. *Sendo open source, para uma maior manipulação, e sendo um sistema que tenha uma base concreta.*
 
 
-- Caio Fiori Martins.
+- Caio Fiori Martins;
+- Gabriel Lucrécio.
 ### Estudante da ETEC (2023 - 2025), da turma João Cabral de Melo Neto.
